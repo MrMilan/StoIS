@@ -5,13 +5,22 @@
  */
 package stois.login;
 
+import Controller.PersonsJpaController;
 import Controller.UsersJpaController;
+import entity.Persons;
 import entity.Users;
+import java.awt.Component;
 import javax.persistence.EntityManagerFactory;
 import java.security.NoSuchAlgorithmException;
 import java.io.UnsupportedEncodingException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import stois.Passport;
 
 /**
@@ -110,11 +119,18 @@ public class Loginform extends javax.swing.JFrame {
                 // Compute the new DIGEST
                 Passport pp = new Passport();
                 if (pp.isItSamePassword(pass, u.getPasswordsalt(), u.getPassword2())) {
-                    System.out.println("Logged in");
-                }
-                else
-                {
-                    System.err.println("Incorret login or password");
+                    int userId = u.getUsersid();
+                    PersonsJpaController pjc = new PersonsJpaController(emf);
+                    List<Persons> personas = pjc.findPersonsEntities();
+//                    switch(role)
+//                                    Loginform lm = new Loginform(emf);
+//        lm.setVisible(true);
+                } else {
+                    Component frame = new JFrame();
+                    JOptionPane.showMessageDialog(frame,
+                            "Incorret password or login",
+                            "Inane error",
+                            JOptionPane.ERROR_MESSAGE);
                 }
             } catch (NoSuchAlgorithmException ex) {
                 Logger.getLogger(Loginform.class.getName()).log(Level.SEVERE, null, ex);

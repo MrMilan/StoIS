@@ -175,6 +175,18 @@ public class RolesJpaController implements Serializable {
         }
     }
 
+//    public boolean isUserInRole(int userId, RolesPK id) {
+//        EntityManager em = getEntityManager();
+//        try {
+//            return true;
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        } finally {
+//            em.close();
+//        }
+//
+//    }
+
     public int getRolesCount() {
         EntityManager em = getEntityManager();
         try {
@@ -187,5 +199,5 @@ public class RolesJpaController implements Serializable {
             em.close();
         }
     }
-    
+
 }
