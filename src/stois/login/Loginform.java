@@ -8,6 +8,11 @@ package stois.login;
 import Controller.UsersJpaController;
 import entity.Users;
 import javax.persistence.EntityManagerFactory;
+import java.security.NoSuchAlgorithmException;
+import java.io.UnsupportedEncodingException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import stois.Passport;
 
 /**
  *
@@ -19,6 +24,7 @@ public class Loginform extends javax.swing.JFrame {
      * Creates new form Loginform
      */
     private EntityManagerFactory emf = null;
+
     public Loginform(EntityManagerFactory emf) {
         initComponents();
         this.emf = emf;
@@ -93,22 +99,41 @@ public class Loginform extends javax.swing.JFrame {
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
         char[] pass = txtBoxPasswd.getPassword();
-       String username = txtBoxUsername.getText();
-       
+        String username = txtBoxUsername.getText();
+
         UsersJpaController ujc = new UsersJpaController(emf);
         Users u = ujc.findUsersByUserName(username);
         if (u == null) {
             System.err.println("User not found");
-        }else
-        {
-//                       byte[] bDigest = base64ToByte(digest);
-//           byte[] bSalt = base64ToByte(salt);
-// 
-//           // Compute the new DIGEST
-//           byte[] proposedDigest = getHash(ITERATION_NUMBER, password, bSalt);
+        } else {
+            try {
+                // Compute the new DIGEST
+                Passport pp = new Passport();
+                if (pp.isItSamePassword(pass, u.getPasswordsalt(), u.getPassword2())) {
+                    System.out.println("Logged in");
+                }
+                else
+                {
+                    System.err.println("Incorret login or password");
+                }
+            } catch (NoSuchAlgorithmException ex) {
+                Logger.getLogger(Loginform.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (UnsupportedEncodingException ex) {
+                Logger.getLogger(Loginform.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }//GEN-LAST:event_btnLoginActionPerformed
 
+    /**
+     * From a password, a number of iterations and a salt, returns the
+     * corresponding digest
+     *
+     * @param iterationNb int The number of iterations of the algorithm
+     * @param password String The password to encrypt
+     * @param salt byte[] The salt
+     * @return byte[] The digested password
+     * @throws NoSuchAlgorithmException If the algorithm doesn't exist
+     */
     /**
      * @param args the command line arguments
      */
