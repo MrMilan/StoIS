@@ -26,7 +26,6 @@ public class StoIS {
      * @param args the command line arguments
      */
     private static EntityManagerFactory emf = null;
-    public final static int ITERATION_NUMBER_SALT = 36;
 //    private static EntityManager em = null;
 
     public static HashMap<String,Object> container = new HashMap();
