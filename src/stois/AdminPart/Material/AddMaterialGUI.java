@@ -3,18 +3,18 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package stois.AdminPart;
+package stois.AdminPart.Material;
 
 /**
  *
  * @author Lukas
  */
-public class AddToolGUI extends javax.swing.JFrame {
+public class AddMaterialGUI extends javax.swing.JFrame {
 
     /**
      * Creates new form ToolGUI
      */
-    public AddToolGUI() {
+    public AddMaterialGUI() {
         initComponents();
     }
 
@@ -39,15 +39,15 @@ public class AddToolGUI extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel1.setText("Add Tool");
+        jLabel1.setText("Add material");
 
-        jTextField1.setText("Tool name");
+        jTextField1.setText("Material name");
 
-        jLabel2.setText("Tool name");
+        jLabel2.setText("Material name");
 
-        jLabel3.setText("Tool code");
+        jLabel3.setText("Material code");
 
-        jTextField2.setText("Tool code");
+        jTextField2.setText("Material code");
 
         jButton1.setText("Confirm");
 
@@ -78,7 +78,7 @@ public class AddToolGUI extends javax.swing.JFrame {
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(191, 191, 191))
             .addGroup(layout.createSequentialGroup()
-                .addGap(189, 189, 189)
+                .addGap(176, 176, 176)
                 .addComponent(jLabel1)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -124,13 +124,13 @@ public class AddToolGUI extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(AddToolGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AddMaterialGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(AddToolGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AddMaterialGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(AddToolGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AddMaterialGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(AddToolGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AddMaterialGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
         //</editor-fold>
@@ -152,7 +152,7 @@ public class AddToolGUI extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new AddToolGUI().setVisible(true);
+                new AddMaterialGUI().setVisible(true);
             }
         });
     }
