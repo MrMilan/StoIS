@@ -101,11 +101,11 @@ public class Loginform extends javax.swing.JFrame {
             System.err.println("User not found");
         }else
         {
-                       byte[] bDigest = base64ToByte(digest);
-           byte[] bSalt = base64ToByte(salt);
- 
-           // Compute the new DIGEST
-           byte[] proposedDigest = getHash(ITERATION_NUMBER, password, bSalt);
+//                       byte[] bDigest = base64ToByte(digest);
+//           byte[] bSalt = base64ToByte(salt);
+// 
+//           // Compute the new DIGEST
+//           byte[] proposedDigest = getHash(ITERATION_NUMBER, password, bSalt);
         }
     }//GEN-LAST:event_btnLoginActionPerformed
 
