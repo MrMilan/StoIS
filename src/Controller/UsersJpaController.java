@@ -188,6 +188,20 @@ public class UsersJpaController implements Serializable {
         }
     }
 
+    public Users findUsersByUserName(String username) {
+        EntityManager em = getEntityManager();
+        try {
+            Query q = em.createQuery("SELECT u FROM Users AS u WHERE u.username=:username");
+            q.setParameter("username", username);
+            return (Users) q.getSingleResult();
+        } catch (Exception e) {
+//           e.printStackTrace();
+            return null;
+        } finally {
+            em.close();
+        }
+    }
+
     public int getUsersCount() {
         EntityManager em = getEntityManager();
         try {
@@ -200,5 +214,5 @@ public class UsersJpaController implements Serializable {
             em.close();
         }
     }
-    
+
 }
