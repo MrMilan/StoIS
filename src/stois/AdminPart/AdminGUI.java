@@ -29,114 +29,179 @@ public class AdminGUI extends javax.swing.JFrame {
 
         jSeparator3 = new javax.swing.JSeparator();
         jSeparator4 = new javax.swing.JSeparator();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        jButtUserAdd = new javax.swing.JButton();
+        jButtUserDel = new javax.swing.JButton();
+        jButtRepExp = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
-        jButton4 = new javax.swing.JButton();
+        jButtUserList = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
-        jButton5 = new javax.swing.JButton();
+        jButtMaterAdd = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        jButton6 = new javax.swing.JButton();
-        jButton7 = new javax.swing.JButton();
+        jButtToolAdd = new javax.swing.JButton();
+        jButtMaterDel = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
-        jButton8 = new javax.swing.JButton();
-        jButton9 = new javax.swing.JButton();
-        jButton10 = new javax.swing.JButton();
+        jButtOperAdd = new javax.swing.JButton();
+        jButtOperDel = new javax.swing.JButton();
+        jButtDiagAdd = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
-        jButton11 = new javax.swing.JButton();
-        jButton12 = new javax.swing.JButton();
-        jButton13 = new javax.swing.JButton();
-        jButton14 = new javax.swing.JButton();
-        jButton15 = new javax.swing.JButton();
-        jButton16 = new javax.swing.JButton();
+        jButtToolDel = new javax.swing.JButton();
+        jButtToolList = new javax.swing.JButton();
+        jButtDiagDel = new javax.swing.JButton();
+        jButtDiagList = new javax.swing.JButton();
+        jButtMaterList = new javax.swing.JButton();
+        jButtOperList = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JSeparator();
         jSeparator2 = new javax.swing.JSeparator();
         jLabel7 = new javax.swing.JLabel();
         jSeparator5 = new javax.swing.JSeparator();
-        jButton17 = new javax.swing.JButton();
-        jButton18 = new javax.swing.JButton();
+        jButtAdminPsw = new javax.swing.JButton();
+        jButtAdminLogoff = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jButton1.setText("Add user");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        jButtUserAdd.setText("Add user");
+        jButtUserAdd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                jButtUserAddActionPerformed(evt);
             }
         });
 
-        jButton2.setText("Delete user");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        jButtUserDel.setText("Delete user");
+        jButtUserDel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                jButtUserDelActionPerformed(evt);
             }
         });
 
-        jButton3.setText("Export");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        jButtRepExp.setText("Export");
+        jButtRepExp.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                jButtRepExpActionPerformed(evt);
             }
         });
 
         jLabel1.setText("Users");
 
-        jButton4.setText("User list");
+        jButtUserList.setText("User list");
+        jButtUserList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtUserListMouseClicked(evt);
+            }
+        });
 
         jLabel2.setText("Reports");
 
-        jButton5.setText("Add material");
+        jButtMaterAdd.setText("Add material");
+        jButtMaterAdd.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtMaterAddMouseClicked(evt);
+            }
+        });
 
         jLabel3.setText("Materials");
 
         jLabel4.setText("Tools");
 
-        jButton6.setText("Add tool");
+        jButtToolAdd.setText("Add tool");
+        jButtToolAdd.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtToolAddMouseClicked(evt);
+            }
+        });
 
-        jButton7.setText("Cancel material");
+        jButtMaterDel.setText("Cancel material");
+        jButtMaterDel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtMaterDelMouseClicked(evt);
+            }
+        });
 
         jLabel5.setText("Operations");
 
-        jButton8.setText("Add operation");
-        jButton8.addActionListener(new java.awt.event.ActionListener() {
+        jButtOperAdd.setText("Add operation");
+        jButtOperAdd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton8ActionPerformed(evt);
+                jButtOperAddActionPerformed(evt);
             }
         });
 
-        jButton9.setText("Cancel operation");
+        jButtOperDel.setText("Cancel operation");
+        jButtOperDel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtOperDelMouseClicked(evt);
+            }
+        });
 
-        jButton10.setText("Add diagnosis");
+        jButtDiagAdd.setText("Add diagnosis");
+        jButtDiagAdd.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtDiagAddMouseClicked(evt);
+            }
+        });
 
         jLabel6.setText("Diagnosis");
 
-        jButton11.setText("Cancel tool");
-        jButton11.addActionListener(new java.awt.event.ActionListener() {
+        jButtToolDel.setText("Cancel tool");
+        jButtToolDel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton11ActionPerformed(evt);
+                jButtToolDelActionPerformed(evt);
             }
         });
 
-        jButton12.setText("Tool list");
+        jButtToolList.setText("Tool list");
+        jButtToolList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtToolListMouseClicked(evt);
+            }
+        });
 
-        jButton13.setText("Cancel diagnosis");
+        jButtDiagDel.setText("Cancel diagnosis");
+        jButtDiagDel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtDiagDelMouseClicked(evt);
+            }
+        });
 
-        jButton14.setText("Diagnosis list");
+        jButtDiagList.setText("Diagnosis list");
+        jButtDiagList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtDiagListMouseClicked(evt);
+            }
+        });
 
-        jButton15.setText("Material list");
+        jButtMaterList.setText("Material list");
+        jButtMaterList.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtMaterListActionPerformed(evt);
+            }
+        });
 
-        jButton16.setText("Operation list");
+        jButtOperList.setText("Operation list");
+        jButtOperList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtOperListMouseClicked(evt);
+            }
+        });
 
         jSeparator2.setOrientation(javax.swing.SwingConstants.VERTICAL);
 
         jLabel7.setFont(new java.awt.Font("Tahoma", 0, 15)); // NOI18N
         jLabel7.setText("Admin");
 
-        jButton17.setText("Change password");
+        jButtAdminPsw.setText("Change password");
+        jButtAdminPsw.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtAdminPswMouseClicked(evt);
+            }
+        });
 
-        jButton18.setText("Log off");
+        jButtAdminLogoff.setText("Log off");
+        jButtAdminLogoff.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtAdminLogoffMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -155,22 +220,22 @@ public class AdminGUI extends javax.swing.JFrame {
                                 .addGap(19, 19, 19)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jButton15, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jButtMaterList, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jButton16, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(jButtOperList, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jButton7)
+                                        .addComponent(jButtMaterDel)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jButton9))
+                                        .addComponent(jButtOperDel))
                                     .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jButtMaterAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addComponent(jButtOperAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addGap(50, 50, 50)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jButton14, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jButton13, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
-                                    .addComponent(jButton10, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                    .addComponent(jButtDiagList, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jButtDiagDel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
+                                    .addComponent(jButtDiagAdd, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
@@ -191,20 +256,20 @@ public class AdminGUI extends javax.swing.JFrame {
                                                         .addComponent(jSeparator5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 279, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                                             .addGap(16, 16, 16)
-                                                            .addComponent(jButton17)
+                                                            .addComponent(jButtAdminPsw)
                                                             .addGap(28, 28, 28)
-                                                            .addComponent(jButton18, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                                            .addComponent(jButtAdminLogoff, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                                             .addGap(136, 136, 136)
                                                             .addComponent(jLabel1))
                                                         .addGroup(layout.createSequentialGroup()
                                                             .addGap(17, 17, 17)
-                                                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                            .addComponent(jButtUserAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                                            .addComponent(jButtUserDel, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                                     .addGroup(layout.createSequentialGroup()
                                                         .addGap(96, 96, 96)
-                                                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                                        .addComponent(jButtUserList, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)))
                                         .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(27, 27, 27)))
@@ -215,16 +280,16 @@ public class AdminGUI extends javax.swing.JFrame {
                                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                                 .addComponent(jLabel4)
                                                 .addGap(52, 52, 52))
-                                            .addComponent(jButton11, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                            .addComponent(jButtToolDel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                         .addComponent(jLabel2)
                                         .addGap(45, 45, 45))
                                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                            .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addComponent(jButtToolAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jButtRepExp, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE))
                                         .addGap(1, 1, 1))
-                                    .addComponent(jButton12, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                                    .addComponent(jButtToolList, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))))))
                 .addGap(60, 60, 60))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
@@ -243,31 +308,31 @@ public class AdminGUI extends javax.swing.JFrame {
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addComponent(jLabel4)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jButton6)
+                                .addComponent(jButtToolAdd)
                                 .addGap(11, 11, 11))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(jButton3)
+                                .addComponent(jButtRepExp)
                                 .addGap(89, 89, 89)))
-                        .addComponent(jButton11)
+                        .addComponent(jButtToolDel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton12))
+                        .addComponent(jButtToolList))
                     .addComponent(jSeparator2)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jLabel7)
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jButton17)
-                            .addComponent(jButton18))
+                            .addComponent(jButtAdminPsw)
+                            .addComponent(jButtAdminLogoff))
                         .addGap(23, 23, 23)
                         .addComponent(jSeparator5, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jButton2)
-                            .addComponent(jButton1))
+                            .addComponent(jButtUserDel)
+                            .addComponent(jButtUserAdd))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton4)
+                        .addComponent(jButtUserList)
                         .addGap(12, 12, 12)))
                 .addGap(18, 18, 18)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -278,45 +343,97 @@ public class AdminGUI extends javax.swing.JFrame {
                     .addComponent(jLabel3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton10)
-                    .addComponent(jButton8)
-                    .addComponent(jButton5))
+                    .addComponent(jButtDiagAdd)
+                    .addComponent(jButtOperAdd)
+                    .addComponent(jButtMaterAdd))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton13)
-                    .addComponent(jButton9)
-                    .addComponent(jButton7))
+                    .addComponent(jButtDiagDel)
+                    .addComponent(jButtOperDel)
+                    .addComponent(jButtMaterDel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jButton14)
-                        .addComponent(jButton16))
-                    .addComponent(jButton15))
+                        .addComponent(jButtDiagList)
+                        .addComponent(jButtOperList))
+                    .addComponent(jButtMaterList))
                 .addContainerGap(35, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void jButtUserAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtUserAddActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_jButtUserAddActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void jButtUserDelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtUserDelActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_jButtUserDelActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void jButtRepExpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtRepExpActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_jButtRepExpActionPerformed
 
-    private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
+    private void jButtToolDelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtToolDelActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton11ActionPerformed
+    }//GEN-LAST:event_jButtToolDelActionPerformed
 
-    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+    private void jButtOperAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtOperAddActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton8ActionPerformed
+    }//GEN-LAST:event_jButtOperAddActionPerformed
+
+    private void jButtMaterListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtMaterListActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButtMaterListActionPerformed
+
+    private void jButtMaterAddMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtMaterAddMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButtMaterAddMouseClicked
+
+    private void jButtMaterDelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtMaterDelMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButtMaterDelMouseClicked
+
+    private void jButtUserListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtUserListMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButtUserListMouseClicked
+
+    private void jButtToolAddMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtToolAddMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButtToolAddMouseClicked
+
+    private void jButtToolListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtToolListMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButtToolListMouseClicked
+
+    private void jButtAdminPswMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtAdminPswMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButtAdminPswMouseClicked
+
+    private void jButtAdminLogoffMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtAdminLogoffMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButtAdminLogoffMouseClicked
+
+    private void jButtOperDelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtOperDelMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButtOperDelMouseClicked
+
+    private void jButtOperListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtOperListMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButtOperListMouseClicked
+
+    private void jButtDiagAddMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtDiagAddMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButtDiagAddMouseClicked
+
+    private void jButtDiagDelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtDiagDelMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButtDiagDelMouseClicked
+
+    private void jButtDiagListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtDiagListMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButtDiagListMouseClicked
 
     /**
      * @param args the command line arguments
@@ -354,24 +471,24 @@ public class AdminGUI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton10;
-    private javax.swing.JButton jButton11;
-    private javax.swing.JButton jButton12;
-    private javax.swing.JButton jButton13;
-    private javax.swing.JButton jButton14;
-    private javax.swing.JButton jButton15;
-    private javax.swing.JButton jButton16;
-    private javax.swing.JButton jButton17;
-    private javax.swing.JButton jButton18;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton7;
-    private javax.swing.JButton jButton8;
-    private javax.swing.JButton jButton9;
+    private javax.swing.JButton jButtAdminLogoff;
+    private javax.swing.JButton jButtAdminPsw;
+    private javax.swing.JButton jButtDiagAdd;
+    private javax.swing.JButton jButtDiagDel;
+    private javax.swing.JButton jButtDiagList;
+    private javax.swing.JButton jButtMaterAdd;
+    private javax.swing.JButton jButtMaterDel;
+    private javax.swing.JButton jButtMaterList;
+    private javax.swing.JButton jButtOperAdd;
+    private javax.swing.JButton jButtOperDel;
+    private javax.swing.JButton jButtOperList;
+    private javax.swing.JButton jButtRepExp;
+    private javax.swing.JButton jButtToolAdd;
+    private javax.swing.JButton jButtToolDel;
+    private javax.swing.JButton jButtToolList;
+    private javax.swing.JButton jButtUserAdd;
+    private javax.swing.JButton jButtUserDel;
+    private javax.swing.JButton jButtUserList;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
