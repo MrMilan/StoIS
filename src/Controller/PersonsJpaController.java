@@ -364,6 +364,20 @@ public class PersonsJpaController implements Serializable {
             em.close();
         }
     }
+    
+    public Persons findPersonsById(int id) {
+        EntityManager em = getEntityManager();
+        try {
+            Query q = em.createQuery("SELECT p FROM Persons AS p WHERE p.personsPK.personid=:id");
+            q.setParameter("id", id);
+            return (Persons) q.getSingleResult();
+        } catch (Exception e) {
+//           e.printStackTrace();
+            return null;
+        } finally {
+            em.close();
+        }
+    }
 
     public int getPersonsCount() {
         EntityManager em = getEntityManager();

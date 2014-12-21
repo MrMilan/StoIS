@@ -5,7 +5,10 @@
  */
 package stois;
 
+import Controller.PersonsJpaController;
+import Controller.RolesJpaController;
 import entity.Persons;
+import entity.Roles;
 import java.util.HashMap;
 import java.util.List;
 import javax.persistence.Entity;
@@ -36,10 +39,14 @@ public class StoIS {
         } catch (Exception e) {
             System.err.println("No connection to database");
         }
-        
+//        PersonsJpaController pjc = new PersonsJpaController(emf);
+//        Persons personsById = pjc.findPersonsById(8);
+//        RolesJpaController rjc= new RolesJpaController(emf);
+//        List<Roles> findRolesEntities = rjc.findRolesEntities(1,0);
+//        
+//        personsById.setRolesCollection(findRolesEntities);
         Loginform lm = new Loginform(emf);
         lm.setVisible(true);
-
         // TODO code application logic here
 //        em = emf.createEntityManager();
 //        Query q = em.createQuery("SELECT p FROM Persons AS p");
