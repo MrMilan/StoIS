@@ -111,7 +111,13 @@ public class Loginform extends javax.swing.JFrame {
         String username = txtBoxUsername.getText();
 
         UsersJpaController ujc = new UsersJpaController(emf);
-        Users u = ujc.findUsersByUserName(username);
+        Users u= null;
+        try {
+        u = ujc.findUsersByUserName(username);    
+        } catch (Exception e) {
+        System.err.println("Connection to database and searching in database faild");
+        }
+        
         if (u == null) {
             System.err.println("User not found");
         } else {
