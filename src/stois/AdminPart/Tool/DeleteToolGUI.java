@@ -5,22 +5,38 @@
  */
 package stois.AdminPart.Tool;
 
+import Controller.ToolsJpaController;
+import Controller.exceptions.IllegalOrphanException;
+import Controller.exceptions.NonexistentEntityException;
 import entity.Tools;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import javax.swing.DefaultListModel;
+import javax.swing.JList;
 
 /**
  *
  * @author Lukas
  */
 public class DeleteToolGUI extends javax.swing.JFrame {
-    DefaultListModel<Tools> toolsModel = new DefaultListModel<>();
+
     /**
      * Creates new form ToolGUI
      */
-    public DeleteToolGUI() {
+    
+    private static EntityManagerFactory emf = null;
+    
+    public DeleteToolGUI(EntityManagerFactory emf) {
         initComponents();
-        jList1.setModel(toolsModel);
+        this.emf = emf;
     }
+    
+    
+    private static Integer bla = null;
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -32,46 +48,50 @@ public class DeleteToolGUI extends javax.swing.JFrame {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        JtextName = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
-        jLabel3 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList();
+        JButtDelete = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         jSeparator2 = new javax.swing.JSeparator();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        jButtFind = new javax.swing.JButton();
+        jButtUpdate = new javax.swing.JButton();
+        list1 = new java.awt.List();
+        jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel1.setText("Delete Tool");
 
-        jTextField1.setText("Tool name");
+        JtextName.setText("Tool name");
 
         jLabel2.setText("Tool name");
 
-        jLabel3.setText("Tool code");
-
-        jTextField2.setText("Tool code");
-
-        jButton1.setText("Delete");
-
-        jList1.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
+        JButtDelete.setText("Delete");
+        JButtDelete.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                JButtDeleteMouseClicked(evt);
+            }
         });
-        jScrollPane1.setViewportView(jList1);
 
         jLabel4.setText("FIND");
 
-        jButton2.setText("Find");
+        jButtFind.setText("Find");
+        jButtFind.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtFindMouseClicked(evt);
+            }
+        });
 
-        jButton3.setText("Reset");
+        jButtUpdate.setText("Update");
+        jButtUpdate.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtUpdateMouseClicked(evt);
+            }
+        });
+
+        jLabel3.setText("Tool name");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -82,40 +102,33 @@ public class DeleteToolGUI extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addGap(34, 34, 34)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(271, 271, 271)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jTextField1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(284, 284, 284)
-                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(34, 34, 34)
                                 .addComponent(jLabel2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 42, Short.MAX_VALUE)
-                                .addComponent(jLabel3))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(layout.createSequentialGroup()
-                                        .addGap(38, 38, 38)
-                                        .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                        .addGap(69, 69, 69)
-                                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addComponent(jLabel4)
+                                        .addGap(93, 93, 93)))
                                 .addGap(27, 27, 27))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel4)
-                                .addGap(120, 120, 120)))))
+                                .addComponent(list1, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 97, Short.MAX_VALUE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                        .addComponent(JtextName, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(67, 67, 67))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                        .addComponent(jButtFind, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(86, 86, 86))
+                                    .addComponent(jLabel3)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jButtUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(JButtDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(83, 83, 83)))))
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
                 .addGap(181, 181, 181)
@@ -129,33 +142,127 @@ public class DeleteToolGUI extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
                     .addComponent(jLabel2)
                     .addComponent(jLabel4))
-                .addGap(13, 13, 13)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jButton2)
-                            .addComponent(jButton3))
+                        .addComponent(jLabel3)
+                        .addGap(5, 5, 5)
+                        .addComponent(JtextName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(14, 14, 14)
-                        .addComponent(jSeparator2, javax.swing.GroupLayout.DEFAULT_SIZE, 11, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(19, 19, 19))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addComponent(jButtFind)
+                        .addGap(18, 18, 18)
+                        .addComponent(jSeparator2, javax.swing.GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE))
+                    .addComponent(list1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(JButtDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtUpdate))
+                .addGap(19, 19, 19))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void JButtDeleteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JButtDeleteMouseClicked
+        // TODO add your handling code here:
+        /*
+     try {
+            emf = Persistence.createEntityManagerFactory("StoISPU");
+        } catch (Exception e) {
+            System.err.println("No connection to database");
+        }
+     */
+     
+        System.out.println(list1.getSelectedItem());
+        
+        ToolsJpaController tjc = new ToolsJpaController(emf);
+        
+        List<Tools> toolsEntities = tjc.findToolsEntities();
+       
+        
+        toolsEntities.stream().forEach((tool) -> {
+            if(tool.getToolname().equals(list1.getSelectedItem())){
+                bla = tool.getToolid();
+            }
+        });
+        
+        System.out.println(bla);
+        
+        try {
+            tjc.destroy(bla);
+        } catch (NonexistentEntityException ex) {
+            Logger.getLogger(DeleteToolGUI.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalOrphanException ex) {
+            Logger.getLogger(DeleteToolGUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        
+        
+        
+        
+        
+        
+        
+    }//GEN-LAST:event_JButtDeleteMouseClicked
+
+    private void jButtFindMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtFindMouseClicked
+        // TODO add your handling code here:
+        /*
+        try {
+            emf = Persistence.createEntityManagerFactory("StoISPU");
+        } catch (Exception e) {
+            System.err.println("No connection to database");
+        }
+        */
+          
+        ToolsJpaController tjc = new ToolsJpaController(emf);
+      
+        List<Tools> toolsEntities = tjc.findToolsEntities();
+
+        // vymazani listu1
+        
+        list1.removeAll();
+        
+        // jmeno hledaneho obejktu
+        
+        String jmeno;
+        jmeno = JtextName.getText();
+
+        toolsEntities.stream().forEach((tool) -> {
+            if(tool.getToolname().equals(jmeno)){
+                list1.add(jmeno);
+            }
+        });
+        
+       
+        
+    }//GEN-LAST:event_jButtFindMouseClicked
+
+    private void jButtUpdateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtUpdateMouseClicked
+        // TODO add your handling code here:
+       //vymazani listu
+        list1.removeAll();
+        
+        // tool controler
+        ToolsJpaController tjc = new ToolsJpaController(emf);
+        
+        //nalezeni si id podle kodu
+        List<Tools> toolsEntities = tjc.findToolsEntities();
+        
+
+        toolsEntities.stream().forEach((tool) -> {
+            System.out.println(tool.getToolname());
+        });
+                
+        toolsEntities.stream().forEach((tool) -> {
+            list1.add(tool.getToolname());
+        }); 
+        
+        
+    }//GEN-LAST:event_jButtUpdateMouseClicked
 
     /**
      * @param args the command line arguments
@@ -188,26 +295,29 @@ public class DeleteToolGUI extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
+        /*
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new DeleteToolGUI().setVisible(true);
+                new DeleteToolGUI(emf).setVisible(true);
             }
         });
+        */
+        
+        
+        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
+    private javax.swing.JButton JButtDelete;
+    private javax.swing.JTextField JtextName;
+    private javax.swing.JButton jButtFind;
+    private javax.swing.JButton jButtUpdate;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JList jList1;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
+    private java.awt.List list1;
     // End of variables declaration//GEN-END:variables
 }

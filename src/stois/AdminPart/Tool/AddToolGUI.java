@@ -5,6 +5,12 @@
  */
 package stois.AdminPart.Tool;
 
+import Controller.ToolsJpaController;
+import entity.Tools;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.tools.Tool;
+
 /**
  *
  * @author Lukas
@@ -14,10 +20,14 @@ public class AddToolGUI extends javax.swing.JFrame {
     /**
      * Creates new form ToolGUI
      */
-    public AddToolGUI() {
+    private static EntityManagerFactory emf = null;
+    
+    public AddToolGUI(EntityManagerFactory emf) {
         initComponents();
+        this.emf = emf;
     }
-
+    
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -50,6 +60,11 @@ public class AddToolGUI extends javax.swing.JFrame {
         jTextField2.setText("Tool code");
 
         jButton1.setText("Confirm");
+        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton1MouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -107,6 +122,26 @@ public class AddToolGUI extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
+        // TODO add your handling code here:
+        // pripojeni k databazi
+        
+        /*try {
+            emf = Persistence.createEntityManagerFactory("StoISPU");
+        } catch (Exception e) {
+            System.err.println("No connection to database");
+        }
+        */
+         //vytahnuti si dat z textfieldu
+        String toolName = jTextField1.getText();
+        String toolCode = jTextField2.getText();
+             
+        // tool controler
+        ToolsJpaController tjc = new ToolsJpaController(emf);
+        tjc.create(new Tools(null,toolName,toolCode,false,false));
+                 
+    }//GEN-LAST:event_jButton1MouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -150,11 +185,12 @@ public class AddToolGUI extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
+        /*java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new AddToolGUI().setVisible(true);
+                new AddToolGUI(emf).setVisible(true);
             }
         });
+                */
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
