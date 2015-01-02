@@ -20,6 +20,7 @@ import java.util.Collection;
 import entity.PersonsHasRoles;
 import entity.Users;
 import entity.PersonsHasTelephones;
+import entity.Roles;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -391,5 +392,25 @@ public class PersonsJpaController implements Serializable {
             em.close();
         }
     }
-    
+
+    public List<Roles> getUsersRoles(Integer usersId) {
+        EntityManager em = getEntityManager();
+        try {
+            Query q;
+          q = em.createQuery("SELECT r.roleid,r.rolename from Persons AS p LEFT JOIN  Users AS u ON p.personid =  u.persons_personid LEFT JOIN Persons_has_roles AS phr ON p.personid = phr.persons_personid LEFT JOIN Roles AS r ON r.roleid = phr.roles_roleid WHERE u.usersid==:userId");
+//            q = em.createQuery("SELECT u.roleid,u.rolename from Userswithrole AS u WHERE u.usersid==:userId");
+//            q = em.createQuery("SELECT p.personid FROM Persons AS p LEFT JOIN Users AS u on u.persons_personid=p.personid WHERE u.usersid=:userId");
+            q.setParameter("userId", usersId);
+            Integer personsId = (Integer) q.getSingleResult();
+                        q = em.createQuery("SELECT r.roleid,r.rolename FROM Roles AS r LEFT JOIN persons_has_roles AS phr on phr.roles_roleid=r.roleid WHERE phr.persons_personid=:persons");
+            q.setParameter("personsId", personsId);
+            return (List<Roles>) q.getSingleResult();
+        } catch (Exception e) {
+//           e.printStackTrace();
+            return null;
+        } finally {
+            em.close();
+        }
+    }
+
 }

@@ -31,7 +31,8 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "Operationscodes.findAll", query = "SELECT o FROM Operationscodes o"),
     @NamedQuery(name = "Operationscodes.findByIdoperationscodes", query = "SELECT o FROM Operationscodes o WHERE o.idoperationscodes = :idoperationscodes"),
-    @NamedQuery(name = "Operationscodes.findByOperationcode", query = "SELECT o FROM Operationscodes o WHERE o.operationcode = :operationcode")})
+    @NamedQuery(name = "Operationscodes.findByOperationcode", query = "SELECT o FROM Operationscodes o WHERE o.operationcode = :operationcode"),
+    @NamedQuery(name = "Operationscodes.findByOperationname", query = "SELECT o FROM Operationscodes o WHERE o.operationname = :operationname")})
 public class Operationscodes implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -42,6 +43,8 @@ public class Operationscodes implements Serializable {
     @Basic(optional = false)
     @Column(name = "operationcode")
     private String operationcode;
+    @Column(name = "operationname")
+    private String operationname;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "operationscodesIdoperationscodes")
     private Collection<Operations> operationsCollection;
 
@@ -71,6 +74,14 @@ public class Operationscodes implements Serializable {
 
     public void setOperationcode(String operationcode) {
         this.operationcode = operationcode;
+    }
+
+    public String getOperationname() {
+        return operationname;
+    }
+
+    public void setOperationname(String operationname) {
+        this.operationname = operationname;
     }
 
     @XmlTransient
@@ -104,7 +115,7 @@ public class Operationscodes implements Serializable {
 
     @Override
     public String toString() {
-        return "stois.Entity.Operationscodes[ idoperationscodes=" + idoperationscodes + " ]";
+        return "entity.Operationscodes[ idoperationscodes=" + idoperationscodes + " ]";
     }
     
 }

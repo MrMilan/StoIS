@@ -6,9 +6,7 @@
 package entity;
 
 import java.io.Serializable;
-import java.util.Collection;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,10 +16,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -32,7 +28,8 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "PersonsHasRoles.findAll", query = "SELECT p FROM PersonsHasRoles p"),
-    @NamedQuery(name = "PersonsHasRoles.findByIdphr", query = "SELECT p FROM PersonsHasRoles p WHERE p.idphr = :idphr")})
+    @NamedQuery(name = "PersonsHasRoles.findByIdphr", query = "SELECT p FROM PersonsHasRoles p WHERE p.idphr = :idphr"),
+    @NamedQuery(name = "PersonsHasRoles.findByCanceled", query = "SELECT p FROM PersonsHasRoles p WHERE p.canceled = :canceled")})
 public class PersonsHasRoles implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -40,14 +37,14 @@ public class PersonsHasRoles implements Serializable {
     @Basic(optional = false)
     @Column(name = "idphr")
     private Integer idphr;
+    @Column(name = "canceled")
+    private Boolean canceled;
     @JoinColumn(name = "persons_personid", referencedColumnName = "personid")
     @ManyToOne(optional = false)
     private Persons personsPersonid;
     @JoinColumn(name = "roles_roleid", referencedColumnName = "roleid")
     @ManyToOne(optional = false)
     private Roles rolesRoleid;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "personsHasRolesIdphr")
-    private Collection<Actions> actionsCollection;
 
     public PersonsHasRoles() {
     }
@@ -64,6 +61,14 @@ public class PersonsHasRoles implements Serializable {
         this.idphr = idphr;
     }
 
+    public Boolean getCanceled() {
+        return canceled;
+    }
+
+    public void setCanceled(Boolean canceled) {
+        this.canceled = canceled;
+    }
+
     public Persons getPersonsPersonid() {
         return personsPersonid;
     }
@@ -78,15 +83,6 @@ public class PersonsHasRoles implements Serializable {
 
     public void setRolesRoleid(Roles rolesRoleid) {
         this.rolesRoleid = rolesRoleid;
-    }
-
-    @XmlTransient
-    public Collection<Actions> getActionsCollection() {
-        return actionsCollection;
-    }
-
-    public void setActionsCollection(Collection<Actions> actionsCollection) {
-        this.actionsCollection = actionsCollection;
     }
 
     @Override
@@ -111,7 +107,7 @@ public class PersonsHasRoles implements Serializable {
 
     @Override
     public String toString() {
-        return "stois.Entity.PersonsHasRoles[ idphr=" + idphr + " ]";
+        return "entity.PersonsHasRoles[ idphr=" + idphr + " ]";
     }
     
 }

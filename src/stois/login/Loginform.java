@@ -8,11 +8,14 @@ package stois.login;
 import Controller.PersonsJpaController;
 import Controller.UsersJpaController;
 import entity.Persons;
+import entity.PersonsHasRoles;
+import entity.Roles;
 import entity.Users;
 import java.awt.Component;
 import javax.persistence.EntityManagerFactory;
 import java.security.NoSuchAlgorithmException;
 import java.io.UnsupportedEncodingException;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -126,11 +129,12 @@ public class Loginform extends javax.swing.JFrame {
                 Passport pp = new Passport();
                 if (pp.isItSamePassword(pass, u.getPasswordsalt(), u.getPassword2())) {
                     int userId = u.getUsersid();
+                    
                     PersonsJpaController pjc = new PersonsJpaController(emf);
-                    List<Persons> personas = pjc.findPersonsEntities();
+                    List<Roles> fur= pjc.getUsersRoles(userId);
 //                    switch(role)
-//                                    Loginform lm = new Loginform(emf);
-//        lm.setVisible(true);
+int a = 7;
+
                 } else {
                     Component frame = new JFrame();
                     JOptionPane.showMessageDialog(frame,

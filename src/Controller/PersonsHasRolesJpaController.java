@@ -5,7 +5,6 @@
  */
 package Controller;
 
-import Controller.exceptions.IllegalOrphanException;
 import Controller.exceptions.NonexistentEntityException;
 import java.io.Serializable;
 import javax.persistence.Query;
@@ -13,11 +12,8 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import entity.Persons;
-import entity.Roles;
-import entity.Actions;
 import entity.PersonsHasRoles;
-import java.util.ArrayList;
-import java.util.Collection;
+import entity.Roles;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -38,9 +34,6 @@ public class PersonsHasRolesJpaController implements Serializable {
     }
 
     public void create(PersonsHasRoles personsHasRoles) {
-        if (personsHasRoles.getActionsCollection() == null) {
-            personsHasRoles.setActionsCollection(new ArrayList<Actions>());
-        }
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -55,12 +48,6 @@ public class PersonsHasRolesJpaController implements Serializable {
                 rolesRoleid = em.getReference(rolesRoleid.getClass(), rolesRoleid.getRoleid());
                 personsHasRoles.setRolesRoleid(rolesRoleid);
             }
-            Collection<Actions> attachedActionsCollection = new ArrayList<Actions>();
-            for (Actions actionsCollectionActionsToAttach : personsHasRoles.getActionsCollection()) {
-                actionsCollectionActionsToAttach = em.getReference(actionsCollectionActionsToAttach.getClass(), actionsCollectionActionsToAttach.getActionid());
-                attachedActionsCollection.add(actionsCollectionActionsToAttach);
-            }
-            personsHasRoles.setActionsCollection(attachedActionsCollection);
             em.persist(personsHasRoles);
             if (personsPersonid != null) {
                 personsPersonid.getPersonsHasRolesCollection().add(personsHasRoles);
@@ -70,15 +57,6 @@ public class PersonsHasRolesJpaController implements Serializable {
                 rolesRoleid.getPersonsHasRolesCollection().add(personsHasRoles);
                 rolesRoleid = em.merge(rolesRoleid);
             }
-            for (Actions actionsCollectionActions : personsHasRoles.getActionsCollection()) {
-                PersonsHasRoles oldPersonsHasRolesIdphrOfActionsCollectionActions = actionsCollectionActions.getPersonsHasRolesIdphr();
-                actionsCollectionActions.setPersonsHasRolesIdphr(personsHasRoles);
-                actionsCollectionActions = em.merge(actionsCollectionActions);
-                if (oldPersonsHasRolesIdphrOfActionsCollectionActions != null) {
-                    oldPersonsHasRolesIdphrOfActionsCollectionActions.getActionsCollection().remove(actionsCollectionActions);
-                    oldPersonsHasRolesIdphrOfActionsCollectionActions = em.merge(oldPersonsHasRolesIdphrOfActionsCollectionActions);
-                }
-            }
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -87,7 +65,7 @@ public class PersonsHasRolesJpaController implements Serializable {
         }
     }
 
-    public void edit(PersonsHasRoles personsHasRoles) throws IllegalOrphanException, NonexistentEntityException, Exception {
+    public void edit(PersonsHasRoles personsHasRoles) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -97,20 +75,6 @@ public class PersonsHasRolesJpaController implements Serializable {
             Persons personsPersonidNew = personsHasRoles.getPersonsPersonid();
             Roles rolesRoleidOld = persistentPersonsHasRoles.getRolesRoleid();
             Roles rolesRoleidNew = personsHasRoles.getRolesRoleid();
-            Collection<Actions> actionsCollectionOld = persistentPersonsHasRoles.getActionsCollection();
-            Collection<Actions> actionsCollectionNew = personsHasRoles.getActionsCollection();
-            List<String> illegalOrphanMessages = null;
-            for (Actions actionsCollectionOldActions : actionsCollectionOld) {
-                if (!actionsCollectionNew.contains(actionsCollectionOldActions)) {
-                    if (illegalOrphanMessages == null) {
-                        illegalOrphanMessages = new ArrayList<String>();
-                    }
-                    illegalOrphanMessages.add("You must retain Actions " + actionsCollectionOldActions + " since its personsHasRolesIdphr field is not nullable.");
-                }
-            }
-            if (illegalOrphanMessages != null) {
-                throw new IllegalOrphanException(illegalOrphanMessages);
-            }
             if (personsPersonidNew != null) {
                 personsPersonidNew = em.getReference(personsPersonidNew.getClass(), personsPersonidNew.getPersonid());
                 personsHasRoles.setPersonsPersonid(personsPersonidNew);
@@ -119,13 +83,6 @@ public class PersonsHasRolesJpaController implements Serializable {
                 rolesRoleidNew = em.getReference(rolesRoleidNew.getClass(), rolesRoleidNew.getRoleid());
                 personsHasRoles.setRolesRoleid(rolesRoleidNew);
             }
-            Collection<Actions> attachedActionsCollectionNew = new ArrayList<Actions>();
-            for (Actions actionsCollectionNewActionsToAttach : actionsCollectionNew) {
-                actionsCollectionNewActionsToAttach = em.getReference(actionsCollectionNewActionsToAttach.getClass(), actionsCollectionNewActionsToAttach.getActionid());
-                attachedActionsCollectionNew.add(actionsCollectionNewActionsToAttach);
-            }
-            actionsCollectionNew = attachedActionsCollectionNew;
-            personsHasRoles.setActionsCollection(actionsCollectionNew);
             personsHasRoles = em.merge(personsHasRoles);
             if (personsPersonidOld != null && !personsPersonidOld.equals(personsPersonidNew)) {
                 personsPersonidOld.getPersonsHasRolesCollection().remove(personsHasRoles);
@@ -142,17 +99,6 @@ public class PersonsHasRolesJpaController implements Serializable {
             if (rolesRoleidNew != null && !rolesRoleidNew.equals(rolesRoleidOld)) {
                 rolesRoleidNew.getPersonsHasRolesCollection().add(personsHasRoles);
                 rolesRoleidNew = em.merge(rolesRoleidNew);
-            }
-            for (Actions actionsCollectionNewActions : actionsCollectionNew) {
-                if (!actionsCollectionOld.contains(actionsCollectionNewActions)) {
-                    PersonsHasRoles oldPersonsHasRolesIdphrOfActionsCollectionNewActions = actionsCollectionNewActions.getPersonsHasRolesIdphr();
-                    actionsCollectionNewActions.setPersonsHasRolesIdphr(personsHasRoles);
-                    actionsCollectionNewActions = em.merge(actionsCollectionNewActions);
-                    if (oldPersonsHasRolesIdphrOfActionsCollectionNewActions != null && !oldPersonsHasRolesIdphrOfActionsCollectionNewActions.equals(personsHasRoles)) {
-                        oldPersonsHasRolesIdphrOfActionsCollectionNewActions.getActionsCollection().remove(actionsCollectionNewActions);
-                        oldPersonsHasRolesIdphrOfActionsCollectionNewActions = em.merge(oldPersonsHasRolesIdphrOfActionsCollectionNewActions);
-                    }
-                }
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
@@ -171,7 +117,7 @@ public class PersonsHasRolesJpaController implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException {
+    public void destroy(Integer id) throws NonexistentEntityException {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -182,17 +128,6 @@ public class PersonsHasRolesJpaController implements Serializable {
                 personsHasRoles.getIdphr();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The personsHasRoles with id " + id + " no longer exists.", enfe);
-            }
-            List<String> illegalOrphanMessages = null;
-            Collection<Actions> actionsCollectionOrphanCheck = personsHasRoles.getActionsCollection();
-            for (Actions actionsCollectionOrphanCheckActions : actionsCollectionOrphanCheck) {
-                if (illegalOrphanMessages == null) {
-                    illegalOrphanMessages = new ArrayList<String>();
-                }
-                illegalOrphanMessages.add("This PersonsHasRoles (" + personsHasRoles + ") cannot be destroyed since the Actions " + actionsCollectionOrphanCheckActions + " in its actionsCollection field has a non-nullable personsHasRolesIdphr field.");
-            }
-            if (illegalOrphanMessages != null) {
-                throw new IllegalOrphanException(illegalOrphanMessages);
             }
             Persons personsPersonid = personsHasRoles.getPersonsPersonid();
             if (personsPersonid != null) {

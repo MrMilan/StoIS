@@ -12,7 +12,6 @@ import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import entity.Operations;
 import entity.Tools;
 import entity.Usedtools;
 import java.util.List;
@@ -39,21 +38,12 @@ public class UsedtoolsJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Operations operationsOperationsid = usedtools.getOperationsOperationsid();
-            if (operationsOperationsid != null) {
-                operationsOperationsid = em.getReference(operationsOperationsid.getClass(), operationsOperationsid.getOperationsid());
-                usedtools.setOperationsOperationsid(operationsOperationsid);
-            }
             Tools toolsToolid = usedtools.getToolsToolid();
             if (toolsToolid != null) {
                 toolsToolid = em.getReference(toolsToolid.getClass(), toolsToolid.getToolid());
                 usedtools.setToolsToolid(toolsToolid);
             }
             em.persist(usedtools);
-            if (operationsOperationsid != null) {
-                operationsOperationsid.getUsedtoolsCollection().add(usedtools);
-                operationsOperationsid = em.merge(operationsOperationsid);
-            }
             if (toolsToolid != null) {
                 toolsToolid.getUsedtoolsCollection().add(usedtools);
                 toolsToolid = em.merge(toolsToolid);
@@ -77,27 +67,13 @@ public class UsedtoolsJpaController implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             Usedtools persistentUsedtools = em.find(Usedtools.class, usedtools.getIdusedtool());
-            Operations operationsOperationsidOld = persistentUsedtools.getOperationsOperationsid();
-            Operations operationsOperationsidNew = usedtools.getOperationsOperationsid();
             Tools toolsToolidOld = persistentUsedtools.getToolsToolid();
             Tools toolsToolidNew = usedtools.getToolsToolid();
-            if (operationsOperationsidNew != null) {
-                operationsOperationsidNew = em.getReference(operationsOperationsidNew.getClass(), operationsOperationsidNew.getOperationsid());
-                usedtools.setOperationsOperationsid(operationsOperationsidNew);
-            }
             if (toolsToolidNew != null) {
                 toolsToolidNew = em.getReference(toolsToolidNew.getClass(), toolsToolidNew.getToolid());
                 usedtools.setToolsToolid(toolsToolidNew);
             }
             usedtools = em.merge(usedtools);
-            if (operationsOperationsidOld != null && !operationsOperationsidOld.equals(operationsOperationsidNew)) {
-                operationsOperationsidOld.getUsedtoolsCollection().remove(usedtools);
-                operationsOperationsidOld = em.merge(operationsOperationsidOld);
-            }
-            if (operationsOperationsidNew != null && !operationsOperationsidNew.equals(operationsOperationsidOld)) {
-                operationsOperationsidNew.getUsedtoolsCollection().add(usedtools);
-                operationsOperationsidNew = em.merge(operationsOperationsidNew);
-            }
             if (toolsToolidOld != null && !toolsToolidOld.equals(toolsToolidNew)) {
                 toolsToolidOld.getUsedtoolsCollection().remove(usedtools);
                 toolsToolidOld = em.merge(toolsToolidOld);
@@ -134,11 +110,6 @@ public class UsedtoolsJpaController implements Serializable {
                 usedtools.getIdusedtool();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The usedtools with id " + id + " no longer exists.", enfe);
-            }
-            Operations operationsOperationsid = usedtools.getOperationsOperationsid();
-            if (operationsOperationsid != null) {
-                operationsOperationsid.getUsedtoolsCollection().remove(usedtools);
-                operationsOperationsid = em.merge(operationsOperationsid);
             }
             Tools toolsToolid = usedtools.getToolsToolid();
             if (toolsToolid != null) {

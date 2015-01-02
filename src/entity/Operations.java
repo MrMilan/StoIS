@@ -6,9 +6,7 @@
 package entity;
 
 import java.io.Serializable;
-import java.util.Collection;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,10 +16,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -33,8 +29,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "Operations.findAll", query = "SELECT o FROM Operations o"),
     @NamedQuery(name = "Operations.findByOperationsid", query = "SELECT o FROM Operations o WHERE o.operationsid = :operationsid"),
-    @NamedQuery(name = "Operations.findByTypeofwork", query = "SELECT o FROM Operations o WHERE o.typeofwork = :typeofwork"),
-    @NamedQuery(name = "Operations.findByWorkcode", query = "SELECT o FROM Operations o WHERE o.workcode = :workcode")})
+    @NamedQuery(name = "Operations.findByNote", query = "SELECT o FROM Operations o WHERE o.note = :note")})
 public class Operations implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -42,19 +37,11 @@ public class Operations implements Serializable {
     @Basic(optional = false)
     @Column(name = "operationsid")
     private Integer operationsid;
-    @Column(name = "typeofwork")
-    private String typeofwork;
-    @Column(name = "workcode")
-    private Integer workcode;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "operationsOperationsid")
-    private Collection<Usedtools> usedtoolsCollection;
+    @Column(name = "note")
+    private String note;
     @JoinColumn(name = "operationscodes_idoperationscodes", referencedColumnName = "idoperationscodes")
     @ManyToOne(optional = false)
     private Operationscodes operationscodesIdoperationscodes;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "operationsOperationsid")
-    private Collection<Usedmaterials> usedmaterialsCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "operationsOperationsid")
-    private Collection<Actions> actionsCollection;
 
     public Operations() {
     }
@@ -71,29 +58,12 @@ public class Operations implements Serializable {
         this.operationsid = operationsid;
     }
 
-    public String getTypeofwork() {
-        return typeofwork;
+    public String getNote() {
+        return note;
     }
 
-    public void setTypeofwork(String typeofwork) {
-        this.typeofwork = typeofwork;
-    }
-
-    public Integer getWorkcode() {
-        return workcode;
-    }
-
-    public void setWorkcode(Integer workcode) {
-        this.workcode = workcode;
-    }
-
-    @XmlTransient
-    public Collection<Usedtools> getUsedtoolsCollection() {
-        return usedtoolsCollection;
-    }
-
-    public void setUsedtoolsCollection(Collection<Usedtools> usedtoolsCollection) {
-        this.usedtoolsCollection = usedtoolsCollection;
+    public void setNote(String note) {
+        this.note = note;
     }
 
     public Operationscodes getOperationscodesIdoperationscodes() {
@@ -102,24 +72,6 @@ public class Operations implements Serializable {
 
     public void setOperationscodesIdoperationscodes(Operationscodes operationscodesIdoperationscodes) {
         this.operationscodesIdoperationscodes = operationscodesIdoperationscodes;
-    }
-
-    @XmlTransient
-    public Collection<Usedmaterials> getUsedmaterialsCollection() {
-        return usedmaterialsCollection;
-    }
-
-    public void setUsedmaterialsCollection(Collection<Usedmaterials> usedmaterialsCollection) {
-        this.usedmaterialsCollection = usedmaterialsCollection;
-    }
-
-    @XmlTransient
-    public Collection<Actions> getActionsCollection() {
-        return actionsCollection;
-    }
-
-    public void setActionsCollection(Collection<Actions> actionsCollection) {
-        this.actionsCollection = actionsCollection;
     }
 
     @Override
@@ -144,7 +96,7 @@ public class Operations implements Serializable {
 
     @Override
     public String toString() {
-        return "stois.Entity.Operations[ operationsid=" + operationsid + " ]";
+        return "entity.Operations[ operationsid=" + operationsid + " ]";
     }
     
 }

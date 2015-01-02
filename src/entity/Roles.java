@@ -31,7 +31,8 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "Roles.findAll", query = "SELECT r FROM Roles r"),
     @NamedQuery(name = "Roles.findByRoleid", query = "SELECT r FROM Roles r WHERE r.roleid = :roleid"),
-    @NamedQuery(name = "Roles.findByRolename", query = "SELECT r FROM Roles r WHERE r.rolename = :rolename")})
+    @NamedQuery(name = "Roles.findByRolename", query = "SELECT r FROM Roles r WHERE r.rolename = :rolename"),
+    @NamedQuery(name = "Roles.findByCanceled", query = "SELECT r FROM Roles r WHERE r.canceled = :canceled")})
 public class Roles implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -42,6 +43,8 @@ public class Roles implements Serializable {
     @Basic(optional = false)
     @Column(name = "rolename")
     private String rolename;
+    @Column(name = "canceled")
+    private Boolean canceled;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "rolesRoleid")
     private Collection<PersonsHasRoles> personsHasRolesCollection;
 
@@ -71,6 +74,14 @@ public class Roles implements Serializable {
 
     public void setRolename(String rolename) {
         this.rolename = rolename;
+    }
+
+    public Boolean getCanceled() {
+        return canceled;
+    }
+
+    public void setCanceled(Boolean canceled) {
+        this.canceled = canceled;
     }
 
     @XmlTransient
@@ -104,7 +115,7 @@ public class Roles implements Serializable {
 
     @Override
     public String toString() {
-        return "stois.Entity.Roles[ roleid=" + roleid + " ]";
+        return "entity.Roles[ roleid=" + roleid + " ]";
     }
     
 }

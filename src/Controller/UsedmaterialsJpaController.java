@@ -12,7 +12,6 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import entity.Materials;
-import entity.Operations;
 import entity.Usedmaterials;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -43,19 +42,10 @@ public class UsedmaterialsJpaController implements Serializable {
                 materialsMaterialid = em.getReference(materialsMaterialid.getClass(), materialsMaterialid.getMaterialid());
                 usedmaterials.setMaterialsMaterialid(materialsMaterialid);
             }
-            Operations operationsOperationsid = usedmaterials.getOperationsOperationsid();
-            if (operationsOperationsid != null) {
-                operationsOperationsid = em.getReference(operationsOperationsid.getClass(), operationsOperationsid.getOperationsid());
-                usedmaterials.setOperationsOperationsid(operationsOperationsid);
-            }
             em.persist(usedmaterials);
             if (materialsMaterialid != null) {
                 materialsMaterialid.getUsedmaterialsCollection().add(usedmaterials);
                 materialsMaterialid = em.merge(materialsMaterialid);
-            }
-            if (operationsOperationsid != null) {
-                operationsOperationsid.getUsedmaterialsCollection().add(usedmaterials);
-                operationsOperationsid = em.merge(operationsOperationsid);
             }
             em.getTransaction().commit();
         } finally {
@@ -73,15 +63,9 @@ public class UsedmaterialsJpaController implements Serializable {
             Usedmaterials persistentUsedmaterials = em.find(Usedmaterials.class, usedmaterials.getIdusedmateria());
             Materials materialsMaterialidOld = persistentUsedmaterials.getMaterialsMaterialid();
             Materials materialsMaterialidNew = usedmaterials.getMaterialsMaterialid();
-            Operations operationsOperationsidOld = persistentUsedmaterials.getOperationsOperationsid();
-            Operations operationsOperationsidNew = usedmaterials.getOperationsOperationsid();
             if (materialsMaterialidNew != null) {
                 materialsMaterialidNew = em.getReference(materialsMaterialidNew.getClass(), materialsMaterialidNew.getMaterialid());
                 usedmaterials.setMaterialsMaterialid(materialsMaterialidNew);
-            }
-            if (operationsOperationsidNew != null) {
-                operationsOperationsidNew = em.getReference(operationsOperationsidNew.getClass(), operationsOperationsidNew.getOperationsid());
-                usedmaterials.setOperationsOperationsid(operationsOperationsidNew);
             }
             usedmaterials = em.merge(usedmaterials);
             if (materialsMaterialidOld != null && !materialsMaterialidOld.equals(materialsMaterialidNew)) {
@@ -91,14 +75,6 @@ public class UsedmaterialsJpaController implements Serializable {
             if (materialsMaterialidNew != null && !materialsMaterialidNew.equals(materialsMaterialidOld)) {
                 materialsMaterialidNew.getUsedmaterialsCollection().add(usedmaterials);
                 materialsMaterialidNew = em.merge(materialsMaterialidNew);
-            }
-            if (operationsOperationsidOld != null && !operationsOperationsidOld.equals(operationsOperationsidNew)) {
-                operationsOperationsidOld.getUsedmaterialsCollection().remove(usedmaterials);
-                operationsOperationsidOld = em.merge(operationsOperationsidOld);
-            }
-            if (operationsOperationsidNew != null && !operationsOperationsidNew.equals(operationsOperationsidOld)) {
-                operationsOperationsidNew.getUsedmaterialsCollection().add(usedmaterials);
-                operationsOperationsidNew = em.merge(operationsOperationsidNew);
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
@@ -133,11 +109,6 @@ public class UsedmaterialsJpaController implements Serializable {
             if (materialsMaterialid != null) {
                 materialsMaterialid.getUsedmaterialsCollection().remove(usedmaterials);
                 materialsMaterialid = em.merge(materialsMaterialid);
-            }
-            Operations operationsOperationsid = usedmaterials.getOperationsOperationsid();
-            if (operationsOperationsid != null) {
-                operationsOperationsid.getUsedmaterialsCollection().remove(usedmaterials);
-                operationsOperationsid = em.merge(operationsOperationsid);
             }
             em.remove(usedmaterials);
             em.getTransaction().commit();
