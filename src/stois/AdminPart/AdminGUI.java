@@ -6,6 +6,7 @@
 package stois.AdminPart;
 
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 
 /**
  *
@@ -16,10 +17,17 @@ public class AdminGUI extends javax.swing.JFrame {
     /**
      * Creates new form AdminGUI
      */
+    private EntityManagerFactory emf = null;
+    
     public AdminGUI() {
         initComponents();
+        try {
+            emf = Persistence.createEntityManagerFactory("StoISPU");
+        } catch (Exception e) {
+            System.err.println("No connection to database");
+        } 
     }
-        private EntityManagerFactory emf = null;
+        
 //    public AdminGUI(EntityManagerFactory emf) {
 //        initComponents();
 //        this.emf = emf;
@@ -384,10 +392,14 @@ public class AdminGUI extends javax.swing.JFrame {
 
     private void jButtToolDelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtToolDelActionPerformed
         // TODO add your handling code here:
+    stois.AdminPart.Tool.DeleteToolGUI deleteTool = new stois.AdminPart.Tool.DeleteToolGUI(emf);
+    deleteTool.setVisible(true); 
     }//GEN-LAST:event_jButtToolDelActionPerformed
 
     private void jButtOperAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtOperAddActionPerformed
         // TODO add your handling code here:
+    stois.AdminPart.Operation.AddOperationlGUI addOper = new stois.AdminPart.Operation.AddOperationlGUI();
+    addOper.setVisible(true);
     }//GEN-LAST:event_jButtOperAddActionPerformed
 
     private void jButtMaterListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtMaterListActionPerformed
@@ -408,6 +420,9 @@ public class AdminGUI extends javax.swing.JFrame {
 
     private void jButtToolAddMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtToolAddMouseClicked
         // TODO add your handling code here:
+    stois.AdminPart.Tool.AddToolGUI addTool = new stois.AdminPart.Tool.AddToolGUI(emf);
+    addTool.setVisible(true);
+    
     }//GEN-LAST:event_jButtToolAddMouseClicked
 
     private void jButtToolListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtToolListMouseClicked
@@ -471,6 +486,7 @@ public class AdminGUI extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 new AdminGUI().setVisible(true);
             }
