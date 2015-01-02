@@ -7,11 +7,16 @@ package entity;
 
 import java.io.Serializable;
 import java.util.Collection;
-import javax.persistence.EmbeddedId;
+import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -21,51 +26,66 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Milhouse
  */
 @Entity
-@Table(catalog = "s06", schema = "public")
+@Table(name = "roles")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Roles.findAll", query = "SELECT r FROM Roles r"),
-    @NamedQuery(name = "Roles.findByRoleid", query = "SELECT r FROM Roles r WHERE r.rolesPK.roleid = :roleid"),
-    @NamedQuery(name = "Roles.findByRolename", query = "SELECT r FROM Roles r WHERE r.rolesPK.rolename = :rolename")})
+    @NamedQuery(name = "Roles.findByRoleid", query = "SELECT r FROM Roles r WHERE r.roleid = :roleid"),
+    @NamedQuery(name = "Roles.findByRolename", query = "SELECT r FROM Roles r WHERE r.rolename = :rolename")})
 public class Roles implements Serializable {
     private static final long serialVersionUID = 1L;
-    @EmbeddedId
-    protected RolesPK rolesPK;
-    @ManyToMany(mappedBy = "rolesCollection")
-    private Collection<Persons> personsCollection;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "roleid")
+    private Integer roleid;
+    @Basic(optional = false)
+    @Column(name = "rolename")
+    private String rolename;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "rolesRoleid")
+    private Collection<PersonsHasRoles> personsHasRolesCollection;
 
     public Roles() {
     }
 
-    public Roles(RolesPK rolesPK) {
-        this.rolesPK = rolesPK;
+    public Roles(Integer roleid) {
+        this.roleid = roleid;
     }
 
-    public Roles(int roleid, String rolename) {
-        this.rolesPK = new RolesPK(roleid, rolename);
+    public Roles(Integer roleid, String rolename) {
+        this.roleid = roleid;
+        this.rolename = rolename;
     }
 
-    public RolesPK getRolesPK() {
-        return rolesPK;
+    public Integer getRoleid() {
+        return roleid;
     }
 
-    public void setRolesPK(RolesPK rolesPK) {
-        this.rolesPK = rolesPK;
+    public void setRoleid(Integer roleid) {
+        this.roleid = roleid;
+    }
+
+    public String getRolename() {
+        return rolename;
+    }
+
+    public void setRolename(String rolename) {
+        this.rolename = rolename;
     }
 
     @XmlTransient
-    public Collection<Persons> getPersonsCollection() {
-        return personsCollection;
+    public Collection<PersonsHasRoles> getPersonsHasRolesCollection() {
+        return personsHasRolesCollection;
     }
 
-    public void setPersonsCollection(Collection<Persons> personsCollection) {
-        this.personsCollection = personsCollection;
+    public void setPersonsHasRolesCollection(Collection<PersonsHasRoles> personsHasRolesCollection) {
+        this.personsHasRolesCollection = personsHasRolesCollection;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (rolesPK != null ? rolesPK.hashCode() : 0);
+        hash += (roleid != null ? roleid.hashCode() : 0);
         return hash;
     }
 
@@ -76,7 +96,7 @@ public class Roles implements Serializable {
             return false;
         }
         Roles other = (Roles) object;
-        if ((this.rolesPK == null && other.rolesPK != null) || (this.rolesPK != null && !this.rolesPK.equals(other.rolesPK))) {
+        if ((this.roleid == null && other.roleid != null) || (this.roleid != null && !this.roleid.equals(other.roleid))) {
             return false;
         }
         return true;
@@ -84,7 +104,7 @@ public class Roles implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.Roles[ rolesPK=" + rolesPK + " ]";
+        return "stois.Entity.Roles[ roleid=" + roleid + " ]";
     }
     
 }

@@ -6,30 +6,28 @@
 package entity;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
  * @author Milhouse
  */
 @Entity
-@Table(catalog = "s06", schema = "public")
+@Table(name = "users")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Users.findAll", query = "SELECT u FROM Users u"),
@@ -44,21 +42,27 @@ public class Users implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
+    @Column(name = "usersid")
     private Integer usersid;
     @Basic(optional = false)
+    @Column(name = "username")
     private String username;
     @Basic(optional = false)
     @Column(name = "password_2")
     private String password2;
     @Basic(optional = false)
+    @Column(name = "passwordsalt")
     private String passwordsalt;
     @Basic(optional = false)
+    @Column(name = "passwordanswer")
     private String passwordanswer;
     @Basic(optional = false)
+    @Column(name = "datetimelastlogin")
     @Temporal(TemporalType.TIMESTAMP)
     private Date datetimelastlogin;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "users")
-    private Collection<Persons> personsCollection;
+    @JoinColumn(name = "persons_personid", referencedColumnName = "personid")
+    @ManyToOne(optional = false)
+    private Persons personsPersonid;
 
     public Users() {
     }
@@ -124,13 +128,12 @@ public class Users implements Serializable {
         this.datetimelastlogin = datetimelastlogin;
     }
 
-    @XmlTransient
-    public Collection<Persons> getPersonsCollection() {
-        return personsCollection;
+    public Persons getPersonsPersonid() {
+        return personsPersonid;
     }
 
-    public void setPersonsCollection(Collection<Persons> personsCollection) {
-        this.personsCollection = personsCollection;
+    public void setPersonsPersonid(Persons personsPersonid) {
+        this.personsPersonid = personsPersonid;
     }
 
     @Override
@@ -155,7 +158,7 @@ public class Users implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.Users[ usersid=" + usersid + " ]";
+        return "stois.Entity.Users[ usersid=" + usersid + " ]";
     }
     
 }

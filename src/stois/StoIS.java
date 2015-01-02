@@ -40,6 +40,8 @@ public class StoIS {
             System.err.println("No connection to database");
         }
 //        PersonsJpaController pjc = new PersonsJpaController(emf);
+//        List<Persons> findPersonsEntities = pjc.findPersonsEntities();
+//        findPersonsEntities.
 //        Persons personsById = pjc.findPersonsById(8);
 //        RolesJpaController rjc= new RolesJpaController(emf);
 //        List<Roles> findRolesEntities = rjc.findRolesEntities(1,0);

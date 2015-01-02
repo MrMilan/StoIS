@@ -2,20 +2,24 @@
 <persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
   <persistence-unit name="StoISPU" transaction-type="RESOURCE_LOCAL">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-    <class>entity.Persons</class>
-    <class>entity.Operations</class>
-    <class>entity.Actions</class>
-    <class>entity.Roles</class>
-    <class>entity.Users</class>
-    <class>entity.Diagnosis</class>
-    <class>entity.Tools</class>
-    <class>entity.Materials</class>
-    <class>entity.Insurances</class>
+    <class>entity.PersonsHasRoles</class>
     <class>entity.Addresses</class>
-    <class>entity.Telephones</class>
+    <class>entity.Actions</class>
+    <class>entity.Persons</class>
+    <class>entity.Users</class>
+    <class>entity.Tools</class>
+    <class>entity.Operationscodes</class>
+    <class>entity.Usedmaterials</class>
+    <class>entity.Diagnosis</class>
+    <class>entity.Usedtools</class>
     <class>entity.Reports</class>
-    <class>entity.Personspatient</class>
-    <class>entity.Personswithusersinroles</class>
+    <class>entity.Insurances</class>
+    <class>entity.Operations</class>
+    <class>entity.Materials</class>
+    <class>entity.Roles</class>
+    <class>entity.PersonHasAddress</class>
+    <class>entity.PersonsHasTelephones</class>
+    <class>entity.Telephones</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://biodata.felk.cvut.cz:5432/s06"/>
       <property name="javax.persistence.jdbc.user" value="s06"/>

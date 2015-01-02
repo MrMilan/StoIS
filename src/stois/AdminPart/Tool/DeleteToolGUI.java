@@ -5,17 +5,21 @@
  */
 package stois.AdminPart.Tool;
 
+import entity.Tools;
+import javax.swing.DefaultListModel;
+
 /**
  *
  * @author Lukas
  */
 public class DeleteToolGUI extends javax.swing.JFrame {
-
+    DefaultListModel<Tools> toolsModel = new DefaultListModel<>();
     /**
      * Creates new form ToolGUI
      */
     public DeleteToolGUI() {
         initComponents();
+        jList1.setModel(toolsModel);
     }
 
     /**

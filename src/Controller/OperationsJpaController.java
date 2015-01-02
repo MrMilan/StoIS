@@ -12,10 +12,11 @@ import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import entity.Tools;
+import entity.Operationscodes;
+import entity.Usedtools;
 import java.util.ArrayList;
 import java.util.Collection;
-import entity.Materials;
+import entity.Usedmaterials;
 import entity.Actions;
 import entity.Operations;
 import java.util.List;
@@ -38,11 +39,11 @@ public class OperationsJpaController implements Serializable {
     }
 
     public void create(Operations operations) {
-        if (operations.getToolsCollection() == null) {
-            operations.setToolsCollection(new ArrayList<Tools>());
+        if (operations.getUsedtoolsCollection() == null) {
+            operations.setUsedtoolsCollection(new ArrayList<Usedtools>());
         }
-        if (operations.getMaterialsCollection() == null) {
-            operations.setMaterialsCollection(new ArrayList<Materials>());
+        if (operations.getUsedmaterialsCollection() == null) {
+            operations.setUsedmaterialsCollection(new ArrayList<Usedmaterials>());
         }
         if (operations.getActionsCollection() == null) {
             operations.setActionsCollection(new ArrayList<Actions>());
@@ -51,40 +52,59 @@ public class OperationsJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Collection<Tools> attachedToolsCollection = new ArrayList<Tools>();
-            for (Tools toolsCollectionToolsToAttach : operations.getToolsCollection()) {
-                toolsCollectionToolsToAttach = em.getReference(toolsCollectionToolsToAttach.getClass(), toolsCollectionToolsToAttach.getToolid());
-                attachedToolsCollection.add(toolsCollectionToolsToAttach);
+            Operationscodes operationscodesIdoperationscodes = operations.getOperationscodesIdoperationscodes();
+            if (operationscodesIdoperationscodes != null) {
+                operationscodesIdoperationscodes = em.getReference(operationscodesIdoperationscodes.getClass(), operationscodesIdoperationscodes.getIdoperationscodes());
+                operations.setOperationscodesIdoperationscodes(operationscodesIdoperationscodes);
             }
-            operations.setToolsCollection(attachedToolsCollection);
-            Collection<Materials> attachedMaterialsCollection = new ArrayList<Materials>();
-            for (Materials materialsCollectionMaterialsToAttach : operations.getMaterialsCollection()) {
-                materialsCollectionMaterialsToAttach = em.getReference(materialsCollectionMaterialsToAttach.getClass(), materialsCollectionMaterialsToAttach.getMaterialid());
-                attachedMaterialsCollection.add(materialsCollectionMaterialsToAttach);
+            Collection<Usedtools> attachedUsedtoolsCollection = new ArrayList<Usedtools>();
+            for (Usedtools usedtoolsCollectionUsedtoolsToAttach : operations.getUsedtoolsCollection()) {
+                usedtoolsCollectionUsedtoolsToAttach = em.getReference(usedtoolsCollectionUsedtoolsToAttach.getClass(), usedtoolsCollectionUsedtoolsToAttach.getIdusedtool());
+                attachedUsedtoolsCollection.add(usedtoolsCollectionUsedtoolsToAttach);
             }
-            operations.setMaterialsCollection(attachedMaterialsCollection);
+            operations.setUsedtoolsCollection(attachedUsedtoolsCollection);
+            Collection<Usedmaterials> attachedUsedmaterialsCollection = new ArrayList<Usedmaterials>();
+            for (Usedmaterials usedmaterialsCollectionUsedmaterialsToAttach : operations.getUsedmaterialsCollection()) {
+                usedmaterialsCollectionUsedmaterialsToAttach = em.getReference(usedmaterialsCollectionUsedmaterialsToAttach.getClass(), usedmaterialsCollectionUsedmaterialsToAttach.getIdusedmateria());
+                attachedUsedmaterialsCollection.add(usedmaterialsCollectionUsedmaterialsToAttach);
+            }
+            operations.setUsedmaterialsCollection(attachedUsedmaterialsCollection);
             Collection<Actions> attachedActionsCollection = new ArrayList<Actions>();
             for (Actions actionsCollectionActionsToAttach : operations.getActionsCollection()) {
-                actionsCollectionActionsToAttach = em.getReference(actionsCollectionActionsToAttach.getClass(), actionsCollectionActionsToAttach.getActionsPK());
+                actionsCollectionActionsToAttach = em.getReference(actionsCollectionActionsToAttach.getClass(), actionsCollectionActionsToAttach.getActionid());
                 attachedActionsCollection.add(actionsCollectionActionsToAttach);
             }
             operations.setActionsCollection(attachedActionsCollection);
             em.persist(operations);
-            for (Tools toolsCollectionTools : operations.getToolsCollection()) {
-                toolsCollectionTools.getOperationsCollection().add(operations);
-                toolsCollectionTools = em.merge(toolsCollectionTools);
+            if (operationscodesIdoperationscodes != null) {
+                operationscodesIdoperationscodes.getOperationsCollection().add(operations);
+                operationscodesIdoperationscodes = em.merge(operationscodesIdoperationscodes);
             }
-            for (Materials materialsCollectionMaterials : operations.getMaterialsCollection()) {
-                materialsCollectionMaterials.getOperationsCollection().add(operations);
-                materialsCollectionMaterials = em.merge(materialsCollectionMaterials);
+            for (Usedtools usedtoolsCollectionUsedtools : operations.getUsedtoolsCollection()) {
+                Operations oldOperationsOperationsidOfUsedtoolsCollectionUsedtools = usedtoolsCollectionUsedtools.getOperationsOperationsid();
+                usedtoolsCollectionUsedtools.setOperationsOperationsid(operations);
+                usedtoolsCollectionUsedtools = em.merge(usedtoolsCollectionUsedtools);
+                if (oldOperationsOperationsidOfUsedtoolsCollectionUsedtools != null) {
+                    oldOperationsOperationsidOfUsedtoolsCollectionUsedtools.getUsedtoolsCollection().remove(usedtoolsCollectionUsedtools);
+                    oldOperationsOperationsidOfUsedtoolsCollectionUsedtools = em.merge(oldOperationsOperationsidOfUsedtoolsCollectionUsedtools);
+                }
+            }
+            for (Usedmaterials usedmaterialsCollectionUsedmaterials : operations.getUsedmaterialsCollection()) {
+                Operations oldOperationsOperationsidOfUsedmaterialsCollectionUsedmaterials = usedmaterialsCollectionUsedmaterials.getOperationsOperationsid();
+                usedmaterialsCollectionUsedmaterials.setOperationsOperationsid(operations);
+                usedmaterialsCollectionUsedmaterials = em.merge(usedmaterialsCollectionUsedmaterials);
+                if (oldOperationsOperationsidOfUsedmaterialsCollectionUsedmaterials != null) {
+                    oldOperationsOperationsidOfUsedmaterialsCollectionUsedmaterials.getUsedmaterialsCollection().remove(usedmaterialsCollectionUsedmaterials);
+                    oldOperationsOperationsidOfUsedmaterialsCollectionUsedmaterials = em.merge(oldOperationsOperationsidOfUsedmaterialsCollectionUsedmaterials);
+                }
             }
             for (Actions actionsCollectionActions : operations.getActionsCollection()) {
-                Operations oldOperationsOfActionsCollectionActions = actionsCollectionActions.getOperations();
-                actionsCollectionActions.setOperations(operations);
+                Operations oldOperationsOperationsidOfActionsCollectionActions = actionsCollectionActions.getOperationsOperationsid();
+                actionsCollectionActions.setOperationsOperationsid(operations);
                 actionsCollectionActions = em.merge(actionsCollectionActions);
-                if (oldOperationsOfActionsCollectionActions != null) {
-                    oldOperationsOfActionsCollectionActions.getActionsCollection().remove(actionsCollectionActions);
-                    oldOperationsOfActionsCollectionActions = em.merge(oldOperationsOfActionsCollectionActions);
+                if (oldOperationsOperationsidOfActionsCollectionActions != null) {
+                    oldOperationsOperationsidOfActionsCollectionActions.getActionsCollection().remove(actionsCollectionActions);
+                    oldOperationsOperationsidOfActionsCollectionActions = em.merge(oldOperationsOperationsidOfActionsCollectionActions);
                 }
             }
             em.getTransaction().commit();
@@ -101,78 +121,106 @@ public class OperationsJpaController implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             Operations persistentOperations = em.find(Operations.class, operations.getOperationsid());
-            Collection<Tools> toolsCollectionOld = persistentOperations.getToolsCollection();
-            Collection<Tools> toolsCollectionNew = operations.getToolsCollection();
-            Collection<Materials> materialsCollectionOld = persistentOperations.getMaterialsCollection();
-            Collection<Materials> materialsCollectionNew = operations.getMaterialsCollection();
+            Operationscodes operationscodesIdoperationscodesOld = persistentOperations.getOperationscodesIdoperationscodes();
+            Operationscodes operationscodesIdoperationscodesNew = operations.getOperationscodesIdoperationscodes();
+            Collection<Usedtools> usedtoolsCollectionOld = persistentOperations.getUsedtoolsCollection();
+            Collection<Usedtools> usedtoolsCollectionNew = operations.getUsedtoolsCollection();
+            Collection<Usedmaterials> usedmaterialsCollectionOld = persistentOperations.getUsedmaterialsCollection();
+            Collection<Usedmaterials> usedmaterialsCollectionNew = operations.getUsedmaterialsCollection();
             Collection<Actions> actionsCollectionOld = persistentOperations.getActionsCollection();
             Collection<Actions> actionsCollectionNew = operations.getActionsCollection();
             List<String> illegalOrphanMessages = null;
+            for (Usedtools usedtoolsCollectionOldUsedtools : usedtoolsCollectionOld) {
+                if (!usedtoolsCollectionNew.contains(usedtoolsCollectionOldUsedtools)) {
+                    if (illegalOrphanMessages == null) {
+                        illegalOrphanMessages = new ArrayList<String>();
+                    }
+                    illegalOrphanMessages.add("You must retain Usedtools " + usedtoolsCollectionOldUsedtools + " since its operationsOperationsid field is not nullable.");
+                }
+            }
+            for (Usedmaterials usedmaterialsCollectionOldUsedmaterials : usedmaterialsCollectionOld) {
+                if (!usedmaterialsCollectionNew.contains(usedmaterialsCollectionOldUsedmaterials)) {
+                    if (illegalOrphanMessages == null) {
+                        illegalOrphanMessages = new ArrayList<String>();
+                    }
+                    illegalOrphanMessages.add("You must retain Usedmaterials " + usedmaterialsCollectionOldUsedmaterials + " since its operationsOperationsid field is not nullable.");
+                }
+            }
             for (Actions actionsCollectionOldActions : actionsCollectionOld) {
                 if (!actionsCollectionNew.contains(actionsCollectionOldActions)) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain Actions " + actionsCollectionOldActions + " since its operations field is not nullable.");
+                    illegalOrphanMessages.add("You must retain Actions " + actionsCollectionOldActions + " since its operationsOperationsid field is not nullable.");
                 }
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
-            Collection<Tools> attachedToolsCollectionNew = new ArrayList<Tools>();
-            for (Tools toolsCollectionNewToolsToAttach : toolsCollectionNew) {
-                toolsCollectionNewToolsToAttach = em.getReference(toolsCollectionNewToolsToAttach.getClass(), toolsCollectionNewToolsToAttach.getToolid());
-                attachedToolsCollectionNew.add(toolsCollectionNewToolsToAttach);
+            if (operationscodesIdoperationscodesNew != null) {
+                operationscodesIdoperationscodesNew = em.getReference(operationscodesIdoperationscodesNew.getClass(), operationscodesIdoperationscodesNew.getIdoperationscodes());
+                operations.setOperationscodesIdoperationscodes(operationscodesIdoperationscodesNew);
             }
-            toolsCollectionNew = attachedToolsCollectionNew;
-            operations.setToolsCollection(toolsCollectionNew);
-            Collection<Materials> attachedMaterialsCollectionNew = new ArrayList<Materials>();
-            for (Materials materialsCollectionNewMaterialsToAttach : materialsCollectionNew) {
-                materialsCollectionNewMaterialsToAttach = em.getReference(materialsCollectionNewMaterialsToAttach.getClass(), materialsCollectionNewMaterialsToAttach.getMaterialid());
-                attachedMaterialsCollectionNew.add(materialsCollectionNewMaterialsToAttach);
+            Collection<Usedtools> attachedUsedtoolsCollectionNew = new ArrayList<Usedtools>();
+            for (Usedtools usedtoolsCollectionNewUsedtoolsToAttach : usedtoolsCollectionNew) {
+                usedtoolsCollectionNewUsedtoolsToAttach = em.getReference(usedtoolsCollectionNewUsedtoolsToAttach.getClass(), usedtoolsCollectionNewUsedtoolsToAttach.getIdusedtool());
+                attachedUsedtoolsCollectionNew.add(usedtoolsCollectionNewUsedtoolsToAttach);
             }
-            materialsCollectionNew = attachedMaterialsCollectionNew;
-            operations.setMaterialsCollection(materialsCollectionNew);
+            usedtoolsCollectionNew = attachedUsedtoolsCollectionNew;
+            operations.setUsedtoolsCollection(usedtoolsCollectionNew);
+            Collection<Usedmaterials> attachedUsedmaterialsCollectionNew = new ArrayList<Usedmaterials>();
+            for (Usedmaterials usedmaterialsCollectionNewUsedmaterialsToAttach : usedmaterialsCollectionNew) {
+                usedmaterialsCollectionNewUsedmaterialsToAttach = em.getReference(usedmaterialsCollectionNewUsedmaterialsToAttach.getClass(), usedmaterialsCollectionNewUsedmaterialsToAttach.getIdusedmateria());
+                attachedUsedmaterialsCollectionNew.add(usedmaterialsCollectionNewUsedmaterialsToAttach);
+            }
+            usedmaterialsCollectionNew = attachedUsedmaterialsCollectionNew;
+            operations.setUsedmaterialsCollection(usedmaterialsCollectionNew);
             Collection<Actions> attachedActionsCollectionNew = new ArrayList<Actions>();
             for (Actions actionsCollectionNewActionsToAttach : actionsCollectionNew) {
-                actionsCollectionNewActionsToAttach = em.getReference(actionsCollectionNewActionsToAttach.getClass(), actionsCollectionNewActionsToAttach.getActionsPK());
+                actionsCollectionNewActionsToAttach = em.getReference(actionsCollectionNewActionsToAttach.getClass(), actionsCollectionNewActionsToAttach.getActionid());
                 attachedActionsCollectionNew.add(actionsCollectionNewActionsToAttach);
             }
             actionsCollectionNew = attachedActionsCollectionNew;
             operations.setActionsCollection(actionsCollectionNew);
             operations = em.merge(operations);
-            for (Tools toolsCollectionOldTools : toolsCollectionOld) {
-                if (!toolsCollectionNew.contains(toolsCollectionOldTools)) {
-                    toolsCollectionOldTools.getOperationsCollection().remove(operations);
-                    toolsCollectionOldTools = em.merge(toolsCollectionOldTools);
+            if (operationscodesIdoperationscodesOld != null && !operationscodesIdoperationscodesOld.equals(operationscodesIdoperationscodesNew)) {
+                operationscodesIdoperationscodesOld.getOperationsCollection().remove(operations);
+                operationscodesIdoperationscodesOld = em.merge(operationscodesIdoperationscodesOld);
+            }
+            if (operationscodesIdoperationscodesNew != null && !operationscodesIdoperationscodesNew.equals(operationscodesIdoperationscodesOld)) {
+                operationscodesIdoperationscodesNew.getOperationsCollection().add(operations);
+                operationscodesIdoperationscodesNew = em.merge(operationscodesIdoperationscodesNew);
+            }
+            for (Usedtools usedtoolsCollectionNewUsedtools : usedtoolsCollectionNew) {
+                if (!usedtoolsCollectionOld.contains(usedtoolsCollectionNewUsedtools)) {
+                    Operations oldOperationsOperationsidOfUsedtoolsCollectionNewUsedtools = usedtoolsCollectionNewUsedtools.getOperationsOperationsid();
+                    usedtoolsCollectionNewUsedtools.setOperationsOperationsid(operations);
+                    usedtoolsCollectionNewUsedtools = em.merge(usedtoolsCollectionNewUsedtools);
+                    if (oldOperationsOperationsidOfUsedtoolsCollectionNewUsedtools != null && !oldOperationsOperationsidOfUsedtoolsCollectionNewUsedtools.equals(operations)) {
+                        oldOperationsOperationsidOfUsedtoolsCollectionNewUsedtools.getUsedtoolsCollection().remove(usedtoolsCollectionNewUsedtools);
+                        oldOperationsOperationsidOfUsedtoolsCollectionNewUsedtools = em.merge(oldOperationsOperationsidOfUsedtoolsCollectionNewUsedtools);
+                    }
                 }
             }
-            for (Tools toolsCollectionNewTools : toolsCollectionNew) {
-                if (!toolsCollectionOld.contains(toolsCollectionNewTools)) {
-                    toolsCollectionNewTools.getOperationsCollection().add(operations);
-                    toolsCollectionNewTools = em.merge(toolsCollectionNewTools);
-                }
-            }
-            for (Materials materialsCollectionOldMaterials : materialsCollectionOld) {
-                if (!materialsCollectionNew.contains(materialsCollectionOldMaterials)) {
-                    materialsCollectionOldMaterials.getOperationsCollection().remove(operations);
-                    materialsCollectionOldMaterials = em.merge(materialsCollectionOldMaterials);
-                }
-            }
-            for (Materials materialsCollectionNewMaterials : materialsCollectionNew) {
-                if (!materialsCollectionOld.contains(materialsCollectionNewMaterials)) {
-                    materialsCollectionNewMaterials.getOperationsCollection().add(operations);
-                    materialsCollectionNewMaterials = em.merge(materialsCollectionNewMaterials);
+            for (Usedmaterials usedmaterialsCollectionNewUsedmaterials : usedmaterialsCollectionNew) {
+                if (!usedmaterialsCollectionOld.contains(usedmaterialsCollectionNewUsedmaterials)) {
+                    Operations oldOperationsOperationsidOfUsedmaterialsCollectionNewUsedmaterials = usedmaterialsCollectionNewUsedmaterials.getOperationsOperationsid();
+                    usedmaterialsCollectionNewUsedmaterials.setOperationsOperationsid(operations);
+                    usedmaterialsCollectionNewUsedmaterials = em.merge(usedmaterialsCollectionNewUsedmaterials);
+                    if (oldOperationsOperationsidOfUsedmaterialsCollectionNewUsedmaterials != null && !oldOperationsOperationsidOfUsedmaterialsCollectionNewUsedmaterials.equals(operations)) {
+                        oldOperationsOperationsidOfUsedmaterialsCollectionNewUsedmaterials.getUsedmaterialsCollection().remove(usedmaterialsCollectionNewUsedmaterials);
+                        oldOperationsOperationsidOfUsedmaterialsCollectionNewUsedmaterials = em.merge(oldOperationsOperationsidOfUsedmaterialsCollectionNewUsedmaterials);
+                    }
                 }
             }
             for (Actions actionsCollectionNewActions : actionsCollectionNew) {
                 if (!actionsCollectionOld.contains(actionsCollectionNewActions)) {
-                    Operations oldOperationsOfActionsCollectionNewActions = actionsCollectionNewActions.getOperations();
-                    actionsCollectionNewActions.setOperations(operations);
+                    Operations oldOperationsOperationsidOfActionsCollectionNewActions = actionsCollectionNewActions.getOperationsOperationsid();
+                    actionsCollectionNewActions.setOperationsOperationsid(operations);
                     actionsCollectionNewActions = em.merge(actionsCollectionNewActions);
-                    if (oldOperationsOfActionsCollectionNewActions != null && !oldOperationsOfActionsCollectionNewActions.equals(operations)) {
-                        oldOperationsOfActionsCollectionNewActions.getActionsCollection().remove(actionsCollectionNewActions);
-                        oldOperationsOfActionsCollectionNewActions = em.merge(oldOperationsOfActionsCollectionNewActions);
+                    if (oldOperationsOperationsidOfActionsCollectionNewActions != null && !oldOperationsOperationsidOfActionsCollectionNewActions.equals(operations)) {
+                        oldOperationsOperationsidOfActionsCollectionNewActions.getActionsCollection().remove(actionsCollectionNewActions);
+                        oldOperationsOperationsidOfActionsCollectionNewActions = em.merge(oldOperationsOperationsidOfActionsCollectionNewActions);
                     }
                 }
             }
@@ -206,25 +254,34 @@ public class OperationsJpaController implements Serializable {
                 throw new NonexistentEntityException("The operations with id " + id + " no longer exists.", enfe);
             }
             List<String> illegalOrphanMessages = null;
+            Collection<Usedtools> usedtoolsCollectionOrphanCheck = operations.getUsedtoolsCollection();
+            for (Usedtools usedtoolsCollectionOrphanCheckUsedtools : usedtoolsCollectionOrphanCheck) {
+                if (illegalOrphanMessages == null) {
+                    illegalOrphanMessages = new ArrayList<String>();
+                }
+                illegalOrphanMessages.add("This Operations (" + operations + ") cannot be destroyed since the Usedtools " + usedtoolsCollectionOrphanCheckUsedtools + " in its usedtoolsCollection field has a non-nullable operationsOperationsid field.");
+            }
+            Collection<Usedmaterials> usedmaterialsCollectionOrphanCheck = operations.getUsedmaterialsCollection();
+            for (Usedmaterials usedmaterialsCollectionOrphanCheckUsedmaterials : usedmaterialsCollectionOrphanCheck) {
+                if (illegalOrphanMessages == null) {
+                    illegalOrphanMessages = new ArrayList<String>();
+                }
+                illegalOrphanMessages.add("This Operations (" + operations + ") cannot be destroyed since the Usedmaterials " + usedmaterialsCollectionOrphanCheckUsedmaterials + " in its usedmaterialsCollection field has a non-nullable operationsOperationsid field.");
+            }
             Collection<Actions> actionsCollectionOrphanCheck = operations.getActionsCollection();
             for (Actions actionsCollectionOrphanCheckActions : actionsCollectionOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Operations (" + operations + ") cannot be destroyed since the Actions " + actionsCollectionOrphanCheckActions + " in its actionsCollection field has a non-nullable operations field.");
+                illegalOrphanMessages.add("This Operations (" + operations + ") cannot be destroyed since the Actions " + actionsCollectionOrphanCheckActions + " in its actionsCollection field has a non-nullable operationsOperationsid field.");
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
-            Collection<Tools> toolsCollection = operations.getToolsCollection();
-            for (Tools toolsCollectionTools : toolsCollection) {
-                toolsCollectionTools.getOperationsCollection().remove(operations);
-                toolsCollectionTools = em.merge(toolsCollectionTools);
-            }
-            Collection<Materials> materialsCollection = operations.getMaterialsCollection();
-            for (Materials materialsCollectionMaterials : materialsCollection) {
-                materialsCollectionMaterials.getOperationsCollection().remove(operations);
-                materialsCollectionMaterials = em.merge(materialsCollectionMaterials);
+            Operationscodes operationscodesIdoperationscodes = operations.getOperationscodesIdoperationscodes();
+            if (operationscodesIdoperationscodes != null) {
+                operationscodesIdoperationscodes.getOperationsCollection().remove(operations);
+                operationscodesIdoperationscodes = em.merge(operationscodesIdoperationscodes);
             }
             em.remove(operations);
             em.getTransaction().commit();

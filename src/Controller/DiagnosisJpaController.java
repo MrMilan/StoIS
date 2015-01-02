@@ -45,18 +45,18 @@ public class DiagnosisJpaController implements Serializable {
             em.getTransaction().begin();
             Collection<Reports> attachedReportsCollection = new ArrayList<Reports>();
             for (Reports reportsCollectionReportsToAttach : diagnosis.getReportsCollection()) {
-                reportsCollectionReportsToAttach = em.getReference(reportsCollectionReportsToAttach.getClass(), reportsCollectionReportsToAttach.getReportsPK());
+                reportsCollectionReportsToAttach = em.getReference(reportsCollectionReportsToAttach.getClass(), reportsCollectionReportsToAttach.getReportid());
                 attachedReportsCollection.add(reportsCollectionReportsToAttach);
             }
             diagnosis.setReportsCollection(attachedReportsCollection);
             em.persist(diagnosis);
             for (Reports reportsCollectionReports : diagnosis.getReportsCollection()) {
-                Diagnosis oldDiagnosisOfReportsCollectionReports = reportsCollectionReports.getDiagnosis();
-                reportsCollectionReports.setDiagnosis(diagnosis);
+                Diagnosis oldDiagnosisDiagnoseidOfReportsCollectionReports = reportsCollectionReports.getDiagnosisDiagnoseid();
+                reportsCollectionReports.setDiagnosisDiagnoseid(diagnosis);
                 reportsCollectionReports = em.merge(reportsCollectionReports);
-                if (oldDiagnosisOfReportsCollectionReports != null) {
-                    oldDiagnosisOfReportsCollectionReports.getReportsCollection().remove(reportsCollectionReports);
-                    oldDiagnosisOfReportsCollectionReports = em.merge(oldDiagnosisOfReportsCollectionReports);
+                if (oldDiagnosisDiagnoseidOfReportsCollectionReports != null) {
+                    oldDiagnosisDiagnoseidOfReportsCollectionReports.getReportsCollection().remove(reportsCollectionReports);
+                    oldDiagnosisDiagnoseidOfReportsCollectionReports = em.merge(oldDiagnosisDiagnoseidOfReportsCollectionReports);
                 }
             }
             em.getTransaction().commit();
@@ -81,7 +81,7 @@ public class DiagnosisJpaController implements Serializable {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain Reports " + reportsCollectionOldReports + " since its diagnosis field is not nullable.");
+                    illegalOrphanMessages.add("You must retain Reports " + reportsCollectionOldReports + " since its diagnosisDiagnoseid field is not nullable.");
                 }
             }
             if (illegalOrphanMessages != null) {
@@ -89,7 +89,7 @@ public class DiagnosisJpaController implements Serializable {
             }
             Collection<Reports> attachedReportsCollectionNew = new ArrayList<Reports>();
             for (Reports reportsCollectionNewReportsToAttach : reportsCollectionNew) {
-                reportsCollectionNewReportsToAttach = em.getReference(reportsCollectionNewReportsToAttach.getClass(), reportsCollectionNewReportsToAttach.getReportsPK());
+                reportsCollectionNewReportsToAttach = em.getReference(reportsCollectionNewReportsToAttach.getClass(), reportsCollectionNewReportsToAttach.getReportid());
                 attachedReportsCollectionNew.add(reportsCollectionNewReportsToAttach);
             }
             reportsCollectionNew = attachedReportsCollectionNew;
@@ -97,12 +97,12 @@ public class DiagnosisJpaController implements Serializable {
             diagnosis = em.merge(diagnosis);
             for (Reports reportsCollectionNewReports : reportsCollectionNew) {
                 if (!reportsCollectionOld.contains(reportsCollectionNewReports)) {
-                    Diagnosis oldDiagnosisOfReportsCollectionNewReports = reportsCollectionNewReports.getDiagnosis();
-                    reportsCollectionNewReports.setDiagnosis(diagnosis);
+                    Diagnosis oldDiagnosisDiagnoseidOfReportsCollectionNewReports = reportsCollectionNewReports.getDiagnosisDiagnoseid();
+                    reportsCollectionNewReports.setDiagnosisDiagnoseid(diagnosis);
                     reportsCollectionNewReports = em.merge(reportsCollectionNewReports);
-                    if (oldDiagnosisOfReportsCollectionNewReports != null && !oldDiagnosisOfReportsCollectionNewReports.equals(diagnosis)) {
-                        oldDiagnosisOfReportsCollectionNewReports.getReportsCollection().remove(reportsCollectionNewReports);
-                        oldDiagnosisOfReportsCollectionNewReports = em.merge(oldDiagnosisOfReportsCollectionNewReports);
+                    if (oldDiagnosisDiagnoseidOfReportsCollectionNewReports != null && !oldDiagnosisDiagnoseidOfReportsCollectionNewReports.equals(diagnosis)) {
+                        oldDiagnosisDiagnoseidOfReportsCollectionNewReports.getReportsCollection().remove(reportsCollectionNewReports);
+                        oldDiagnosisDiagnoseidOfReportsCollectionNewReports = em.merge(oldDiagnosisDiagnoseidOfReportsCollectionNewReports);
                     }
                 }
             }
@@ -141,7 +141,7 @@ public class DiagnosisJpaController implements Serializable {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Diagnosis (" + diagnosis + ") cannot be destroyed since the Reports " + reportsCollectionOrphanCheckReports + " in its reportsCollection field has a non-nullable diagnosis field.");
+                illegalOrphanMessages.add("This Diagnosis (" + diagnosis + ") cannot be destroyed since the Reports " + reportsCollectionOrphanCheckReports + " in its reportsCollection field has a non-nullable diagnosisDiagnoseid field.");
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);

@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -25,7 +26,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Milhouse
  */
 @Entity
-@Table(catalog = "s06", schema = "public")
+@Table(name = "insurances")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Insurances.findAll", query = "SELECT i FROM Insurances i"),
@@ -38,14 +39,17 @@ public class Insurances implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
+    @Column(name = "insuranceid")
     private Integer insuranceid;
     @Basic(optional = false)
+    @Column(name = "insurancename")
     private String insurancename;
     @Basic(optional = false)
+    @Column(name = "insurancecode")
     private String insurancecode;
-    @Basic(optional = false)
-    private int canceled;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "insurances")
+    @Column(name = "canceled")
+    private Boolean canceled;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "insurancesInsuranceid")
     private Collection<Persons> personsCollection;
 
     public Insurances() {
@@ -55,11 +59,10 @@ public class Insurances implements Serializable {
         this.insuranceid = insuranceid;
     }
 
-    public Insurances(Integer insuranceid, String insurancename, String insurancecode, int canceled) {
+    public Insurances(Integer insuranceid, String insurancename, String insurancecode) {
         this.insuranceid = insuranceid;
         this.insurancename = insurancename;
         this.insurancecode = insurancecode;
-        this.canceled = canceled;
     }
 
     public Integer getInsuranceid() {
@@ -86,11 +89,11 @@ public class Insurances implements Serializable {
         this.insurancecode = insurancecode;
     }
 
-    public int getCanceled() {
+    public Boolean getCanceled() {
         return canceled;
     }
 
-    public void setCanceled(int canceled) {
+    public void setCanceled(Boolean canceled) {
         this.canceled = canceled;
     }
 
@@ -125,7 +128,7 @@ public class Insurances implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.Insurances[ insuranceid=" + insuranceid + " ]";
+        return "stois.Entity.Insurances[ insuranceid=" + insuranceid + " ]";
     }
     
 }

@@ -45,18 +45,18 @@ public class InsurancesJpaController implements Serializable {
             em.getTransaction().begin();
             Collection<Persons> attachedPersonsCollection = new ArrayList<Persons>();
             for (Persons personsCollectionPersonsToAttach : insurances.getPersonsCollection()) {
-                personsCollectionPersonsToAttach = em.getReference(personsCollectionPersonsToAttach.getClass(), personsCollectionPersonsToAttach.getPersonsPK());
+                personsCollectionPersonsToAttach = em.getReference(personsCollectionPersonsToAttach.getClass(), personsCollectionPersonsToAttach.getPersonid());
                 attachedPersonsCollection.add(personsCollectionPersonsToAttach);
             }
             insurances.setPersonsCollection(attachedPersonsCollection);
             em.persist(insurances);
             for (Persons personsCollectionPersons : insurances.getPersonsCollection()) {
-                Insurances oldInsurancesOfPersonsCollectionPersons = personsCollectionPersons.getInsurances();
-                personsCollectionPersons.setInsurances(insurances);
+                Insurances oldInsurancesInsuranceidOfPersonsCollectionPersons = personsCollectionPersons.getInsurancesInsuranceid();
+                personsCollectionPersons.setInsurancesInsuranceid(insurances);
                 personsCollectionPersons = em.merge(personsCollectionPersons);
-                if (oldInsurancesOfPersonsCollectionPersons != null) {
-                    oldInsurancesOfPersonsCollectionPersons.getPersonsCollection().remove(personsCollectionPersons);
-                    oldInsurancesOfPersonsCollectionPersons = em.merge(oldInsurancesOfPersonsCollectionPersons);
+                if (oldInsurancesInsuranceidOfPersonsCollectionPersons != null) {
+                    oldInsurancesInsuranceidOfPersonsCollectionPersons.getPersonsCollection().remove(personsCollectionPersons);
+                    oldInsurancesInsuranceidOfPersonsCollectionPersons = em.merge(oldInsurancesInsuranceidOfPersonsCollectionPersons);
                 }
             }
             em.getTransaction().commit();
@@ -81,7 +81,7 @@ public class InsurancesJpaController implements Serializable {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain Persons " + personsCollectionOldPersons + " since its insurances field is not nullable.");
+                    illegalOrphanMessages.add("You must retain Persons " + personsCollectionOldPersons + " since its insurancesInsuranceid field is not nullable.");
                 }
             }
             if (illegalOrphanMessages != null) {
@@ -89,7 +89,7 @@ public class InsurancesJpaController implements Serializable {
             }
             Collection<Persons> attachedPersonsCollectionNew = new ArrayList<Persons>();
             for (Persons personsCollectionNewPersonsToAttach : personsCollectionNew) {
-                personsCollectionNewPersonsToAttach = em.getReference(personsCollectionNewPersonsToAttach.getClass(), personsCollectionNewPersonsToAttach.getPersonsPK());
+                personsCollectionNewPersonsToAttach = em.getReference(personsCollectionNewPersonsToAttach.getClass(), personsCollectionNewPersonsToAttach.getPersonid());
                 attachedPersonsCollectionNew.add(personsCollectionNewPersonsToAttach);
             }
             personsCollectionNew = attachedPersonsCollectionNew;
@@ -97,12 +97,12 @@ public class InsurancesJpaController implements Serializable {
             insurances = em.merge(insurances);
             for (Persons personsCollectionNewPersons : personsCollectionNew) {
                 if (!personsCollectionOld.contains(personsCollectionNewPersons)) {
-                    Insurances oldInsurancesOfPersonsCollectionNewPersons = personsCollectionNewPersons.getInsurances();
-                    personsCollectionNewPersons.setInsurances(insurances);
+                    Insurances oldInsurancesInsuranceidOfPersonsCollectionNewPersons = personsCollectionNewPersons.getInsurancesInsuranceid();
+                    personsCollectionNewPersons.setInsurancesInsuranceid(insurances);
                     personsCollectionNewPersons = em.merge(personsCollectionNewPersons);
-                    if (oldInsurancesOfPersonsCollectionNewPersons != null && !oldInsurancesOfPersonsCollectionNewPersons.equals(insurances)) {
-                        oldInsurancesOfPersonsCollectionNewPersons.getPersonsCollection().remove(personsCollectionNewPersons);
-                        oldInsurancesOfPersonsCollectionNewPersons = em.merge(oldInsurancesOfPersonsCollectionNewPersons);
+                    if (oldInsurancesInsuranceidOfPersonsCollectionNewPersons != null && !oldInsurancesInsuranceidOfPersonsCollectionNewPersons.equals(insurances)) {
+                        oldInsurancesInsuranceidOfPersonsCollectionNewPersons.getPersonsCollection().remove(personsCollectionNewPersons);
+                        oldInsurancesInsuranceidOfPersonsCollectionNewPersons = em.merge(oldInsurancesInsuranceidOfPersonsCollectionNewPersons);
                     }
                 }
             }
@@ -141,7 +141,7 @@ public class InsurancesJpaController implements Serializable {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Insurances (" + insurances + ") cannot be destroyed since the Persons " + personsCollectionOrphanCheckPersons + " in its personsCollection field has a non-nullable insurances field.");
+                illegalOrphanMessages.add("This Insurances (" + insurances + ") cannot be destroyed since the Persons " + personsCollectionOrphanCheckPersons + " in its personsCollection field has a non-nullable insurancesInsuranceid field.");
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);

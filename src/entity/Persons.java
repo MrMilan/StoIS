@@ -9,11 +9,12 @@ import java.io.Serializable;
 import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
-import javax.persistence.EmbeddedId;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -27,14 +28,11 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Milhouse
  */
 @Entity
-@Table(catalog = "s06", schema = "public")
+@Table(name = "persons")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Persons.findAll", query = "SELECT p FROM Persons p"),
-    @NamedQuery(name = "Persons.findByPersonid", query = "SELECT p FROM Persons p WHERE p.personsPK.personid = :personid"),
-    @NamedQuery(name = "Persons.findByUsersUsersid", query = "SELECT p FROM Persons p WHERE p.personsPK.usersUsersid = :usersUsersid"),
-    @NamedQuery(name = "Persons.findByAddressesAddressid", query = "SELECT p FROM Persons p WHERE p.personsPK.addressesAddressid = :addressesAddressid"),
-    @NamedQuery(name = "Persons.findByInsurancesInsuranceid", query = "SELECT p FROM Persons p WHERE p.personsPK.insurancesInsuranceid = :insurancesInsuranceid"),
+    @NamedQuery(name = "Persons.findByPersonid", query = "SELECT p FROM Persons p WHERE p.personid = :personid"),
     @NamedQuery(name = "Persons.findByFirstname", query = "SELECT p FROM Persons p WHERE p.firstname = :firstname"),
     @NamedQuery(name = "Persons.findBySurename", query = "SELECT p FROM Persons p WHERE p.surename = :surename"),
     @NamedQuery(name = "Persons.findByGender", query = "SELECT p FROM Persons p WHERE p.gender = :gender"),
@@ -43,58 +41,50 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Persons.findByArchived", query = "SELECT p FROM Persons p WHERE p.archived = :archived")})
 public class Persons implements Serializable {
     private static final long serialVersionUID = 1L;
-    @EmbeddedId
-    protected PersonsPK personsPK;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
+    @Column(name = "personid")
+    private Integer personid;
+    @Basic(optional = false)
+    @Column(name = "firstname")
     private String firstname;
     @Basic(optional = false)
+    @Column(name = "surename")
     private String surename;
     @Basic(optional = false)
+    @Column(name = "gender")
     private boolean gender;
     @Basic(optional = false)
+    @Column(name = "birthnumber")
     private String birthnumber;
     @Basic(optional = false)
+    @Column(name = "canceled")
     private boolean canceled;
     @Basic(optional = false)
+    @Column(name = "archived")
     private boolean archived;
-    @JoinTable(name = "persons_has_roles", joinColumns = {
-        @JoinColumn(name = "persons_users_usersid", referencedColumnName = "users_usersid"),
-        @JoinColumn(name = "persons_personid", referencedColumnName = "personid"),
-        @JoinColumn(name = "persons_addresses_addressid", referencedColumnName = "addresses_addressid"),
-        @JoinColumn(name = "persons_insurances_insuranceid", referencedColumnName = "insurances_insuranceid")}, inverseJoinColumns = {
-        @JoinColumn(name = "roles_rolename", referencedColumnName = "rolename"),
-        @JoinColumn(name = "roles_roleid", referencedColumnName = "roleid")})
-    @ManyToMany
-    private Collection<Roles> rolesCollection;
-    @JoinTable(name = "persons_has_telephones", joinColumns = {
-        @JoinColumn(name = "persons_users_usersid", referencedColumnName = "users_usersid"),
-        @JoinColumn(name = "persons_personid", referencedColumnName = "personid"),
-        @JoinColumn(name = "persons_addresses_addressid", referencedColumnName = "addresses_addressid"),
-        @JoinColumn(name = "persons_insurances_insuranceid", referencedColumnName = "insurances_insuranceid")}, inverseJoinColumns = {
-        @JoinColumn(name = "telephones_telephoneid", referencedColumnName = "telephoneid")})
-    @ManyToMany
-    private Collection<Telephones> telephonesCollection;
-    @JoinColumn(name = "addresses_addressid", referencedColumnName = "addressid", insertable = false, updatable = false)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "personsPersonid")
+    private Collection<PersonHasAddress> personHasAddressCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "personsPersonid")
+    private Collection<PersonsHasRoles> personsHasRolesCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "personsPersonid")
+    private Collection<Users> usersCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "personsPersonid")
+    private Collection<PersonsHasTelephones> personsHasTelephonesCollection;
+    @JoinColumn(name = "insurances_insuranceid", referencedColumnName = "insuranceid")
     @ManyToOne(optional = false)
-    private Addresses addresses;
-    @JoinColumn(name = "insurances_insuranceid", referencedColumnName = "insuranceid", insertable = false, updatable = false)
-    @ManyToOne(optional = false)
-    private Insurances insurances;
-    @JoinColumn(name = "users_usersid", referencedColumnName = "usersid", insertable = false, updatable = false)
-    @ManyToOne(optional = false)
-    private Users users;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "persons")
-    private Collection<Actions> actionsCollection;
+    private Insurances insurancesInsuranceid;
 
     public Persons() {
     }
 
-    public Persons(PersonsPK personsPK) {
-        this.personsPK = personsPK;
+    public Persons(Integer personid) {
+        this.personid = personid;
     }
 
-    public Persons(PersonsPK personsPK, String firstname, String surename, boolean gender, String birthnumber, boolean canceled, boolean archived) {
-        this.personsPK = personsPK;
+    public Persons(Integer personid, String firstname, String surename, boolean gender, String birthnumber, boolean canceled, boolean archived) {
+        this.personid = personid;
         this.firstname = firstname;
         this.surename = surename;
         this.gender = gender;
@@ -103,16 +93,12 @@ public class Persons implements Serializable {
         this.archived = archived;
     }
 
-    public Persons(int personid, int usersUsersid, int addressesAddressid, int insurancesInsuranceid) {
-        this.personsPK = new PersonsPK(personid, usersUsersid, addressesAddressid, insurancesInsuranceid);
+    public Integer getPersonid() {
+        return personid;
     }
 
-    public PersonsPK getPersonsPK() {
-        return personsPK;
-    }
-
-    public void setPersonsPK(PersonsPK personsPK) {
-        this.personsPK = personsPK;
+    public void setPersonid(Integer personid) {
+        this.personid = personid;
     }
 
     public String getFirstname() {
@@ -164,60 +150,53 @@ public class Persons implements Serializable {
     }
 
     @XmlTransient
-    public Collection<Roles> getRolesCollection() {
-        return rolesCollection;
+    public Collection<PersonHasAddress> getPersonHasAddressCollection() {
+        return personHasAddressCollection;
     }
 
-    public void setRolesCollection(Collection<Roles> rolesCollection) {
-        this.rolesCollection = rolesCollection;
-    }
-
-    @XmlTransient
-    public Collection<Telephones> getTelephonesCollection() {
-        return telephonesCollection;
-    }
-
-    public void setTelephonesCollection(Collection<Telephones> telephonesCollection) {
-        this.telephonesCollection = telephonesCollection;
-    }
-
-    public Addresses getAddresses() {
-        return addresses;
-    }
-
-    public void setAddresses(Addresses addresses) {
-        this.addresses = addresses;
-    }
-
-    public Insurances getInsurances() {
-        return insurances;
-    }
-
-    public void setInsurances(Insurances insurances) {
-        this.insurances = insurances;
-    }
-
-    public Users getUsers() {
-        return users;
-    }
-
-    public void setUsers(Users users) {
-        this.users = users;
+    public void setPersonHasAddressCollection(Collection<PersonHasAddress> personHasAddressCollection) {
+        this.personHasAddressCollection = personHasAddressCollection;
     }
 
     @XmlTransient
-    public Collection<Actions> getActionsCollection() {
-        return actionsCollection;
+    public Collection<PersonsHasRoles> getPersonsHasRolesCollection() {
+        return personsHasRolesCollection;
     }
 
-    public void setActionsCollection(Collection<Actions> actionsCollection) {
-        this.actionsCollection = actionsCollection;
+    public void setPersonsHasRolesCollection(Collection<PersonsHasRoles> personsHasRolesCollection) {
+        this.personsHasRolesCollection = personsHasRolesCollection;
+    }
+
+    @XmlTransient
+    public Collection<Users> getUsersCollection() {
+        return usersCollection;
+    }
+
+    public void setUsersCollection(Collection<Users> usersCollection) {
+        this.usersCollection = usersCollection;
+    }
+
+    @XmlTransient
+    public Collection<PersonsHasTelephones> getPersonsHasTelephonesCollection() {
+        return personsHasTelephonesCollection;
+    }
+
+    public void setPersonsHasTelephonesCollection(Collection<PersonsHasTelephones> personsHasTelephonesCollection) {
+        this.personsHasTelephonesCollection = personsHasTelephonesCollection;
+    }
+
+    public Insurances getInsurancesInsuranceid() {
+        return insurancesInsuranceid;
+    }
+
+    public void setInsurancesInsuranceid(Insurances insurancesInsuranceid) {
+        this.insurancesInsuranceid = insurancesInsuranceid;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (personsPK != null ? personsPK.hashCode() : 0);
+        hash += (personid != null ? personid.hashCode() : 0);
         return hash;
     }
 
@@ -228,7 +207,7 @@ public class Persons implements Serializable {
             return false;
         }
         Persons other = (Persons) object;
-        if ((this.personsPK == null && other.personsPK != null) || (this.personsPK != null && !this.personsPK.equals(other.personsPK))) {
+        if ((this.personid == null && other.personid != null) || (this.personid != null && !this.personid.equals(other.personid))) {
             return false;
         }
         return true;
@@ -236,7 +215,7 @@ public class Persons implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.Persons[ personsPK=" + personsPK + " ]";
+        return "stois.Entity.Persons[ personid=" + personid + " ]";
     }
     
 }

@@ -8,15 +8,15 @@ package entity;
 import java.io.Serializable;
 import java.util.Collection;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Milhouse
  */
 @Entity
-@Table(catalog = "s06", schema = "public")
+@Table(name = "materials")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Materials.findAll", query = "SELECT m FROM Materials m"),
@@ -39,18 +39,19 @@ public class Materials implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
+    @Column(name = "materialid")
     private Integer materialid;
     @Basic(optional = false)
+    @Column(name = "materialname")
     private String materialname;
     @Basic(optional = false)
+    @Column(name = "materialcode")
     private String materialcode;
     @Basic(optional = false)
+    @Column(name = "canceled")
     private boolean canceled;
-    @JoinTable(name = "usedmaterials", joinColumns = {
-        @JoinColumn(name = "materials_materialid", referencedColumnName = "materialid")}, inverseJoinColumns = {
-        @JoinColumn(name = "operations_operationsid", referencedColumnName = "operationsid")})
-    @ManyToMany
-    private Collection<Operations> operationsCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "materialsMaterialid")
+    private Collection<Usedmaterials> usedmaterialsCollection;
 
     public Materials() {
     }
@@ -99,12 +100,12 @@ public class Materials implements Serializable {
     }
 
     @XmlTransient
-    public Collection<Operations> getOperationsCollection() {
-        return operationsCollection;
+    public Collection<Usedmaterials> getUsedmaterialsCollection() {
+        return usedmaterialsCollection;
     }
 
-    public void setOperationsCollection(Collection<Operations> operationsCollection) {
-        this.operationsCollection = operationsCollection;
+    public void setUsedmaterialsCollection(Collection<Usedmaterials> usedmaterialsCollection) {
+        this.usedmaterialsCollection = usedmaterialsCollection;
     }
 
     @Override
@@ -129,7 +130,7 @@ public class Materials implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.Materials[ materialid=" + materialid + " ]";
+        return "stois.Entity.Materials[ materialid=" + materialid + " ]";
     }
     
 }

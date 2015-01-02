@@ -5,14 +5,15 @@
  */
 package Controller;
 
+import Controller.exceptions.IllegalOrphanException;
 import Controller.exceptions.NonexistentEntityException;
+import entity.Tools;
 import java.io.Serializable;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import entity.Operations;
-import entity.Tools;
+import entity.Usedtools;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -35,23 +36,28 @@ public class ToolsJpaController implements Serializable {
     }
 
     public void create(Tools tools) {
-        if (tools.getOperationsCollection() == null) {
-            tools.setOperationsCollection(new ArrayList<Operations>());
+        if (tools.getUsedtoolsCollection() == null) {
+            tools.setUsedtoolsCollection(new ArrayList<Usedtools>());
         }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Collection<Operations> attachedOperationsCollection = new ArrayList<Operations>();
-            for (Operations operationsCollectionOperationsToAttach : tools.getOperationsCollection()) {
-                operationsCollectionOperationsToAttach = em.getReference(operationsCollectionOperationsToAttach.getClass(), operationsCollectionOperationsToAttach.getOperationsid());
-                attachedOperationsCollection.add(operationsCollectionOperationsToAttach);
+            Collection<Usedtools> attachedUsedtoolsCollection = new ArrayList<Usedtools>();
+            for (Usedtools usedtoolsCollectionUsedtoolsToAttach : tools.getUsedtoolsCollection()) {
+                usedtoolsCollectionUsedtoolsToAttach = em.getReference(usedtoolsCollectionUsedtoolsToAttach.getClass(), usedtoolsCollectionUsedtoolsToAttach.getIdusedtool());
+                attachedUsedtoolsCollection.add(usedtoolsCollectionUsedtoolsToAttach);
             }
-            tools.setOperationsCollection(attachedOperationsCollection);
+            tools.setUsedtoolsCollection(attachedUsedtoolsCollection);
             em.persist(tools);
-            for (Operations operationsCollectionOperations : tools.getOperationsCollection()) {
-                operationsCollectionOperations.getToolsCollection().add(tools);
-                operationsCollectionOperations = em.merge(operationsCollectionOperations);
+            for (Usedtools usedtoolsCollectionUsedtools : tools.getUsedtoolsCollection()) {
+                Tools oldToolsToolidOfUsedtoolsCollectionUsedtools = usedtoolsCollectionUsedtools.getToolsToolid();
+                usedtoolsCollectionUsedtools.setToolsToolid(tools);
+                usedtoolsCollectionUsedtools = em.merge(usedtoolsCollectionUsedtools);
+                if (oldToolsToolidOfUsedtoolsCollectionUsedtools != null) {
+                    oldToolsToolidOfUsedtoolsCollectionUsedtools.getUsedtoolsCollection().remove(usedtoolsCollectionUsedtools);
+                    oldToolsToolidOfUsedtoolsCollectionUsedtools = em.merge(oldToolsToolidOfUsedtoolsCollectionUsedtools);
+                }
             }
             em.getTransaction().commit();
         } finally {
@@ -61,32 +67,43 @@ public class ToolsJpaController implements Serializable {
         }
     }
 
-    public void edit(Tools tools) throws NonexistentEntityException, Exception {
+    public void edit(Tools tools) throws IllegalOrphanException, NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
             Tools persistentTools = em.find(Tools.class, tools.getToolid());
-            Collection<Operations> operationsCollectionOld = persistentTools.getOperationsCollection();
-            Collection<Operations> operationsCollectionNew = tools.getOperationsCollection();
-            Collection<Operations> attachedOperationsCollectionNew = new ArrayList<Operations>();
-            for (Operations operationsCollectionNewOperationsToAttach : operationsCollectionNew) {
-                operationsCollectionNewOperationsToAttach = em.getReference(operationsCollectionNewOperationsToAttach.getClass(), operationsCollectionNewOperationsToAttach.getOperationsid());
-                attachedOperationsCollectionNew.add(operationsCollectionNewOperationsToAttach);
-            }
-            operationsCollectionNew = attachedOperationsCollectionNew;
-            tools.setOperationsCollection(operationsCollectionNew);
-            tools = em.merge(tools);
-            for (Operations operationsCollectionOldOperations : operationsCollectionOld) {
-                if (!operationsCollectionNew.contains(operationsCollectionOldOperations)) {
-                    operationsCollectionOldOperations.getToolsCollection().remove(tools);
-                    operationsCollectionOldOperations = em.merge(operationsCollectionOldOperations);
+            Collection<Usedtools> usedtoolsCollectionOld = persistentTools.getUsedtoolsCollection();
+            Collection<Usedtools> usedtoolsCollectionNew = tools.getUsedtoolsCollection();
+            List<String> illegalOrphanMessages = null;
+            for (Usedtools usedtoolsCollectionOldUsedtools : usedtoolsCollectionOld) {
+                if (!usedtoolsCollectionNew.contains(usedtoolsCollectionOldUsedtools)) {
+                    if (illegalOrphanMessages == null) {
+                        illegalOrphanMessages = new ArrayList<String>();
+                    }
+                    illegalOrphanMessages.add("You must retain Usedtools " + usedtoolsCollectionOldUsedtools + " since its toolsToolid field is not nullable.");
                 }
             }
-            for (Operations operationsCollectionNewOperations : operationsCollectionNew) {
-                if (!operationsCollectionOld.contains(operationsCollectionNewOperations)) {
-                    operationsCollectionNewOperations.getToolsCollection().add(tools);
-                    operationsCollectionNewOperations = em.merge(operationsCollectionNewOperations);
+            if (illegalOrphanMessages != null) {
+                throw new IllegalOrphanException(illegalOrphanMessages);
+            }
+            Collection<Usedtools> attachedUsedtoolsCollectionNew = new ArrayList<Usedtools>();
+            for (Usedtools usedtoolsCollectionNewUsedtoolsToAttach : usedtoolsCollectionNew) {
+                usedtoolsCollectionNewUsedtoolsToAttach = em.getReference(usedtoolsCollectionNewUsedtoolsToAttach.getClass(), usedtoolsCollectionNewUsedtoolsToAttach.getIdusedtool());
+                attachedUsedtoolsCollectionNew.add(usedtoolsCollectionNewUsedtoolsToAttach);
+            }
+            usedtoolsCollectionNew = attachedUsedtoolsCollectionNew;
+            tools.setUsedtoolsCollection(usedtoolsCollectionNew);
+            tools = em.merge(tools);
+            for (Usedtools usedtoolsCollectionNewUsedtools : usedtoolsCollectionNew) {
+                if (!usedtoolsCollectionOld.contains(usedtoolsCollectionNewUsedtools)) {
+                    Tools oldToolsToolidOfUsedtoolsCollectionNewUsedtools = usedtoolsCollectionNewUsedtools.getToolsToolid();
+                    usedtoolsCollectionNewUsedtools.setToolsToolid(tools);
+                    usedtoolsCollectionNewUsedtools = em.merge(usedtoolsCollectionNewUsedtools);
+                    if (oldToolsToolidOfUsedtoolsCollectionNewUsedtools != null && !oldToolsToolidOfUsedtoolsCollectionNewUsedtools.equals(tools)) {
+                        oldToolsToolidOfUsedtoolsCollectionNewUsedtools.getUsedtoolsCollection().remove(usedtoolsCollectionNewUsedtools);
+                        oldToolsToolidOfUsedtoolsCollectionNewUsedtools = em.merge(oldToolsToolidOfUsedtoolsCollectionNewUsedtools);
+                    }
                 }
             }
             em.getTransaction().commit();
@@ -106,7 +123,7 @@ public class ToolsJpaController implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws NonexistentEntityException {
+    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -118,10 +135,16 @@ public class ToolsJpaController implements Serializable {
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The tools with id " + id + " no longer exists.", enfe);
             }
-            Collection<Operations> operationsCollection = tools.getOperationsCollection();
-            for (Operations operationsCollectionOperations : operationsCollection) {
-                operationsCollectionOperations.getToolsCollection().remove(tools);
-                operationsCollectionOperations = em.merge(operationsCollectionOperations);
+            List<String> illegalOrphanMessages = null;
+            Collection<Usedtools> usedtoolsCollectionOrphanCheck = tools.getUsedtoolsCollection();
+            for (Usedtools usedtoolsCollectionOrphanCheckUsedtools : usedtoolsCollectionOrphanCheck) {
+                if (illegalOrphanMessages == null) {
+                    illegalOrphanMessages = new ArrayList<String>();
+                }
+                illegalOrphanMessages.add("This Tools (" + tools + ") cannot be destroyed since the Usedtools " + usedtoolsCollectionOrphanCheckUsedtools + " in its usedtoolsCollection field has a non-nullable toolsToolid field.");
+            }
+            if (illegalOrphanMessages != null) {
+                throw new IllegalOrphanException(illegalOrphanMessages);
             }
             em.remove(tools);
             em.getTransaction().commit();

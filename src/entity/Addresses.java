@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -25,7 +26,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Milhouse
  */
 @Entity
-@Table(catalog = "s06", schema = "public")
+@Table(name = "addresses")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Addresses.findAll", query = "SELECT a FROM Addresses a"),
@@ -41,21 +42,28 @@ public class Addresses implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
+    @Column(name = "addressid")
     private Integer addressid;
     @Basic(optional = false)
+    @Column(name = "street")
     private String street;
     @Basic(optional = false)
+    @Column(name = "streetnumber")
     private int streetnumber;
     @Basic(optional = false)
+    @Column(name = "zipcode")
     private int zipcode;
     @Basic(optional = false)
+    @Column(name = "town")
     private String town;
     @Basic(optional = false)
+    @Column(name = "country")
     private String country;
     @Basic(optional = false)
+    @Column(name = "canceled")
     private boolean canceled;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "addresses")
-    private Collection<Persons> personsCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "addressesAddressid")
+    private Collection<PersonHasAddress> personHasAddressCollection;
 
     public Addresses() {
     }
@@ -131,12 +139,12 @@ public class Addresses implements Serializable {
     }
 
     @XmlTransient
-    public Collection<Persons> getPersonsCollection() {
-        return personsCollection;
+    public Collection<PersonHasAddress> getPersonHasAddressCollection() {
+        return personHasAddressCollection;
     }
 
-    public void setPersonsCollection(Collection<Persons> personsCollection) {
-        this.personsCollection = personsCollection;
+    public void setPersonHasAddressCollection(Collection<PersonHasAddress> personHasAddressCollection) {
+        this.personHasAddressCollection = personHasAddressCollection;
     }
 
     @Override
@@ -161,7 +169,7 @@ public class Addresses implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.Addresses[ addressid=" + addressid + " ]";
+        return "stois.Entity.Addresses[ addressid=" + addressid + " ]";
     }
     
 }

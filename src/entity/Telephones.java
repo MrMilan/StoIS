@@ -8,13 +8,15 @@ package entity;
 import java.io.Serializable;
 import java.util.Collection;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -24,7 +26,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Milhouse
  */
 @Entity
-@Table(catalog = "s06", schema = "public")
+@Table(name = "telephones")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Telephones.findAll", query = "SELECT t FROM Telephones t"),
@@ -36,13 +38,16 @@ public class Telephones implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
+    @Column(name = "telephoneid")
     private Integer telephoneid;
     @Basic(optional = false)
+    @Column(name = "telephonenumber")
     private int telephonenumber;
     @Basic(optional = false)
+    @Column(name = "canceled")
     private boolean canceled;
-    @ManyToMany(mappedBy = "telephonesCollection")
-    private Collection<Persons> personsCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "telephonesTelephoneid")
+    private Collection<PersonsHasTelephones> personsHasTelephonesCollection;
 
     public Telephones() {
     }
@@ -82,12 +87,12 @@ public class Telephones implements Serializable {
     }
 
     @XmlTransient
-    public Collection<Persons> getPersonsCollection() {
-        return personsCollection;
+    public Collection<PersonsHasTelephones> getPersonsHasTelephonesCollection() {
+        return personsHasTelephonesCollection;
     }
 
-    public void setPersonsCollection(Collection<Persons> personsCollection) {
-        this.personsCollection = personsCollection;
+    public void setPersonsHasTelephonesCollection(Collection<PersonsHasTelephones> personsHasTelephonesCollection) {
+        this.personsHasTelephonesCollection = personsHasTelephonesCollection;
     }
 
     @Override
@@ -112,7 +117,7 @@ public class Telephones implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.Telephones[ telephoneid=" + telephoneid + " ]";
+        return "stois.Entity.Telephones[ telephoneid=" + telephoneid + " ]";
     }
     
 }

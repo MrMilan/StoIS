@@ -7,7 +7,6 @@ package Controller;
 
 import Controller.exceptions.IllegalOrphanException;
 import Controller.exceptions.NonexistentEntityException;
-import Controller.exceptions.PreexistingEntityException;
 import java.io.Serializable;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
@@ -16,7 +15,6 @@ import javax.persistence.criteria.Root;
 import entity.Diagnosis;
 import entity.Actions;
 import entity.Reports;
-import entity.ReportsPK;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -38,10 +36,7 @@ public class ReportsJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Reports reports) throws PreexistingEntityException, Exception {
-        if (reports.getReportsPK() == null) {
-            reports.setReportsPK(new ReportsPK());
-        }
+    public void create(Reports reports) {
         if (reports.getActionsCollection() == null) {
             reports.setActionsCollection(new ArrayList<Actions>());
         }
@@ -49,37 +44,32 @@ public class ReportsJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Diagnosis diagnosis = reports.getDiagnosis();
-            if (diagnosis != null) {
-                diagnosis = em.getReference(diagnosis.getClass(), diagnosis.getDiagnoseid());
-                reports.setDiagnosis(diagnosis);
+            Diagnosis diagnosisDiagnoseid = reports.getDiagnosisDiagnoseid();
+            if (diagnosisDiagnoseid != null) {
+                diagnosisDiagnoseid = em.getReference(diagnosisDiagnoseid.getClass(), diagnosisDiagnoseid.getDiagnoseid());
+                reports.setDiagnosisDiagnoseid(diagnosisDiagnoseid);
             }
             Collection<Actions> attachedActionsCollection = new ArrayList<Actions>();
             for (Actions actionsCollectionActionsToAttach : reports.getActionsCollection()) {
-                actionsCollectionActionsToAttach = em.getReference(actionsCollectionActionsToAttach.getClass(), actionsCollectionActionsToAttach.getActionsPK());
+                actionsCollectionActionsToAttach = em.getReference(actionsCollectionActionsToAttach.getClass(), actionsCollectionActionsToAttach.getActionid());
                 attachedActionsCollection.add(actionsCollectionActionsToAttach);
             }
             reports.setActionsCollection(attachedActionsCollection);
             em.persist(reports);
-            if (diagnosis != null) {
-                diagnosis.getReportsCollection().add(reports);
-                diagnosis = em.merge(diagnosis);
+            if (diagnosisDiagnoseid != null) {
+                diagnosisDiagnoseid.getReportsCollection().add(reports);
+                diagnosisDiagnoseid = em.merge(diagnosisDiagnoseid);
             }
             for (Actions actionsCollectionActions : reports.getActionsCollection()) {
-                Reports oldReportsOfActionsCollectionActions = actionsCollectionActions.getReports();
-                actionsCollectionActions.setReports(reports);
+                Reports oldReportsReportidOfActionsCollectionActions = actionsCollectionActions.getReportsReportid();
+                actionsCollectionActions.setReportsReportid(reports);
                 actionsCollectionActions = em.merge(actionsCollectionActions);
-                if (oldReportsOfActionsCollectionActions != null) {
-                    oldReportsOfActionsCollectionActions.getActionsCollection().remove(actionsCollectionActions);
-                    oldReportsOfActionsCollectionActions = em.merge(oldReportsOfActionsCollectionActions);
+                if (oldReportsReportidOfActionsCollectionActions != null) {
+                    oldReportsReportidOfActionsCollectionActions.getActionsCollection().remove(actionsCollectionActions);
+                    oldReportsReportidOfActionsCollectionActions = em.merge(oldReportsReportidOfActionsCollectionActions);
                 }
             }
             em.getTransaction().commit();
-        } catch (Exception ex) {
-            if (findReports(reports.getReportsPK()) != null) {
-                throw new PreexistingEntityException("Reports " + reports + " already exists.", ex);
-            }
-            throw ex;
         } finally {
             if (em != null) {
                 em.close();
@@ -92,9 +82,9 @@ public class ReportsJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Reports persistentReports = em.find(Reports.class, reports.getReportsPK());
-            Diagnosis diagnosisOld = persistentReports.getDiagnosis();
-            Diagnosis diagnosisNew = reports.getDiagnosis();
+            Reports persistentReports = em.find(Reports.class, reports.getReportid());
+            Diagnosis diagnosisDiagnoseidOld = persistentReports.getDiagnosisDiagnoseid();
+            Diagnosis diagnosisDiagnoseidNew = reports.getDiagnosisDiagnoseid();
             Collection<Actions> actionsCollectionOld = persistentReports.getActionsCollection();
             Collection<Actions> actionsCollectionNew = reports.getActionsCollection();
             List<String> illegalOrphanMessages = null;
@@ -103,40 +93,40 @@ public class ReportsJpaController implements Serializable {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain Actions " + actionsCollectionOldActions + " since its reports field is not nullable.");
+                    illegalOrphanMessages.add("You must retain Actions " + actionsCollectionOldActions + " since its reportsReportid field is not nullable.");
                 }
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
-            if (diagnosisNew != null) {
-                diagnosisNew = em.getReference(diagnosisNew.getClass(), diagnosisNew.getDiagnoseid());
-                reports.setDiagnosis(diagnosisNew);
+            if (diagnosisDiagnoseidNew != null) {
+                diagnosisDiagnoseidNew = em.getReference(diagnosisDiagnoseidNew.getClass(), diagnosisDiagnoseidNew.getDiagnoseid());
+                reports.setDiagnosisDiagnoseid(diagnosisDiagnoseidNew);
             }
             Collection<Actions> attachedActionsCollectionNew = new ArrayList<Actions>();
             for (Actions actionsCollectionNewActionsToAttach : actionsCollectionNew) {
-                actionsCollectionNewActionsToAttach = em.getReference(actionsCollectionNewActionsToAttach.getClass(), actionsCollectionNewActionsToAttach.getActionsPK());
+                actionsCollectionNewActionsToAttach = em.getReference(actionsCollectionNewActionsToAttach.getClass(), actionsCollectionNewActionsToAttach.getActionid());
                 attachedActionsCollectionNew.add(actionsCollectionNewActionsToAttach);
             }
             actionsCollectionNew = attachedActionsCollectionNew;
             reports.setActionsCollection(actionsCollectionNew);
             reports = em.merge(reports);
-            if (diagnosisOld != null && !diagnosisOld.equals(diagnosisNew)) {
-                diagnosisOld.getReportsCollection().remove(reports);
-                diagnosisOld = em.merge(diagnosisOld);
+            if (diagnosisDiagnoseidOld != null && !diagnosisDiagnoseidOld.equals(diagnosisDiagnoseidNew)) {
+                diagnosisDiagnoseidOld.getReportsCollection().remove(reports);
+                diagnosisDiagnoseidOld = em.merge(diagnosisDiagnoseidOld);
             }
-            if (diagnosisNew != null && !diagnosisNew.equals(diagnosisOld)) {
-                diagnosisNew.getReportsCollection().add(reports);
-                diagnosisNew = em.merge(diagnosisNew);
+            if (diagnosisDiagnoseidNew != null && !diagnosisDiagnoseidNew.equals(diagnosisDiagnoseidOld)) {
+                diagnosisDiagnoseidNew.getReportsCollection().add(reports);
+                diagnosisDiagnoseidNew = em.merge(diagnosisDiagnoseidNew);
             }
             for (Actions actionsCollectionNewActions : actionsCollectionNew) {
                 if (!actionsCollectionOld.contains(actionsCollectionNewActions)) {
-                    Reports oldReportsOfActionsCollectionNewActions = actionsCollectionNewActions.getReports();
-                    actionsCollectionNewActions.setReports(reports);
+                    Reports oldReportsReportidOfActionsCollectionNewActions = actionsCollectionNewActions.getReportsReportid();
+                    actionsCollectionNewActions.setReportsReportid(reports);
                     actionsCollectionNewActions = em.merge(actionsCollectionNewActions);
-                    if (oldReportsOfActionsCollectionNewActions != null && !oldReportsOfActionsCollectionNewActions.equals(reports)) {
-                        oldReportsOfActionsCollectionNewActions.getActionsCollection().remove(actionsCollectionNewActions);
-                        oldReportsOfActionsCollectionNewActions = em.merge(oldReportsOfActionsCollectionNewActions);
+                    if (oldReportsReportidOfActionsCollectionNewActions != null && !oldReportsReportidOfActionsCollectionNewActions.equals(reports)) {
+                        oldReportsReportidOfActionsCollectionNewActions.getActionsCollection().remove(actionsCollectionNewActions);
+                        oldReportsReportidOfActionsCollectionNewActions = em.merge(oldReportsReportidOfActionsCollectionNewActions);
                     }
                 }
             }
@@ -144,7 +134,7 @@ public class ReportsJpaController implements Serializable {
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                ReportsPK id = reports.getReportsPK();
+                Integer id = reports.getReportid();
                 if (findReports(id) == null) {
                     throw new NonexistentEntityException("The reports with id " + id + " no longer exists.");
                 }
@@ -157,7 +147,7 @@ public class ReportsJpaController implements Serializable {
         }
     }
 
-    public void destroy(ReportsPK id) throws IllegalOrphanException, NonexistentEntityException {
+    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -165,7 +155,7 @@ public class ReportsJpaController implements Serializable {
             Reports reports;
             try {
                 reports = em.getReference(Reports.class, id);
-                reports.getReportsPK();
+                reports.getReportid();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The reports with id " + id + " no longer exists.", enfe);
             }
@@ -175,15 +165,15 @@ public class ReportsJpaController implements Serializable {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Reports (" + reports + ") cannot be destroyed since the Actions " + actionsCollectionOrphanCheckActions + " in its actionsCollection field has a non-nullable reports field.");
+                illegalOrphanMessages.add("This Reports (" + reports + ") cannot be destroyed since the Actions " + actionsCollectionOrphanCheckActions + " in its actionsCollection field has a non-nullable reportsReportid field.");
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
-            Diagnosis diagnosis = reports.getDiagnosis();
-            if (diagnosis != null) {
-                diagnosis.getReportsCollection().remove(reports);
-                diagnosis = em.merge(diagnosis);
+            Diagnosis diagnosisDiagnoseid = reports.getDiagnosisDiagnoseid();
+            if (diagnosisDiagnoseid != null) {
+                diagnosisDiagnoseid.getReportsCollection().remove(reports);
+                diagnosisDiagnoseid = em.merge(diagnosisDiagnoseid);
             }
             em.remove(reports);
             em.getTransaction().commit();
@@ -218,7 +208,7 @@ public class ReportsJpaController implements Serializable {
         }
     }
 
-    public Reports findReports(ReportsPK id) {
+    public Reports findReports(Integer id) {
         EntityManager em = getEntityManager();
         try {
             return em.find(Reports.class, id);

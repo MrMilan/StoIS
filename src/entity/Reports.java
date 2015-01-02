@@ -8,9 +8,13 @@ package entity;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
+import javax.persistence.Basic;
 import javax.persistence.CascadeType;
-import javax.persistence.EmbeddedId;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -27,44 +31,44 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Milhouse
  */
 @Entity
-@Table(catalog = "s06", schema = "public")
+@Table(name = "reports")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Reports.findAll", query = "SELECT r FROM Reports r"),
-    @NamedQuery(name = "Reports.findByReportid", query = "SELECT r FROM Reports r WHERE r.reportsPK.reportid = :reportid"),
-    @NamedQuery(name = "Reports.findByDiagnosisDiagnoseid", query = "SELECT r FROM Reports r WHERE r.reportsPK.diagnosisDiagnoseid = :diagnosisDiagnoseid"),
+    @NamedQuery(name = "Reports.findByReportid", query = "SELECT r FROM Reports r WHERE r.reportid = :reportid"),
     @NamedQuery(name = "Reports.findByDate", query = "SELECT r FROM Reports r WHERE r.date = :date"),
     @NamedQuery(name = "Reports.findByNote", query = "SELECT r FROM Reports r WHERE r.note = :note")})
 public class Reports implements Serializable {
     private static final long serialVersionUID = 1L;
-    @EmbeddedId
-    protected ReportsPK reportsPK;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "reportid")
+    private Integer reportid;
+    @Column(name = "date")
     @Temporal(TemporalType.DATE)
     private Date date;
+    @Column(name = "note")
     private String note;
-    @JoinColumn(name = "diagnosis_diagnoseid", referencedColumnName = "diagnoseid", insertable = false, updatable = false)
+    @JoinColumn(name = "diagnosis_diagnoseid", referencedColumnName = "diagnoseid")
     @ManyToOne(optional = false)
-    private Diagnosis diagnosis;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "reports")
+    private Diagnosis diagnosisDiagnoseid;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "reportsReportid")
     private Collection<Actions> actionsCollection;
 
     public Reports() {
     }
 
-    public Reports(ReportsPK reportsPK) {
-        this.reportsPK = reportsPK;
+    public Reports(Integer reportid) {
+        this.reportid = reportid;
     }
 
-    public Reports(int reportid, int diagnosisDiagnoseid) {
-        this.reportsPK = new ReportsPK(reportid, diagnosisDiagnoseid);
+    public Integer getReportid() {
+        return reportid;
     }
 
-    public ReportsPK getReportsPK() {
-        return reportsPK;
-    }
-
-    public void setReportsPK(ReportsPK reportsPK) {
-        this.reportsPK = reportsPK;
+    public void setReportid(Integer reportid) {
+        this.reportid = reportid;
     }
 
     public Date getDate() {
@@ -83,12 +87,12 @@ public class Reports implements Serializable {
         this.note = note;
     }
 
-    public Diagnosis getDiagnosis() {
-        return diagnosis;
+    public Diagnosis getDiagnosisDiagnoseid() {
+        return diagnosisDiagnoseid;
     }
 
-    public void setDiagnosis(Diagnosis diagnosis) {
-        this.diagnosis = diagnosis;
+    public void setDiagnosisDiagnoseid(Diagnosis diagnosisDiagnoseid) {
+        this.diagnosisDiagnoseid = diagnosisDiagnoseid;
     }
 
     @XmlTransient
@@ -103,7 +107,7 @@ public class Reports implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (reportsPK != null ? reportsPK.hashCode() : 0);
+        hash += (reportid != null ? reportid.hashCode() : 0);
         return hash;
     }
 
@@ -114,7 +118,7 @@ public class Reports implements Serializable {
             return false;
         }
         Reports other = (Reports) object;
-        if ((this.reportsPK == null && other.reportsPK != null) || (this.reportsPK != null && !this.reportsPK.equals(other.reportsPK))) {
+        if ((this.reportid == null && other.reportid != null) || (this.reportid != null && !this.reportid.equals(other.reportid))) {
             return false;
         }
         return true;
@@ -122,7 +126,7 @@ public class Reports implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.Reports[ reportsPK=" + reportsPK + " ]";
+        return "stois.Entity.Reports[ reportid=" + reportid + " ]";
     }
     
 }

@@ -5,6 +5,7 @@
  */
 package Controller;
 
+import Controller.exceptions.IllegalOrphanException;
 import Controller.exceptions.NonexistentEntityException;
 import entity.Materials;
 import java.io.Serializable;
@@ -12,7 +13,7 @@ import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import entity.Operations;
+import entity.Usedmaterials;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -35,23 +36,28 @@ public class MaterialsJpaController implements Serializable {
     }
 
     public void create(Materials materials) {
-        if (materials.getOperationsCollection() == null) {
-            materials.setOperationsCollection(new ArrayList<Operations>());
+        if (materials.getUsedmaterialsCollection() == null) {
+            materials.setUsedmaterialsCollection(new ArrayList<Usedmaterials>());
         }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Collection<Operations> attachedOperationsCollection = new ArrayList<Operations>();
-            for (Operations operationsCollectionOperationsToAttach : materials.getOperationsCollection()) {
-                operationsCollectionOperationsToAttach = em.getReference(operationsCollectionOperationsToAttach.getClass(), operationsCollectionOperationsToAttach.getOperationsid());
-                attachedOperationsCollection.add(operationsCollectionOperationsToAttach);
+            Collection<Usedmaterials> attachedUsedmaterialsCollection = new ArrayList<Usedmaterials>();
+            for (Usedmaterials usedmaterialsCollectionUsedmaterialsToAttach : materials.getUsedmaterialsCollection()) {
+                usedmaterialsCollectionUsedmaterialsToAttach = em.getReference(usedmaterialsCollectionUsedmaterialsToAttach.getClass(), usedmaterialsCollectionUsedmaterialsToAttach.getIdusedmateria());
+                attachedUsedmaterialsCollection.add(usedmaterialsCollectionUsedmaterialsToAttach);
             }
-            materials.setOperationsCollection(attachedOperationsCollection);
+            materials.setUsedmaterialsCollection(attachedUsedmaterialsCollection);
             em.persist(materials);
-            for (Operations operationsCollectionOperations : materials.getOperationsCollection()) {
-                operationsCollectionOperations.getMaterialsCollection().add(materials);
-                operationsCollectionOperations = em.merge(operationsCollectionOperations);
+            for (Usedmaterials usedmaterialsCollectionUsedmaterials : materials.getUsedmaterialsCollection()) {
+                Materials oldMaterialsMaterialidOfUsedmaterialsCollectionUsedmaterials = usedmaterialsCollectionUsedmaterials.getMaterialsMaterialid();
+                usedmaterialsCollectionUsedmaterials.setMaterialsMaterialid(materials);
+                usedmaterialsCollectionUsedmaterials = em.merge(usedmaterialsCollectionUsedmaterials);
+                if (oldMaterialsMaterialidOfUsedmaterialsCollectionUsedmaterials != null) {
+                    oldMaterialsMaterialidOfUsedmaterialsCollectionUsedmaterials.getUsedmaterialsCollection().remove(usedmaterialsCollectionUsedmaterials);
+                    oldMaterialsMaterialidOfUsedmaterialsCollectionUsedmaterials = em.merge(oldMaterialsMaterialidOfUsedmaterialsCollectionUsedmaterials);
+                }
             }
             em.getTransaction().commit();
         } finally {
@@ -61,32 +67,43 @@ public class MaterialsJpaController implements Serializable {
         }
     }
 
-    public void edit(Materials materials) throws NonexistentEntityException, Exception {
+    public void edit(Materials materials) throws IllegalOrphanException, NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
             Materials persistentMaterials = em.find(Materials.class, materials.getMaterialid());
-            Collection<Operations> operationsCollectionOld = persistentMaterials.getOperationsCollection();
-            Collection<Operations> operationsCollectionNew = materials.getOperationsCollection();
-            Collection<Operations> attachedOperationsCollectionNew = new ArrayList<Operations>();
-            for (Operations operationsCollectionNewOperationsToAttach : operationsCollectionNew) {
-                operationsCollectionNewOperationsToAttach = em.getReference(operationsCollectionNewOperationsToAttach.getClass(), operationsCollectionNewOperationsToAttach.getOperationsid());
-                attachedOperationsCollectionNew.add(operationsCollectionNewOperationsToAttach);
-            }
-            operationsCollectionNew = attachedOperationsCollectionNew;
-            materials.setOperationsCollection(operationsCollectionNew);
-            materials = em.merge(materials);
-            for (Operations operationsCollectionOldOperations : operationsCollectionOld) {
-                if (!operationsCollectionNew.contains(operationsCollectionOldOperations)) {
-                    operationsCollectionOldOperations.getMaterialsCollection().remove(materials);
-                    operationsCollectionOldOperations = em.merge(operationsCollectionOldOperations);
+            Collection<Usedmaterials> usedmaterialsCollectionOld = persistentMaterials.getUsedmaterialsCollection();
+            Collection<Usedmaterials> usedmaterialsCollectionNew = materials.getUsedmaterialsCollection();
+            List<String> illegalOrphanMessages = null;
+            for (Usedmaterials usedmaterialsCollectionOldUsedmaterials : usedmaterialsCollectionOld) {
+                if (!usedmaterialsCollectionNew.contains(usedmaterialsCollectionOldUsedmaterials)) {
+                    if (illegalOrphanMessages == null) {
+                        illegalOrphanMessages = new ArrayList<String>();
+                    }
+                    illegalOrphanMessages.add("You must retain Usedmaterials " + usedmaterialsCollectionOldUsedmaterials + " since its materialsMaterialid field is not nullable.");
                 }
             }
-            for (Operations operationsCollectionNewOperations : operationsCollectionNew) {
-                if (!operationsCollectionOld.contains(operationsCollectionNewOperations)) {
-                    operationsCollectionNewOperations.getMaterialsCollection().add(materials);
-                    operationsCollectionNewOperations = em.merge(operationsCollectionNewOperations);
+            if (illegalOrphanMessages != null) {
+                throw new IllegalOrphanException(illegalOrphanMessages);
+            }
+            Collection<Usedmaterials> attachedUsedmaterialsCollectionNew = new ArrayList<Usedmaterials>();
+            for (Usedmaterials usedmaterialsCollectionNewUsedmaterialsToAttach : usedmaterialsCollectionNew) {
+                usedmaterialsCollectionNewUsedmaterialsToAttach = em.getReference(usedmaterialsCollectionNewUsedmaterialsToAttach.getClass(), usedmaterialsCollectionNewUsedmaterialsToAttach.getIdusedmateria());
+                attachedUsedmaterialsCollectionNew.add(usedmaterialsCollectionNewUsedmaterialsToAttach);
+            }
+            usedmaterialsCollectionNew = attachedUsedmaterialsCollectionNew;
+            materials.setUsedmaterialsCollection(usedmaterialsCollectionNew);
+            materials = em.merge(materials);
+            for (Usedmaterials usedmaterialsCollectionNewUsedmaterials : usedmaterialsCollectionNew) {
+                if (!usedmaterialsCollectionOld.contains(usedmaterialsCollectionNewUsedmaterials)) {
+                    Materials oldMaterialsMaterialidOfUsedmaterialsCollectionNewUsedmaterials = usedmaterialsCollectionNewUsedmaterials.getMaterialsMaterialid();
+                    usedmaterialsCollectionNewUsedmaterials.setMaterialsMaterialid(materials);
+                    usedmaterialsCollectionNewUsedmaterials = em.merge(usedmaterialsCollectionNewUsedmaterials);
+                    if (oldMaterialsMaterialidOfUsedmaterialsCollectionNewUsedmaterials != null && !oldMaterialsMaterialidOfUsedmaterialsCollectionNewUsedmaterials.equals(materials)) {
+                        oldMaterialsMaterialidOfUsedmaterialsCollectionNewUsedmaterials.getUsedmaterialsCollection().remove(usedmaterialsCollectionNewUsedmaterials);
+                        oldMaterialsMaterialidOfUsedmaterialsCollectionNewUsedmaterials = em.merge(oldMaterialsMaterialidOfUsedmaterialsCollectionNewUsedmaterials);
+                    }
                 }
             }
             em.getTransaction().commit();
@@ -106,7 +123,7 @@ public class MaterialsJpaController implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws NonexistentEntityException {
+    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -118,10 +135,16 @@ public class MaterialsJpaController implements Serializable {
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The materials with id " + id + " no longer exists.", enfe);
             }
-            Collection<Operations> operationsCollection = materials.getOperationsCollection();
-            for (Operations operationsCollectionOperations : operationsCollection) {
-                operationsCollectionOperations.getMaterialsCollection().remove(materials);
-                operationsCollectionOperations = em.merge(operationsCollectionOperations);
+            List<String> illegalOrphanMessages = null;
+            Collection<Usedmaterials> usedmaterialsCollectionOrphanCheck = materials.getUsedmaterialsCollection();
+            for (Usedmaterials usedmaterialsCollectionOrphanCheckUsedmaterials : usedmaterialsCollectionOrphanCheck) {
+                if (illegalOrphanMessages == null) {
+                    illegalOrphanMessages = new ArrayList<String>();
+                }
+                illegalOrphanMessages.add("This Materials (" + materials + ") cannot be destroyed since the Usedmaterials " + usedmaterialsCollectionOrphanCheckUsedmaterials + " in its usedmaterialsCollection field has a non-nullable materialsMaterialid field.");
+            }
+            if (illegalOrphanMessages != null) {
+                throw new IllegalOrphanException(illegalOrphanMessages);
             }
             em.remove(materials);
             em.getTransaction().commit();

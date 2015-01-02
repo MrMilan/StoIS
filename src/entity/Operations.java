@@ -9,13 +9,13 @@ import java.io.Serializable;
 import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -28,7 +28,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Milhouse
  */
 @Entity
-@Table(catalog = "s06", schema = "public")
+@Table(name = "operations")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Operations.findAll", query = "SELECT o FROM Operations o"),
@@ -40,17 +40,20 @@ public class Operations implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
+    @Column(name = "operationsid")
     private Integer operationsid;
+    @Column(name = "typeofwork")
     private String typeofwork;
+    @Column(name = "workcode")
     private Integer workcode;
-    @JoinTable(name = "usedtools", joinColumns = {
-        @JoinColumn(name = "operations_operationsid", referencedColumnName = "operationsid")}, inverseJoinColumns = {
-        @JoinColumn(name = "tools_toolid", referencedColumnName = "toolid")})
-    @ManyToMany
-    private Collection<Tools> toolsCollection;
-    @ManyToMany(mappedBy = "operationsCollection")
-    private Collection<Materials> materialsCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "operations")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "operationsOperationsid")
+    private Collection<Usedtools> usedtoolsCollection;
+    @JoinColumn(name = "operationscodes_idoperationscodes", referencedColumnName = "idoperationscodes")
+    @ManyToOne(optional = false)
+    private Operationscodes operationscodesIdoperationscodes;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "operationsOperationsid")
+    private Collection<Usedmaterials> usedmaterialsCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "operationsOperationsid")
     private Collection<Actions> actionsCollection;
 
     public Operations() {
@@ -85,21 +88,29 @@ public class Operations implements Serializable {
     }
 
     @XmlTransient
-    public Collection<Tools> getToolsCollection() {
-        return toolsCollection;
+    public Collection<Usedtools> getUsedtoolsCollection() {
+        return usedtoolsCollection;
     }
 
-    public void setToolsCollection(Collection<Tools> toolsCollection) {
-        this.toolsCollection = toolsCollection;
+    public void setUsedtoolsCollection(Collection<Usedtools> usedtoolsCollection) {
+        this.usedtoolsCollection = usedtoolsCollection;
+    }
+
+    public Operationscodes getOperationscodesIdoperationscodes() {
+        return operationscodesIdoperationscodes;
+    }
+
+    public void setOperationscodesIdoperationscodes(Operationscodes operationscodesIdoperationscodes) {
+        this.operationscodesIdoperationscodes = operationscodesIdoperationscodes;
     }
 
     @XmlTransient
-    public Collection<Materials> getMaterialsCollection() {
-        return materialsCollection;
+    public Collection<Usedmaterials> getUsedmaterialsCollection() {
+        return usedmaterialsCollection;
     }
 
-    public void setMaterialsCollection(Collection<Materials> materialsCollection) {
-        this.materialsCollection = materialsCollection;
+    public void setUsedmaterialsCollection(Collection<Usedmaterials> usedmaterialsCollection) {
+        this.usedmaterialsCollection = usedmaterialsCollection;
     }
 
     @XmlTransient
@@ -133,7 +144,7 @@ public class Operations implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.Operations[ operationsid=" + operationsid + " ]";
+        return "stois.Entity.Operations[ operationsid=" + operationsid + " ]";
     }
     
 }

@@ -5,13 +5,14 @@
  */
 package Controller;
 
+import Controller.exceptions.IllegalOrphanException;
 import Controller.exceptions.NonexistentEntityException;
 import java.io.Serializable;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import entity.Persons;
+import entity.PersonsHasTelephones;
 import entity.Telephones;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,23 +36,28 @@ public class TelephonesJpaController implements Serializable {
     }
 
     public void create(Telephones telephones) {
-        if (telephones.getPersonsCollection() == null) {
-            telephones.setPersonsCollection(new ArrayList<Persons>());
+        if (telephones.getPersonsHasTelephonesCollection() == null) {
+            telephones.setPersonsHasTelephonesCollection(new ArrayList<PersonsHasTelephones>());
         }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Collection<Persons> attachedPersonsCollection = new ArrayList<Persons>();
-            for (Persons personsCollectionPersonsToAttach : telephones.getPersonsCollection()) {
-                personsCollectionPersonsToAttach = em.getReference(personsCollectionPersonsToAttach.getClass(), personsCollectionPersonsToAttach.getPersonsPK());
-                attachedPersonsCollection.add(personsCollectionPersonsToAttach);
+            Collection<PersonsHasTelephones> attachedPersonsHasTelephonesCollection = new ArrayList<PersonsHasTelephones>();
+            for (PersonsHasTelephones personsHasTelephonesCollectionPersonsHasTelephonesToAttach : telephones.getPersonsHasTelephonesCollection()) {
+                personsHasTelephonesCollectionPersonsHasTelephonesToAttach = em.getReference(personsHasTelephonesCollectionPersonsHasTelephonesToAttach.getClass(), personsHasTelephonesCollectionPersonsHasTelephonesToAttach.getIdpht());
+                attachedPersonsHasTelephonesCollection.add(personsHasTelephonesCollectionPersonsHasTelephonesToAttach);
             }
-            telephones.setPersonsCollection(attachedPersonsCollection);
+            telephones.setPersonsHasTelephonesCollection(attachedPersonsHasTelephonesCollection);
             em.persist(telephones);
-            for (Persons personsCollectionPersons : telephones.getPersonsCollection()) {
-                personsCollectionPersons.getTelephonesCollection().add(telephones);
-                personsCollectionPersons = em.merge(personsCollectionPersons);
+            for (PersonsHasTelephones personsHasTelephonesCollectionPersonsHasTelephones : telephones.getPersonsHasTelephonesCollection()) {
+                Telephones oldTelephonesTelephoneidOfPersonsHasTelephonesCollectionPersonsHasTelephones = personsHasTelephonesCollectionPersonsHasTelephones.getTelephonesTelephoneid();
+                personsHasTelephonesCollectionPersonsHasTelephones.setTelephonesTelephoneid(telephones);
+                personsHasTelephonesCollectionPersonsHasTelephones = em.merge(personsHasTelephonesCollectionPersonsHasTelephones);
+                if (oldTelephonesTelephoneidOfPersonsHasTelephonesCollectionPersonsHasTelephones != null) {
+                    oldTelephonesTelephoneidOfPersonsHasTelephonesCollectionPersonsHasTelephones.getPersonsHasTelephonesCollection().remove(personsHasTelephonesCollectionPersonsHasTelephones);
+                    oldTelephonesTelephoneidOfPersonsHasTelephonesCollectionPersonsHasTelephones = em.merge(oldTelephonesTelephoneidOfPersonsHasTelephonesCollectionPersonsHasTelephones);
+                }
             }
             em.getTransaction().commit();
         } finally {
@@ -61,32 +67,43 @@ public class TelephonesJpaController implements Serializable {
         }
     }
 
-    public void edit(Telephones telephones) throws NonexistentEntityException, Exception {
+    public void edit(Telephones telephones) throws IllegalOrphanException, NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
             Telephones persistentTelephones = em.find(Telephones.class, telephones.getTelephoneid());
-            Collection<Persons> personsCollectionOld = persistentTelephones.getPersonsCollection();
-            Collection<Persons> personsCollectionNew = telephones.getPersonsCollection();
-            Collection<Persons> attachedPersonsCollectionNew = new ArrayList<Persons>();
-            for (Persons personsCollectionNewPersonsToAttach : personsCollectionNew) {
-                personsCollectionNewPersonsToAttach = em.getReference(personsCollectionNewPersonsToAttach.getClass(), personsCollectionNewPersonsToAttach.getPersonsPK());
-                attachedPersonsCollectionNew.add(personsCollectionNewPersonsToAttach);
-            }
-            personsCollectionNew = attachedPersonsCollectionNew;
-            telephones.setPersonsCollection(personsCollectionNew);
-            telephones = em.merge(telephones);
-            for (Persons personsCollectionOldPersons : personsCollectionOld) {
-                if (!personsCollectionNew.contains(personsCollectionOldPersons)) {
-                    personsCollectionOldPersons.getTelephonesCollection().remove(telephones);
-                    personsCollectionOldPersons = em.merge(personsCollectionOldPersons);
+            Collection<PersonsHasTelephones> personsHasTelephonesCollectionOld = persistentTelephones.getPersonsHasTelephonesCollection();
+            Collection<PersonsHasTelephones> personsHasTelephonesCollectionNew = telephones.getPersonsHasTelephonesCollection();
+            List<String> illegalOrphanMessages = null;
+            for (PersonsHasTelephones personsHasTelephonesCollectionOldPersonsHasTelephones : personsHasTelephonesCollectionOld) {
+                if (!personsHasTelephonesCollectionNew.contains(personsHasTelephonesCollectionOldPersonsHasTelephones)) {
+                    if (illegalOrphanMessages == null) {
+                        illegalOrphanMessages = new ArrayList<String>();
+                    }
+                    illegalOrphanMessages.add("You must retain PersonsHasTelephones " + personsHasTelephonesCollectionOldPersonsHasTelephones + " since its telephonesTelephoneid field is not nullable.");
                 }
             }
-            for (Persons personsCollectionNewPersons : personsCollectionNew) {
-                if (!personsCollectionOld.contains(personsCollectionNewPersons)) {
-                    personsCollectionNewPersons.getTelephonesCollection().add(telephones);
-                    personsCollectionNewPersons = em.merge(personsCollectionNewPersons);
+            if (illegalOrphanMessages != null) {
+                throw new IllegalOrphanException(illegalOrphanMessages);
+            }
+            Collection<PersonsHasTelephones> attachedPersonsHasTelephonesCollectionNew = new ArrayList<PersonsHasTelephones>();
+            for (PersonsHasTelephones personsHasTelephonesCollectionNewPersonsHasTelephonesToAttach : personsHasTelephonesCollectionNew) {
+                personsHasTelephonesCollectionNewPersonsHasTelephonesToAttach = em.getReference(personsHasTelephonesCollectionNewPersonsHasTelephonesToAttach.getClass(), personsHasTelephonesCollectionNewPersonsHasTelephonesToAttach.getIdpht());
+                attachedPersonsHasTelephonesCollectionNew.add(personsHasTelephonesCollectionNewPersonsHasTelephonesToAttach);
+            }
+            personsHasTelephonesCollectionNew = attachedPersonsHasTelephonesCollectionNew;
+            telephones.setPersonsHasTelephonesCollection(personsHasTelephonesCollectionNew);
+            telephones = em.merge(telephones);
+            for (PersonsHasTelephones personsHasTelephonesCollectionNewPersonsHasTelephones : personsHasTelephonesCollectionNew) {
+                if (!personsHasTelephonesCollectionOld.contains(personsHasTelephonesCollectionNewPersonsHasTelephones)) {
+                    Telephones oldTelephonesTelephoneidOfPersonsHasTelephonesCollectionNewPersonsHasTelephones = personsHasTelephonesCollectionNewPersonsHasTelephones.getTelephonesTelephoneid();
+                    personsHasTelephonesCollectionNewPersonsHasTelephones.setTelephonesTelephoneid(telephones);
+                    personsHasTelephonesCollectionNewPersonsHasTelephones = em.merge(personsHasTelephonesCollectionNewPersonsHasTelephones);
+                    if (oldTelephonesTelephoneidOfPersonsHasTelephonesCollectionNewPersonsHasTelephones != null && !oldTelephonesTelephoneidOfPersonsHasTelephonesCollectionNewPersonsHasTelephones.equals(telephones)) {
+                        oldTelephonesTelephoneidOfPersonsHasTelephonesCollectionNewPersonsHasTelephones.getPersonsHasTelephonesCollection().remove(personsHasTelephonesCollectionNewPersonsHasTelephones);
+                        oldTelephonesTelephoneidOfPersonsHasTelephonesCollectionNewPersonsHasTelephones = em.merge(oldTelephonesTelephoneidOfPersonsHasTelephonesCollectionNewPersonsHasTelephones);
+                    }
                 }
             }
             em.getTransaction().commit();
@@ -106,7 +123,7 @@ public class TelephonesJpaController implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws NonexistentEntityException {
+    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -118,10 +135,16 @@ public class TelephonesJpaController implements Serializable {
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The telephones with id " + id + " no longer exists.", enfe);
             }
-            Collection<Persons> personsCollection = telephones.getPersonsCollection();
-            for (Persons personsCollectionPersons : personsCollection) {
-                personsCollectionPersons.getTelephonesCollection().remove(telephones);
-                personsCollectionPersons = em.merge(personsCollectionPersons);
+            List<String> illegalOrphanMessages = null;
+            Collection<PersonsHasTelephones> personsHasTelephonesCollectionOrphanCheck = telephones.getPersonsHasTelephonesCollection();
+            for (PersonsHasTelephones personsHasTelephonesCollectionOrphanCheckPersonsHasTelephones : personsHasTelephonesCollectionOrphanCheck) {
+                if (illegalOrphanMessages == null) {
+                    illegalOrphanMessages = new ArrayList<String>();
+                }
+                illegalOrphanMessages.add("This Telephones (" + telephones + ") cannot be destroyed since the PersonsHasTelephones " + personsHasTelephonesCollectionOrphanCheckPersonsHasTelephones + " in its personsHasTelephonesCollection field has a non-nullable telephonesTelephoneid field.");
+            }
+            if (illegalOrphanMessages != null) {
+                throw new IllegalOrphanException(illegalOrphanMessages);
             }
             em.remove(telephones);
             em.getTransaction().commit();

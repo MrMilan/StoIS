@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -25,7 +26,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Milhouse
  */
 @Entity
-@Table(catalog = "s06", schema = "public")
+@Table(name = "diagnosis")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Diagnosis.findAll", query = "SELECT d FROM Diagnosis d"),
@@ -37,12 +38,15 @@ public class Diagnosis implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
+    @Column(name = "diagnoseid")
     private Integer diagnoseid;
     @Basic(optional = false)
+    @Column(name = "diagnosecode")
     private String diagnosecode;
     @Basic(optional = false)
+    @Column(name = "diagnosenote")
     private String diagnosenote;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "diagnosis")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "diagnosisDiagnoseid")
     private Collection<Reports> reportsCollection;
 
     public Diagnosis() {
@@ -113,7 +117,7 @@ public class Diagnosis implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.Diagnosis[ diagnoseid=" + diagnoseid + " ]";
+        return "stois.Entity.Diagnosis[ diagnoseid=" + diagnoseid + " ]";
     }
     
 }

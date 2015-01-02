@@ -8,13 +8,15 @@ package entity;
 import java.io.Serializable;
 import java.util.Collection;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -24,7 +26,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Milhouse
  */
 @Entity
-@Table(catalog = "s06", schema = "public")
+@Table(name = "tools")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Tools.findAll", query = "SELECT t FROM Tools t"),
@@ -38,17 +40,22 @@ public class Tools implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
+    @Column(name = "toolid")
     private Integer toolid;
     @Basic(optional = false)
+    @Column(name = "toolname")
     private String toolname;
     @Basic(optional = false)
+    @Column(name = "toolcode")
     private String toolcode;
     @Basic(optional = false)
+    @Column(name = "canceled")
     private boolean canceled;
     @Basic(optional = false)
+    @Column(name = "archived")
     private boolean archived;
-    @ManyToMany(mappedBy = "toolsCollection")
-    private Collection<Operations> operationsCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "toolsToolid")
+    private Collection<Usedtools> usedtoolsCollection;
 
     public Tools() {
     }
@@ -106,12 +113,12 @@ public class Tools implements Serializable {
     }
 
     @XmlTransient
-    public Collection<Operations> getOperationsCollection() {
-        return operationsCollection;
+    public Collection<Usedtools> getUsedtoolsCollection() {
+        return usedtoolsCollection;
     }
 
-    public void setOperationsCollection(Collection<Operations> operationsCollection) {
-        this.operationsCollection = operationsCollection;
+    public void setUsedtoolsCollection(Collection<Usedtools> usedtoolsCollection) {
+        this.usedtoolsCollection = usedtoolsCollection;
     }
 
     @Override
@@ -136,7 +143,7 @@ public class Tools implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.Tools[ toolid=" + toolid + " ]";
+        return "stois.Entity.Tools[ toolid=" + toolid + " ]";
     }
     
 }

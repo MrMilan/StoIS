@@ -5,7 +5,6 @@
  */
 package Controller;
 
-import Controller.exceptions.IllegalOrphanException;
 import Controller.exceptions.NonexistentEntityException;
 import java.io.Serializable;
 import javax.persistence.Query;
@@ -14,8 +13,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import entity.Persons;
 import entity.Users;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -36,28 +33,19 @@ public class UsersJpaController implements Serializable {
     }
 
     public void create(Users users) {
-        if (users.getPersonsCollection() == null) {
-            users.setPersonsCollection(new ArrayList<Persons>());
-        }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Collection<Persons> attachedPersonsCollection = new ArrayList<Persons>();
-            for (Persons personsCollectionPersonsToAttach : users.getPersonsCollection()) {
-                personsCollectionPersonsToAttach = em.getReference(personsCollectionPersonsToAttach.getClass(), personsCollectionPersonsToAttach.getPersonsPK());
-                attachedPersonsCollection.add(personsCollectionPersonsToAttach);
+            Persons personsPersonid = users.getPersonsPersonid();
+            if (personsPersonid != null) {
+                personsPersonid = em.getReference(personsPersonid.getClass(), personsPersonid.getPersonid());
+                users.setPersonsPersonid(personsPersonid);
             }
-            users.setPersonsCollection(attachedPersonsCollection);
             em.persist(users);
-            for (Persons personsCollectionPersons : users.getPersonsCollection()) {
-                Users oldUsersOfPersonsCollectionPersons = personsCollectionPersons.getUsers();
-                personsCollectionPersons.setUsers(users);
-                personsCollectionPersons = em.merge(personsCollectionPersons);
-                if (oldUsersOfPersonsCollectionPersons != null) {
-                    oldUsersOfPersonsCollectionPersons.getPersonsCollection().remove(personsCollectionPersons);
-                    oldUsersOfPersonsCollectionPersons = em.merge(oldUsersOfPersonsCollectionPersons);
-                }
+            if (personsPersonid != null) {
+                personsPersonid.getUsersCollection().add(users);
+                personsPersonid = em.merge(personsPersonid);
             }
             em.getTransaction().commit();
         } finally {
@@ -67,44 +55,26 @@ public class UsersJpaController implements Serializable {
         }
     }
 
-    public void edit(Users users) throws IllegalOrphanException, NonexistentEntityException, Exception {
+    public void edit(Users users) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
             Users persistentUsers = em.find(Users.class, users.getUsersid());
-            Collection<Persons> personsCollectionOld = persistentUsers.getPersonsCollection();
-            Collection<Persons> personsCollectionNew = users.getPersonsCollection();
-            List<String> illegalOrphanMessages = null;
-            for (Persons personsCollectionOldPersons : personsCollectionOld) {
-                if (!personsCollectionNew.contains(personsCollectionOldPersons)) {
-                    if (illegalOrphanMessages == null) {
-                        illegalOrphanMessages = new ArrayList<String>();
-                    }
-                    illegalOrphanMessages.add("You must retain Persons " + personsCollectionOldPersons + " since its users field is not nullable.");
-                }
+            Persons personsPersonidOld = persistentUsers.getPersonsPersonid();
+            Persons personsPersonidNew = users.getPersonsPersonid();
+            if (personsPersonidNew != null) {
+                personsPersonidNew = em.getReference(personsPersonidNew.getClass(), personsPersonidNew.getPersonid());
+                users.setPersonsPersonid(personsPersonidNew);
             }
-            if (illegalOrphanMessages != null) {
-                throw new IllegalOrphanException(illegalOrphanMessages);
-            }
-            Collection<Persons> attachedPersonsCollectionNew = new ArrayList<Persons>();
-            for (Persons personsCollectionNewPersonsToAttach : personsCollectionNew) {
-                personsCollectionNewPersonsToAttach = em.getReference(personsCollectionNewPersonsToAttach.getClass(), personsCollectionNewPersonsToAttach.getPersonsPK());
-                attachedPersonsCollectionNew.add(personsCollectionNewPersonsToAttach);
-            }
-            personsCollectionNew = attachedPersonsCollectionNew;
-            users.setPersonsCollection(personsCollectionNew);
             users = em.merge(users);
-            for (Persons personsCollectionNewPersons : personsCollectionNew) {
-                if (!personsCollectionOld.contains(personsCollectionNewPersons)) {
-                    Users oldUsersOfPersonsCollectionNewPersons = personsCollectionNewPersons.getUsers();
-                    personsCollectionNewPersons.setUsers(users);
-                    personsCollectionNewPersons = em.merge(personsCollectionNewPersons);
-                    if (oldUsersOfPersonsCollectionNewPersons != null && !oldUsersOfPersonsCollectionNewPersons.equals(users)) {
-                        oldUsersOfPersonsCollectionNewPersons.getPersonsCollection().remove(personsCollectionNewPersons);
-                        oldUsersOfPersonsCollectionNewPersons = em.merge(oldUsersOfPersonsCollectionNewPersons);
-                    }
-                }
+            if (personsPersonidOld != null && !personsPersonidOld.equals(personsPersonidNew)) {
+                personsPersonidOld.getUsersCollection().remove(users);
+                personsPersonidOld = em.merge(personsPersonidOld);
+            }
+            if (personsPersonidNew != null && !personsPersonidNew.equals(personsPersonidOld)) {
+                personsPersonidNew.getUsersCollection().add(users);
+                personsPersonidNew = em.merge(personsPersonidNew);
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
@@ -123,7 +93,7 @@ public class UsersJpaController implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException {
+    public void destroy(Integer id) throws NonexistentEntityException {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -135,16 +105,10 @@ public class UsersJpaController implements Serializable {
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The users with id " + id + " no longer exists.", enfe);
             }
-            List<String> illegalOrphanMessages = null;
-            Collection<Persons> personsCollectionOrphanCheck = users.getPersonsCollection();
-            for (Persons personsCollectionOrphanCheckPersons : personsCollectionOrphanCheck) {
-                if (illegalOrphanMessages == null) {
-                    illegalOrphanMessages = new ArrayList<String>();
-                }
-                illegalOrphanMessages.add("This Users (" + users + ") cannot be destroyed since the Persons " + personsCollectionOrphanCheckPersons + " in its personsCollection field has a non-nullable users field.");
-            }
-            if (illegalOrphanMessages != null) {
-                throw new IllegalOrphanException(illegalOrphanMessages);
+            Persons personsPersonid = users.getPersonsPersonid();
+            if (personsPersonid != null) {
+                personsPersonid.getUsersCollection().remove(users);
+                personsPersonid = em.merge(personsPersonid);
             }
             em.remove(users);
             em.getTransaction().commit();
@@ -188,20 +152,6 @@ public class UsersJpaController implements Serializable {
         }
     }
 
-    public Users findUsersByUserName(String username) {
-        EntityManager em = getEntityManager();
-        try {
-            Query q = em.createQuery("SELECT u FROM Users AS u WHERE u.username=:username");
-            q.setParameter("username", username);
-            return (Users) q.getSingleResult();
-        } catch (Exception e) {
-//           e.printStackTrace();
-            return null;
-        } finally {
-            em.close();
-        }
-    }
-
     public int getUsersCount() {
         EntityManager em = getEntityManager();
         try {
@@ -215,4 +165,17 @@ public class UsersJpaController implements Serializable {
         }
     }
 
+    public Users findUsersByUserName(String username) {
+        EntityManager em = getEntityManager();
+        try {
+            Query q = em.createQuery("SELECT u FROM Users AS u WHERE u.username=:username");
+            q.setParameter("username", username);
+            return (Users) q.getSingleResult();
+        } catch (Exception e) {
+//           e.printStackTrace();
+            return null;
+        } finally {
+            em.close();
+        }
+    }
 }

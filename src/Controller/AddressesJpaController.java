@@ -13,7 +13,7 @@ import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import entity.Persons;
+import entity.PersonHasAddress;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -36,27 +36,27 @@ public class AddressesJpaController implements Serializable {
     }
 
     public void create(Addresses addresses) {
-        if (addresses.getPersonsCollection() == null) {
-            addresses.setPersonsCollection(new ArrayList<Persons>());
+        if (addresses.getPersonHasAddressCollection() == null) {
+            addresses.setPersonHasAddressCollection(new ArrayList<PersonHasAddress>());
         }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Collection<Persons> attachedPersonsCollection = new ArrayList<Persons>();
-            for (Persons personsCollectionPersonsToAttach : addresses.getPersonsCollection()) {
-                personsCollectionPersonsToAttach = em.getReference(personsCollectionPersonsToAttach.getClass(), personsCollectionPersonsToAttach.getPersonsPK());
-                attachedPersonsCollection.add(personsCollectionPersonsToAttach);
+            Collection<PersonHasAddress> attachedPersonHasAddressCollection = new ArrayList<PersonHasAddress>();
+            for (PersonHasAddress personHasAddressCollectionPersonHasAddressToAttach : addresses.getPersonHasAddressCollection()) {
+                personHasAddressCollectionPersonHasAddressToAttach = em.getReference(personHasAddressCollectionPersonHasAddressToAttach.getClass(), personHasAddressCollectionPersonHasAddressToAttach.getIdpersonHasAddress());
+                attachedPersonHasAddressCollection.add(personHasAddressCollectionPersonHasAddressToAttach);
             }
-            addresses.setPersonsCollection(attachedPersonsCollection);
+            addresses.setPersonHasAddressCollection(attachedPersonHasAddressCollection);
             em.persist(addresses);
-            for (Persons personsCollectionPersons : addresses.getPersonsCollection()) {
-                Addresses oldAddressesOfPersonsCollectionPersons = personsCollectionPersons.getAddresses();
-                personsCollectionPersons.setAddresses(addresses);
-                personsCollectionPersons = em.merge(personsCollectionPersons);
-                if (oldAddressesOfPersonsCollectionPersons != null) {
-                    oldAddressesOfPersonsCollectionPersons.getPersonsCollection().remove(personsCollectionPersons);
-                    oldAddressesOfPersonsCollectionPersons = em.merge(oldAddressesOfPersonsCollectionPersons);
+            for (PersonHasAddress personHasAddressCollectionPersonHasAddress : addresses.getPersonHasAddressCollection()) {
+                Addresses oldAddressesAddressidOfPersonHasAddressCollectionPersonHasAddress = personHasAddressCollectionPersonHasAddress.getAddressesAddressid();
+                personHasAddressCollectionPersonHasAddress.setAddressesAddressid(addresses);
+                personHasAddressCollectionPersonHasAddress = em.merge(personHasAddressCollectionPersonHasAddress);
+                if (oldAddressesAddressidOfPersonHasAddressCollectionPersonHasAddress != null) {
+                    oldAddressesAddressidOfPersonHasAddressCollectionPersonHasAddress.getPersonHasAddressCollection().remove(personHasAddressCollectionPersonHasAddress);
+                    oldAddressesAddressidOfPersonHasAddressCollectionPersonHasAddress = em.merge(oldAddressesAddressidOfPersonHasAddressCollectionPersonHasAddress);
                 }
             }
             em.getTransaction().commit();
@@ -73,36 +73,36 @@ public class AddressesJpaController implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             Addresses persistentAddresses = em.find(Addresses.class, addresses.getAddressid());
-            Collection<Persons> personsCollectionOld = persistentAddresses.getPersonsCollection();
-            Collection<Persons> personsCollectionNew = addresses.getPersonsCollection();
+            Collection<PersonHasAddress> personHasAddressCollectionOld = persistentAddresses.getPersonHasAddressCollection();
+            Collection<PersonHasAddress> personHasAddressCollectionNew = addresses.getPersonHasAddressCollection();
             List<String> illegalOrphanMessages = null;
-            for (Persons personsCollectionOldPersons : personsCollectionOld) {
-                if (!personsCollectionNew.contains(personsCollectionOldPersons)) {
+            for (PersonHasAddress personHasAddressCollectionOldPersonHasAddress : personHasAddressCollectionOld) {
+                if (!personHasAddressCollectionNew.contains(personHasAddressCollectionOldPersonHasAddress)) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain Persons " + personsCollectionOldPersons + " since its addresses field is not nullable.");
+                    illegalOrphanMessages.add("You must retain PersonHasAddress " + personHasAddressCollectionOldPersonHasAddress + " since its addressesAddressid field is not nullable.");
                 }
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
-            Collection<Persons> attachedPersonsCollectionNew = new ArrayList<Persons>();
-            for (Persons personsCollectionNewPersonsToAttach : personsCollectionNew) {
-                personsCollectionNewPersonsToAttach = em.getReference(personsCollectionNewPersonsToAttach.getClass(), personsCollectionNewPersonsToAttach.getPersonsPK());
-                attachedPersonsCollectionNew.add(personsCollectionNewPersonsToAttach);
+            Collection<PersonHasAddress> attachedPersonHasAddressCollectionNew = new ArrayList<PersonHasAddress>();
+            for (PersonHasAddress personHasAddressCollectionNewPersonHasAddressToAttach : personHasAddressCollectionNew) {
+                personHasAddressCollectionNewPersonHasAddressToAttach = em.getReference(personHasAddressCollectionNewPersonHasAddressToAttach.getClass(), personHasAddressCollectionNewPersonHasAddressToAttach.getIdpersonHasAddress());
+                attachedPersonHasAddressCollectionNew.add(personHasAddressCollectionNewPersonHasAddressToAttach);
             }
-            personsCollectionNew = attachedPersonsCollectionNew;
-            addresses.setPersonsCollection(personsCollectionNew);
+            personHasAddressCollectionNew = attachedPersonHasAddressCollectionNew;
+            addresses.setPersonHasAddressCollection(personHasAddressCollectionNew);
             addresses = em.merge(addresses);
-            for (Persons personsCollectionNewPersons : personsCollectionNew) {
-                if (!personsCollectionOld.contains(personsCollectionNewPersons)) {
-                    Addresses oldAddressesOfPersonsCollectionNewPersons = personsCollectionNewPersons.getAddresses();
-                    personsCollectionNewPersons.setAddresses(addresses);
-                    personsCollectionNewPersons = em.merge(personsCollectionNewPersons);
-                    if (oldAddressesOfPersonsCollectionNewPersons != null && !oldAddressesOfPersonsCollectionNewPersons.equals(addresses)) {
-                        oldAddressesOfPersonsCollectionNewPersons.getPersonsCollection().remove(personsCollectionNewPersons);
-                        oldAddressesOfPersonsCollectionNewPersons = em.merge(oldAddressesOfPersonsCollectionNewPersons);
+            for (PersonHasAddress personHasAddressCollectionNewPersonHasAddress : personHasAddressCollectionNew) {
+                if (!personHasAddressCollectionOld.contains(personHasAddressCollectionNewPersonHasAddress)) {
+                    Addresses oldAddressesAddressidOfPersonHasAddressCollectionNewPersonHasAddress = personHasAddressCollectionNewPersonHasAddress.getAddressesAddressid();
+                    personHasAddressCollectionNewPersonHasAddress.setAddressesAddressid(addresses);
+                    personHasAddressCollectionNewPersonHasAddress = em.merge(personHasAddressCollectionNewPersonHasAddress);
+                    if (oldAddressesAddressidOfPersonHasAddressCollectionNewPersonHasAddress != null && !oldAddressesAddressidOfPersonHasAddressCollectionNewPersonHasAddress.equals(addresses)) {
+                        oldAddressesAddressidOfPersonHasAddressCollectionNewPersonHasAddress.getPersonHasAddressCollection().remove(personHasAddressCollectionNewPersonHasAddress);
+                        oldAddressesAddressidOfPersonHasAddressCollectionNewPersonHasAddress = em.merge(oldAddressesAddressidOfPersonHasAddressCollectionNewPersonHasAddress);
                     }
                 }
             }
@@ -136,12 +136,12 @@ public class AddressesJpaController implements Serializable {
                 throw new NonexistentEntityException("The addresses with id " + id + " no longer exists.", enfe);
             }
             List<String> illegalOrphanMessages = null;
-            Collection<Persons> personsCollectionOrphanCheck = addresses.getPersonsCollection();
-            for (Persons personsCollectionOrphanCheckPersons : personsCollectionOrphanCheck) {
+            Collection<PersonHasAddress> personHasAddressCollectionOrphanCheck = addresses.getPersonHasAddressCollection();
+            for (PersonHasAddress personHasAddressCollectionOrphanCheckPersonHasAddress : personHasAddressCollectionOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Addresses (" + addresses + ") cannot be destroyed since the Persons " + personsCollectionOrphanCheckPersons + " in its personsCollection field has a non-nullable addresses field.");
+                illegalOrphanMessages.add("This Addresses (" + addresses + ") cannot be destroyed since the PersonHasAddress " + personHasAddressCollectionOrphanCheckPersonHasAddress + " in its personHasAddressCollection field has a non-nullable addressesAddressid field.");
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);

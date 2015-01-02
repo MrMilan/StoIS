@@ -7,22 +7,19 @@ package Controller;
 
 import Controller.exceptions.IllegalOrphanException;
 import Controller.exceptions.NonexistentEntityException;
-import Controller.exceptions.PreexistingEntityException;
 import java.io.Serializable;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import entity.Addresses;
 import entity.Insurances;
-import entity.Users;
-import entity.Roles;
+import entity.PersonHasAddress;
+import entity.Persons;
 import java.util.ArrayList;
 import java.util.Collection;
-import entity.Telephones;
-import entity.Actions;
-import entity.Persons;
-import entity.PersonsPK;
+import entity.PersonsHasRoles;
+import entity.Users;
+import entity.PersonsHasTelephones;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -42,92 +39,94 @@ public class PersonsJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Persons persons) throws PreexistingEntityException, Exception {
-        if (persons.getPersonsPK() == null) {
-            persons.setPersonsPK(new PersonsPK());
+    public void create(Persons persons) {
+        if (persons.getPersonHasAddressCollection() == null) {
+            persons.setPersonHasAddressCollection(new ArrayList<PersonHasAddress>());
         }
-        if (persons.getRolesCollection() == null) {
-            persons.setRolesCollection(new ArrayList<Roles>());
+        if (persons.getPersonsHasRolesCollection() == null) {
+            persons.setPersonsHasRolesCollection(new ArrayList<PersonsHasRoles>());
         }
-        if (persons.getTelephonesCollection() == null) {
-            persons.setTelephonesCollection(new ArrayList<Telephones>());
+        if (persons.getUsersCollection() == null) {
+            persons.setUsersCollection(new ArrayList<Users>());
         }
-        if (persons.getActionsCollection() == null) {
-            persons.setActionsCollection(new ArrayList<Actions>());
+        if (persons.getPersonsHasTelephonesCollection() == null) {
+            persons.setPersonsHasTelephonesCollection(new ArrayList<PersonsHasTelephones>());
         }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Addresses addresses = persons.getAddresses();
-            if (addresses != null) {
-                addresses = em.getReference(addresses.getClass(), addresses.getAddressid());
-                persons.setAddresses(addresses);
+            Insurances insurancesInsuranceid = persons.getInsurancesInsuranceid();
+            if (insurancesInsuranceid != null) {
+                insurancesInsuranceid = em.getReference(insurancesInsuranceid.getClass(), insurancesInsuranceid.getInsuranceid());
+                persons.setInsurancesInsuranceid(insurancesInsuranceid);
             }
-            Insurances insurances = persons.getInsurances();
-            if (insurances != null) {
-                insurances = em.getReference(insurances.getClass(), insurances.getInsuranceid());
-                persons.setInsurances(insurances);
+            Collection<PersonHasAddress> attachedPersonHasAddressCollection = new ArrayList<PersonHasAddress>();
+            for (PersonHasAddress personHasAddressCollectionPersonHasAddressToAttach : persons.getPersonHasAddressCollection()) {
+                personHasAddressCollectionPersonHasAddressToAttach = em.getReference(personHasAddressCollectionPersonHasAddressToAttach.getClass(), personHasAddressCollectionPersonHasAddressToAttach.getIdpersonHasAddress());
+                attachedPersonHasAddressCollection.add(personHasAddressCollectionPersonHasAddressToAttach);
             }
-            Users users = persons.getUsers();
-            if (users != null) {
-                users = em.getReference(users.getClass(), users.getUsersid());
-                persons.setUsers(users);
+            persons.setPersonHasAddressCollection(attachedPersonHasAddressCollection);
+            Collection<PersonsHasRoles> attachedPersonsHasRolesCollection = new ArrayList<PersonsHasRoles>();
+            for (PersonsHasRoles personsHasRolesCollectionPersonsHasRolesToAttach : persons.getPersonsHasRolesCollection()) {
+                personsHasRolesCollectionPersonsHasRolesToAttach = em.getReference(personsHasRolesCollectionPersonsHasRolesToAttach.getClass(), personsHasRolesCollectionPersonsHasRolesToAttach.getIdphr());
+                attachedPersonsHasRolesCollection.add(personsHasRolesCollectionPersonsHasRolesToAttach);
             }
-            Collection<Roles> attachedRolesCollection = new ArrayList<Roles>();
-            for (Roles rolesCollectionRolesToAttach : persons.getRolesCollection()) {
-                rolesCollectionRolesToAttach = em.getReference(rolesCollectionRolesToAttach.getClass(), rolesCollectionRolesToAttach.getRolesPK());
-                attachedRolesCollection.add(rolesCollectionRolesToAttach);
+            persons.setPersonsHasRolesCollection(attachedPersonsHasRolesCollection);
+            Collection<Users> attachedUsersCollection = new ArrayList<Users>();
+            for (Users usersCollectionUsersToAttach : persons.getUsersCollection()) {
+                usersCollectionUsersToAttach = em.getReference(usersCollectionUsersToAttach.getClass(), usersCollectionUsersToAttach.getUsersid());
+                attachedUsersCollection.add(usersCollectionUsersToAttach);
             }
-            persons.setRolesCollection(attachedRolesCollection);
-            Collection<Telephones> attachedTelephonesCollection = new ArrayList<Telephones>();
-            for (Telephones telephonesCollectionTelephonesToAttach : persons.getTelephonesCollection()) {
-                telephonesCollectionTelephonesToAttach = em.getReference(telephonesCollectionTelephonesToAttach.getClass(), telephonesCollectionTelephonesToAttach.getTelephoneid());
-                attachedTelephonesCollection.add(telephonesCollectionTelephonesToAttach);
+            persons.setUsersCollection(attachedUsersCollection);
+            Collection<PersonsHasTelephones> attachedPersonsHasTelephonesCollection = new ArrayList<PersonsHasTelephones>();
+            for (PersonsHasTelephones personsHasTelephonesCollectionPersonsHasTelephonesToAttach : persons.getPersonsHasTelephonesCollection()) {
+                personsHasTelephonesCollectionPersonsHasTelephonesToAttach = em.getReference(personsHasTelephonesCollectionPersonsHasTelephonesToAttach.getClass(), personsHasTelephonesCollectionPersonsHasTelephonesToAttach.getIdpht());
+                attachedPersonsHasTelephonesCollection.add(personsHasTelephonesCollectionPersonsHasTelephonesToAttach);
             }
-            persons.setTelephonesCollection(attachedTelephonesCollection);
-            Collection<Actions> attachedActionsCollection = new ArrayList<Actions>();
-            for (Actions actionsCollectionActionsToAttach : persons.getActionsCollection()) {
-                actionsCollectionActionsToAttach = em.getReference(actionsCollectionActionsToAttach.getClass(), actionsCollectionActionsToAttach.getActionsPK());
-                attachedActionsCollection.add(actionsCollectionActionsToAttach);
-            }
-            persons.setActionsCollection(attachedActionsCollection);
+            persons.setPersonsHasTelephonesCollection(attachedPersonsHasTelephonesCollection);
             em.persist(persons);
-            if (addresses != null) {
-                addresses.getPersonsCollection().add(persons);
-                addresses = em.merge(addresses);
+            if (insurancesInsuranceid != null) {
+                insurancesInsuranceid.getPersonsCollection().add(persons);
+                insurancesInsuranceid = em.merge(insurancesInsuranceid);
             }
-            if (insurances != null) {
-                insurances.getPersonsCollection().add(persons);
-                insurances = em.merge(insurances);
+            for (PersonHasAddress personHasAddressCollectionPersonHasAddress : persons.getPersonHasAddressCollection()) {
+                Persons oldPersonsPersonidOfPersonHasAddressCollectionPersonHasAddress = personHasAddressCollectionPersonHasAddress.getPersonsPersonid();
+                personHasAddressCollectionPersonHasAddress.setPersonsPersonid(persons);
+                personHasAddressCollectionPersonHasAddress = em.merge(personHasAddressCollectionPersonHasAddress);
+                if (oldPersonsPersonidOfPersonHasAddressCollectionPersonHasAddress != null) {
+                    oldPersonsPersonidOfPersonHasAddressCollectionPersonHasAddress.getPersonHasAddressCollection().remove(personHasAddressCollectionPersonHasAddress);
+                    oldPersonsPersonidOfPersonHasAddressCollectionPersonHasAddress = em.merge(oldPersonsPersonidOfPersonHasAddressCollectionPersonHasAddress);
+                }
             }
-            if (users != null) {
-                users.getPersonsCollection().add(persons);
-                users = em.merge(users);
+            for (PersonsHasRoles personsHasRolesCollectionPersonsHasRoles : persons.getPersonsHasRolesCollection()) {
+                Persons oldPersonsPersonidOfPersonsHasRolesCollectionPersonsHasRoles = personsHasRolesCollectionPersonsHasRoles.getPersonsPersonid();
+                personsHasRolesCollectionPersonsHasRoles.setPersonsPersonid(persons);
+                personsHasRolesCollectionPersonsHasRoles = em.merge(personsHasRolesCollectionPersonsHasRoles);
+                if (oldPersonsPersonidOfPersonsHasRolesCollectionPersonsHasRoles != null) {
+                    oldPersonsPersonidOfPersonsHasRolesCollectionPersonsHasRoles.getPersonsHasRolesCollection().remove(personsHasRolesCollectionPersonsHasRoles);
+                    oldPersonsPersonidOfPersonsHasRolesCollectionPersonsHasRoles = em.merge(oldPersonsPersonidOfPersonsHasRolesCollectionPersonsHasRoles);
+                }
             }
-            for (Roles rolesCollectionRoles : persons.getRolesCollection()) {
-                rolesCollectionRoles.getPersonsCollection().add(persons);
-                rolesCollectionRoles = em.merge(rolesCollectionRoles);
+            for (Users usersCollectionUsers : persons.getUsersCollection()) {
+                Persons oldPersonsPersonidOfUsersCollectionUsers = usersCollectionUsers.getPersonsPersonid();
+                usersCollectionUsers.setPersonsPersonid(persons);
+                usersCollectionUsers = em.merge(usersCollectionUsers);
+                if (oldPersonsPersonidOfUsersCollectionUsers != null) {
+                    oldPersonsPersonidOfUsersCollectionUsers.getUsersCollection().remove(usersCollectionUsers);
+                    oldPersonsPersonidOfUsersCollectionUsers = em.merge(oldPersonsPersonidOfUsersCollectionUsers);
+                }
             }
-            for (Telephones telephonesCollectionTelephones : persons.getTelephonesCollection()) {
-                telephonesCollectionTelephones.getPersonsCollection().add(persons);
-                telephonesCollectionTelephones = em.merge(telephonesCollectionTelephones);
-            }
-            for (Actions actionsCollectionActions : persons.getActionsCollection()) {
-                Persons oldPersonsOfActionsCollectionActions = actionsCollectionActions.getPersons();
-                actionsCollectionActions.setPersons(persons);
-                actionsCollectionActions = em.merge(actionsCollectionActions);
-                if (oldPersonsOfActionsCollectionActions != null) {
-                    oldPersonsOfActionsCollectionActions.getActionsCollection().remove(actionsCollectionActions);
-                    oldPersonsOfActionsCollectionActions = em.merge(oldPersonsOfActionsCollectionActions);
+            for (PersonsHasTelephones personsHasTelephonesCollectionPersonsHasTelephones : persons.getPersonsHasTelephonesCollection()) {
+                Persons oldPersonsPersonidOfPersonsHasTelephonesCollectionPersonsHasTelephones = personsHasTelephonesCollectionPersonsHasTelephones.getPersonsPersonid();
+                personsHasTelephonesCollectionPersonsHasTelephones.setPersonsPersonid(persons);
+                personsHasTelephonesCollectionPersonsHasTelephones = em.merge(personsHasTelephonesCollectionPersonsHasTelephones);
+                if (oldPersonsPersonidOfPersonsHasTelephonesCollectionPersonsHasTelephones != null) {
+                    oldPersonsPersonidOfPersonsHasTelephonesCollectionPersonsHasTelephones.getPersonsHasTelephonesCollection().remove(personsHasTelephonesCollectionPersonsHasTelephones);
+                    oldPersonsPersonidOfPersonsHasTelephonesCollectionPersonsHasTelephones = em.merge(oldPersonsPersonidOfPersonsHasTelephonesCollectionPersonsHasTelephones);
                 }
             }
             em.getTransaction().commit();
-        } catch (Exception ex) {
-            if (findPersons(persons.getPersonsPK()) != null) {
-                throw new PreexistingEntityException("Persons " + persons + " already exists.", ex);
-            }
-            throw ex;
         } finally {
             if (em != null) {
                 em.close();
@@ -140,121 +139,135 @@ public class PersonsJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Persons persistentPersons = em.find(Persons.class, persons.getPersonsPK());
-            Addresses addressesOld = persistentPersons.getAddresses();
-            Addresses addressesNew = persons.getAddresses();
-            Insurances insurancesOld = persistentPersons.getInsurances();
-            Insurances insurancesNew = persons.getInsurances();
-            Users usersOld = persistentPersons.getUsers();
-            Users usersNew = persons.getUsers();
-            Collection<Roles> rolesCollectionOld = persistentPersons.getRolesCollection();
-            Collection<Roles> rolesCollectionNew = persons.getRolesCollection();
-            Collection<Telephones> telephonesCollectionOld = persistentPersons.getTelephonesCollection();
-            Collection<Telephones> telephonesCollectionNew = persons.getTelephonesCollection();
-            Collection<Actions> actionsCollectionOld = persistentPersons.getActionsCollection();
-            Collection<Actions> actionsCollectionNew = persons.getActionsCollection();
+            Persons persistentPersons = em.find(Persons.class, persons.getPersonid());
+            Insurances insurancesInsuranceidOld = persistentPersons.getInsurancesInsuranceid();
+            Insurances insurancesInsuranceidNew = persons.getInsurancesInsuranceid();
+            Collection<PersonHasAddress> personHasAddressCollectionOld = persistentPersons.getPersonHasAddressCollection();
+            Collection<PersonHasAddress> personHasAddressCollectionNew = persons.getPersonHasAddressCollection();
+            Collection<PersonsHasRoles> personsHasRolesCollectionOld = persistentPersons.getPersonsHasRolesCollection();
+            Collection<PersonsHasRoles> personsHasRolesCollectionNew = persons.getPersonsHasRolesCollection();
+            Collection<Users> usersCollectionOld = persistentPersons.getUsersCollection();
+            Collection<Users> usersCollectionNew = persons.getUsersCollection();
+            Collection<PersonsHasTelephones> personsHasTelephonesCollectionOld = persistentPersons.getPersonsHasTelephonesCollection();
+            Collection<PersonsHasTelephones> personsHasTelephonesCollectionNew = persons.getPersonsHasTelephonesCollection();
             List<String> illegalOrphanMessages = null;
-            for (Actions actionsCollectionOldActions : actionsCollectionOld) {
-                if (!actionsCollectionNew.contains(actionsCollectionOldActions)) {
+            for (PersonHasAddress personHasAddressCollectionOldPersonHasAddress : personHasAddressCollectionOld) {
+                if (!personHasAddressCollectionNew.contains(personHasAddressCollectionOldPersonHasAddress)) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain Actions " + actionsCollectionOldActions + " since its persons field is not nullable.");
+                    illegalOrphanMessages.add("You must retain PersonHasAddress " + personHasAddressCollectionOldPersonHasAddress + " since its personsPersonid field is not nullable.");
+                }
+            }
+            for (PersonsHasRoles personsHasRolesCollectionOldPersonsHasRoles : personsHasRolesCollectionOld) {
+                if (!personsHasRolesCollectionNew.contains(personsHasRolesCollectionOldPersonsHasRoles)) {
+                    if (illegalOrphanMessages == null) {
+                        illegalOrphanMessages = new ArrayList<String>();
+                    }
+                    illegalOrphanMessages.add("You must retain PersonsHasRoles " + personsHasRolesCollectionOldPersonsHasRoles + " since its personsPersonid field is not nullable.");
+                }
+            }
+            for (Users usersCollectionOldUsers : usersCollectionOld) {
+                if (!usersCollectionNew.contains(usersCollectionOldUsers)) {
+                    if (illegalOrphanMessages == null) {
+                        illegalOrphanMessages = new ArrayList<String>();
+                    }
+                    illegalOrphanMessages.add("You must retain Users " + usersCollectionOldUsers + " since its personsPersonid field is not nullable.");
+                }
+            }
+            for (PersonsHasTelephones personsHasTelephonesCollectionOldPersonsHasTelephones : personsHasTelephonesCollectionOld) {
+                if (!personsHasTelephonesCollectionNew.contains(personsHasTelephonesCollectionOldPersonsHasTelephones)) {
+                    if (illegalOrphanMessages == null) {
+                        illegalOrphanMessages = new ArrayList<String>();
+                    }
+                    illegalOrphanMessages.add("You must retain PersonsHasTelephones " + personsHasTelephonesCollectionOldPersonsHasTelephones + " since its personsPersonid field is not nullable.");
                 }
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
-            if (addressesNew != null) {
-                addressesNew = em.getReference(addressesNew.getClass(), addressesNew.getAddressid());
-                persons.setAddresses(addressesNew);
+            if (insurancesInsuranceidNew != null) {
+                insurancesInsuranceidNew = em.getReference(insurancesInsuranceidNew.getClass(), insurancesInsuranceidNew.getInsuranceid());
+                persons.setInsurancesInsuranceid(insurancesInsuranceidNew);
             }
-            if (insurancesNew != null) {
-                insurancesNew = em.getReference(insurancesNew.getClass(), insurancesNew.getInsuranceid());
-                persons.setInsurances(insurancesNew);
+            Collection<PersonHasAddress> attachedPersonHasAddressCollectionNew = new ArrayList<PersonHasAddress>();
+            for (PersonHasAddress personHasAddressCollectionNewPersonHasAddressToAttach : personHasAddressCollectionNew) {
+                personHasAddressCollectionNewPersonHasAddressToAttach = em.getReference(personHasAddressCollectionNewPersonHasAddressToAttach.getClass(), personHasAddressCollectionNewPersonHasAddressToAttach.getIdpersonHasAddress());
+                attachedPersonHasAddressCollectionNew.add(personHasAddressCollectionNewPersonHasAddressToAttach);
             }
-            if (usersNew != null) {
-                usersNew = em.getReference(usersNew.getClass(), usersNew.getUsersid());
-                persons.setUsers(usersNew);
+            personHasAddressCollectionNew = attachedPersonHasAddressCollectionNew;
+            persons.setPersonHasAddressCollection(personHasAddressCollectionNew);
+            Collection<PersonsHasRoles> attachedPersonsHasRolesCollectionNew = new ArrayList<PersonsHasRoles>();
+            for (PersonsHasRoles personsHasRolesCollectionNewPersonsHasRolesToAttach : personsHasRolesCollectionNew) {
+                personsHasRolesCollectionNewPersonsHasRolesToAttach = em.getReference(personsHasRolesCollectionNewPersonsHasRolesToAttach.getClass(), personsHasRolesCollectionNewPersonsHasRolesToAttach.getIdphr());
+                attachedPersonsHasRolesCollectionNew.add(personsHasRolesCollectionNewPersonsHasRolesToAttach);
             }
-            Collection<Roles> attachedRolesCollectionNew = new ArrayList<Roles>();
-            for (Roles rolesCollectionNewRolesToAttach : rolesCollectionNew) {
-                rolesCollectionNewRolesToAttach = em.getReference(rolesCollectionNewRolesToAttach.getClass(), rolesCollectionNewRolesToAttach.getRolesPK());
-                attachedRolesCollectionNew.add(rolesCollectionNewRolesToAttach);
+            personsHasRolesCollectionNew = attachedPersonsHasRolesCollectionNew;
+            persons.setPersonsHasRolesCollection(personsHasRolesCollectionNew);
+            Collection<Users> attachedUsersCollectionNew = new ArrayList<Users>();
+            for (Users usersCollectionNewUsersToAttach : usersCollectionNew) {
+                usersCollectionNewUsersToAttach = em.getReference(usersCollectionNewUsersToAttach.getClass(), usersCollectionNewUsersToAttach.getUsersid());
+                attachedUsersCollectionNew.add(usersCollectionNewUsersToAttach);
             }
-            rolesCollectionNew = attachedRolesCollectionNew;
-            persons.setRolesCollection(rolesCollectionNew);
-            Collection<Telephones> attachedTelephonesCollectionNew = new ArrayList<Telephones>();
-            for (Telephones telephonesCollectionNewTelephonesToAttach : telephonesCollectionNew) {
-                telephonesCollectionNewTelephonesToAttach = em.getReference(telephonesCollectionNewTelephonesToAttach.getClass(), telephonesCollectionNewTelephonesToAttach.getTelephoneid());
-                attachedTelephonesCollectionNew.add(telephonesCollectionNewTelephonesToAttach);
+            usersCollectionNew = attachedUsersCollectionNew;
+            persons.setUsersCollection(usersCollectionNew);
+            Collection<PersonsHasTelephones> attachedPersonsHasTelephonesCollectionNew = new ArrayList<PersonsHasTelephones>();
+            for (PersonsHasTelephones personsHasTelephonesCollectionNewPersonsHasTelephonesToAttach : personsHasTelephonesCollectionNew) {
+                personsHasTelephonesCollectionNewPersonsHasTelephonesToAttach = em.getReference(personsHasTelephonesCollectionNewPersonsHasTelephonesToAttach.getClass(), personsHasTelephonesCollectionNewPersonsHasTelephonesToAttach.getIdpht());
+                attachedPersonsHasTelephonesCollectionNew.add(personsHasTelephonesCollectionNewPersonsHasTelephonesToAttach);
             }
-            telephonesCollectionNew = attachedTelephonesCollectionNew;
-            persons.setTelephonesCollection(telephonesCollectionNew);
-            Collection<Actions> attachedActionsCollectionNew = new ArrayList<Actions>();
-            for (Actions actionsCollectionNewActionsToAttach : actionsCollectionNew) {
-                actionsCollectionNewActionsToAttach = em.getReference(actionsCollectionNewActionsToAttach.getClass(), actionsCollectionNewActionsToAttach.getActionsPK());
-                attachedActionsCollectionNew.add(actionsCollectionNewActionsToAttach);
-            }
-            actionsCollectionNew = attachedActionsCollectionNew;
-            persons.setActionsCollection(actionsCollectionNew);
+            personsHasTelephonesCollectionNew = attachedPersonsHasTelephonesCollectionNew;
+            persons.setPersonsHasTelephonesCollection(personsHasTelephonesCollectionNew);
             persons = em.merge(persons);
-            if (addressesOld != null && !addressesOld.equals(addressesNew)) {
-                addressesOld.getPersonsCollection().remove(persons);
-                addressesOld = em.merge(addressesOld);
+            if (insurancesInsuranceidOld != null && !insurancesInsuranceidOld.equals(insurancesInsuranceidNew)) {
+                insurancesInsuranceidOld.getPersonsCollection().remove(persons);
+                insurancesInsuranceidOld = em.merge(insurancesInsuranceidOld);
             }
-            if (addressesNew != null && !addressesNew.equals(addressesOld)) {
-                addressesNew.getPersonsCollection().add(persons);
-                addressesNew = em.merge(addressesNew);
+            if (insurancesInsuranceidNew != null && !insurancesInsuranceidNew.equals(insurancesInsuranceidOld)) {
+                insurancesInsuranceidNew.getPersonsCollection().add(persons);
+                insurancesInsuranceidNew = em.merge(insurancesInsuranceidNew);
             }
-            if (insurancesOld != null && !insurancesOld.equals(insurancesNew)) {
-                insurancesOld.getPersonsCollection().remove(persons);
-                insurancesOld = em.merge(insurancesOld);
-            }
-            if (insurancesNew != null && !insurancesNew.equals(insurancesOld)) {
-                insurancesNew.getPersonsCollection().add(persons);
-                insurancesNew = em.merge(insurancesNew);
-            }
-            if (usersOld != null && !usersOld.equals(usersNew)) {
-                usersOld.getPersonsCollection().remove(persons);
-                usersOld = em.merge(usersOld);
-            }
-            if (usersNew != null && !usersNew.equals(usersOld)) {
-                usersNew.getPersonsCollection().add(persons);
-                usersNew = em.merge(usersNew);
-            }
-            for (Roles rolesCollectionOldRoles : rolesCollectionOld) {
-                if (!rolesCollectionNew.contains(rolesCollectionOldRoles)) {
-                    rolesCollectionOldRoles.getPersonsCollection().remove(persons);
-                    rolesCollectionOldRoles = em.merge(rolesCollectionOldRoles);
+            for (PersonHasAddress personHasAddressCollectionNewPersonHasAddress : personHasAddressCollectionNew) {
+                if (!personHasAddressCollectionOld.contains(personHasAddressCollectionNewPersonHasAddress)) {
+                    Persons oldPersonsPersonidOfPersonHasAddressCollectionNewPersonHasAddress = personHasAddressCollectionNewPersonHasAddress.getPersonsPersonid();
+                    personHasAddressCollectionNewPersonHasAddress.setPersonsPersonid(persons);
+                    personHasAddressCollectionNewPersonHasAddress = em.merge(personHasAddressCollectionNewPersonHasAddress);
+                    if (oldPersonsPersonidOfPersonHasAddressCollectionNewPersonHasAddress != null && !oldPersonsPersonidOfPersonHasAddressCollectionNewPersonHasAddress.equals(persons)) {
+                        oldPersonsPersonidOfPersonHasAddressCollectionNewPersonHasAddress.getPersonHasAddressCollection().remove(personHasAddressCollectionNewPersonHasAddress);
+                        oldPersonsPersonidOfPersonHasAddressCollectionNewPersonHasAddress = em.merge(oldPersonsPersonidOfPersonHasAddressCollectionNewPersonHasAddress);
+                    }
                 }
             }
-            for (Roles rolesCollectionNewRoles : rolesCollectionNew) {
-                if (!rolesCollectionOld.contains(rolesCollectionNewRoles)) {
-                    rolesCollectionNewRoles.getPersonsCollection().add(persons);
-                    rolesCollectionNewRoles = em.merge(rolesCollectionNewRoles);
+            for (PersonsHasRoles personsHasRolesCollectionNewPersonsHasRoles : personsHasRolesCollectionNew) {
+                if (!personsHasRolesCollectionOld.contains(personsHasRolesCollectionNewPersonsHasRoles)) {
+                    Persons oldPersonsPersonidOfPersonsHasRolesCollectionNewPersonsHasRoles = personsHasRolesCollectionNewPersonsHasRoles.getPersonsPersonid();
+                    personsHasRolesCollectionNewPersonsHasRoles.setPersonsPersonid(persons);
+                    personsHasRolesCollectionNewPersonsHasRoles = em.merge(personsHasRolesCollectionNewPersonsHasRoles);
+                    if (oldPersonsPersonidOfPersonsHasRolesCollectionNewPersonsHasRoles != null && !oldPersonsPersonidOfPersonsHasRolesCollectionNewPersonsHasRoles.equals(persons)) {
+                        oldPersonsPersonidOfPersonsHasRolesCollectionNewPersonsHasRoles.getPersonsHasRolesCollection().remove(personsHasRolesCollectionNewPersonsHasRoles);
+                        oldPersonsPersonidOfPersonsHasRolesCollectionNewPersonsHasRoles = em.merge(oldPersonsPersonidOfPersonsHasRolesCollectionNewPersonsHasRoles);
+                    }
                 }
             }
-            for (Telephones telephonesCollectionOldTelephones : telephonesCollectionOld) {
-                if (!telephonesCollectionNew.contains(telephonesCollectionOldTelephones)) {
-                    telephonesCollectionOldTelephones.getPersonsCollection().remove(persons);
-                    telephonesCollectionOldTelephones = em.merge(telephonesCollectionOldTelephones);
+            for (Users usersCollectionNewUsers : usersCollectionNew) {
+                if (!usersCollectionOld.contains(usersCollectionNewUsers)) {
+                    Persons oldPersonsPersonidOfUsersCollectionNewUsers = usersCollectionNewUsers.getPersonsPersonid();
+                    usersCollectionNewUsers.setPersonsPersonid(persons);
+                    usersCollectionNewUsers = em.merge(usersCollectionNewUsers);
+                    if (oldPersonsPersonidOfUsersCollectionNewUsers != null && !oldPersonsPersonidOfUsersCollectionNewUsers.equals(persons)) {
+                        oldPersonsPersonidOfUsersCollectionNewUsers.getUsersCollection().remove(usersCollectionNewUsers);
+                        oldPersonsPersonidOfUsersCollectionNewUsers = em.merge(oldPersonsPersonidOfUsersCollectionNewUsers);
+                    }
                 }
             }
-            for (Telephones telephonesCollectionNewTelephones : telephonesCollectionNew) {
-                if (!telephonesCollectionOld.contains(telephonesCollectionNewTelephones)) {
-                    telephonesCollectionNewTelephones.getPersonsCollection().add(persons);
-                    telephonesCollectionNewTelephones = em.merge(telephonesCollectionNewTelephones);
-                }
-            }
-            for (Actions actionsCollectionNewActions : actionsCollectionNew) {
-                if (!actionsCollectionOld.contains(actionsCollectionNewActions)) {
-                    Persons oldPersonsOfActionsCollectionNewActions = actionsCollectionNewActions.getPersons();
-                    actionsCollectionNewActions.setPersons(persons);
-                    actionsCollectionNewActions = em.merge(actionsCollectionNewActions);
-                    if (oldPersonsOfActionsCollectionNewActions != null && !oldPersonsOfActionsCollectionNewActions.equals(persons)) {
-                        oldPersonsOfActionsCollectionNewActions.getActionsCollection().remove(actionsCollectionNewActions);
-                        oldPersonsOfActionsCollectionNewActions = em.merge(oldPersonsOfActionsCollectionNewActions);
+            for (PersonsHasTelephones personsHasTelephonesCollectionNewPersonsHasTelephones : personsHasTelephonesCollectionNew) {
+                if (!personsHasTelephonesCollectionOld.contains(personsHasTelephonesCollectionNewPersonsHasTelephones)) {
+                    Persons oldPersonsPersonidOfPersonsHasTelephonesCollectionNewPersonsHasTelephones = personsHasTelephonesCollectionNewPersonsHasTelephones.getPersonsPersonid();
+                    personsHasTelephonesCollectionNewPersonsHasTelephones.setPersonsPersonid(persons);
+                    personsHasTelephonesCollectionNewPersonsHasTelephones = em.merge(personsHasTelephonesCollectionNewPersonsHasTelephones);
+                    if (oldPersonsPersonidOfPersonsHasTelephonesCollectionNewPersonsHasTelephones != null && !oldPersonsPersonidOfPersonsHasTelephonesCollectionNewPersonsHasTelephones.equals(persons)) {
+                        oldPersonsPersonidOfPersonsHasTelephonesCollectionNewPersonsHasTelephones.getPersonsHasTelephonesCollection().remove(personsHasTelephonesCollectionNewPersonsHasTelephones);
+                        oldPersonsPersonidOfPersonsHasTelephonesCollectionNewPersonsHasTelephones = em.merge(oldPersonsPersonidOfPersonsHasTelephonesCollectionNewPersonsHasTelephones);
                     }
                 }
             }
@@ -262,7 +275,7 @@ public class PersonsJpaController implements Serializable {
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                PersonsPK id = persons.getPersonsPK();
+                Integer id = persons.getPersonid();
                 if (findPersons(id) == null) {
                     throw new NonexistentEntityException("The persons with id " + id + " no longer exists.");
                 }
@@ -275,7 +288,7 @@ public class PersonsJpaController implements Serializable {
         }
     }
 
-    public void destroy(PersonsPK id) throws IllegalOrphanException, NonexistentEntityException {
+    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -283,45 +296,46 @@ public class PersonsJpaController implements Serializable {
             Persons persons;
             try {
                 persons = em.getReference(Persons.class, id);
-                persons.getPersonsPK();
+                persons.getPersonid();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The persons with id " + id + " no longer exists.", enfe);
             }
             List<String> illegalOrphanMessages = null;
-            Collection<Actions> actionsCollectionOrphanCheck = persons.getActionsCollection();
-            for (Actions actionsCollectionOrphanCheckActions : actionsCollectionOrphanCheck) {
+            Collection<PersonHasAddress> personHasAddressCollectionOrphanCheck = persons.getPersonHasAddressCollection();
+            for (PersonHasAddress personHasAddressCollectionOrphanCheckPersonHasAddress : personHasAddressCollectionOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Persons (" + persons + ") cannot be destroyed since the Actions " + actionsCollectionOrphanCheckActions + " in its actionsCollection field has a non-nullable persons field.");
+                illegalOrphanMessages.add("This Persons (" + persons + ") cannot be destroyed since the PersonHasAddress " + personHasAddressCollectionOrphanCheckPersonHasAddress + " in its personHasAddressCollection field has a non-nullable personsPersonid field.");
+            }
+            Collection<PersonsHasRoles> personsHasRolesCollectionOrphanCheck = persons.getPersonsHasRolesCollection();
+            for (PersonsHasRoles personsHasRolesCollectionOrphanCheckPersonsHasRoles : personsHasRolesCollectionOrphanCheck) {
+                if (illegalOrphanMessages == null) {
+                    illegalOrphanMessages = new ArrayList<String>();
+                }
+                illegalOrphanMessages.add("This Persons (" + persons + ") cannot be destroyed since the PersonsHasRoles " + personsHasRolesCollectionOrphanCheckPersonsHasRoles + " in its personsHasRolesCollection field has a non-nullable personsPersonid field.");
+            }
+            Collection<Users> usersCollectionOrphanCheck = persons.getUsersCollection();
+            for (Users usersCollectionOrphanCheckUsers : usersCollectionOrphanCheck) {
+                if (illegalOrphanMessages == null) {
+                    illegalOrphanMessages = new ArrayList<String>();
+                }
+                illegalOrphanMessages.add("This Persons (" + persons + ") cannot be destroyed since the Users " + usersCollectionOrphanCheckUsers + " in its usersCollection field has a non-nullable personsPersonid field.");
+            }
+            Collection<PersonsHasTelephones> personsHasTelephonesCollectionOrphanCheck = persons.getPersonsHasTelephonesCollection();
+            for (PersonsHasTelephones personsHasTelephonesCollectionOrphanCheckPersonsHasTelephones : personsHasTelephonesCollectionOrphanCheck) {
+                if (illegalOrphanMessages == null) {
+                    illegalOrphanMessages = new ArrayList<String>();
+                }
+                illegalOrphanMessages.add("This Persons (" + persons + ") cannot be destroyed since the PersonsHasTelephones " + personsHasTelephonesCollectionOrphanCheckPersonsHasTelephones + " in its personsHasTelephonesCollection field has a non-nullable personsPersonid field.");
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
-            Addresses addresses = persons.getAddresses();
-            if (addresses != null) {
-                addresses.getPersonsCollection().remove(persons);
-                addresses = em.merge(addresses);
-            }
-            Insurances insurances = persons.getInsurances();
-            if (insurances != null) {
-                insurances.getPersonsCollection().remove(persons);
-                insurances = em.merge(insurances);
-            }
-            Users users = persons.getUsers();
-            if (users != null) {
-                users.getPersonsCollection().remove(persons);
-                users = em.merge(users);
-            }
-            Collection<Roles> rolesCollection = persons.getRolesCollection();
-            for (Roles rolesCollectionRoles : rolesCollection) {
-                rolesCollectionRoles.getPersonsCollection().remove(persons);
-                rolesCollectionRoles = em.merge(rolesCollectionRoles);
-            }
-            Collection<Telephones> telephonesCollection = persons.getTelephonesCollection();
-            for (Telephones telephonesCollectionTelephones : telephonesCollection) {
-                telephonesCollectionTelephones.getPersonsCollection().remove(persons);
-                telephonesCollectionTelephones = em.merge(telephonesCollectionTelephones);
+            Insurances insurancesInsuranceid = persons.getInsurancesInsuranceid();
+            if (insurancesInsuranceid != null) {
+                insurancesInsuranceid.getPersonsCollection().remove(persons);
+                insurancesInsuranceid = em.merge(insurancesInsuranceid);
             }
             em.remove(persons);
             em.getTransaction().commit();
@@ -356,24 +370,10 @@ public class PersonsJpaController implements Serializable {
         }
     }
 
-    public Persons findPersons(PersonsPK id) {
+    public Persons findPersons(Integer id) {
         EntityManager em = getEntityManager();
         try {
             return em.find(Persons.class, id);
-        } finally {
-            em.close();
-        }
-    }
-    
-    public Persons findPersonsById(int id) {
-        EntityManager em = getEntityManager();
-        try {
-            Query q = em.createQuery("SELECT p FROM Persons AS p WHERE p.personsPK.personid=:id");
-            q.setParameter("id", id);
-            return (Persons) q.getSingleResult();
-        } catch (Exception e) {
-//           e.printStackTrace();
-            return null;
         } finally {
             em.close();
         }

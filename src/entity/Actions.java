@@ -6,10 +6,13 @@
 package entity;
 
 import java.io.Serializable;
-import javax.persistence.EmbeddedId;
+import javax.persistence.Basic;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -21,84 +24,71 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Milhouse
  */
 @Entity
-@Table(catalog = "s06", schema = "public")
+@Table(name = "actions")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Actions.findAll", query = "SELECT a FROM Actions a"),
-    @NamedQuery(name = "Actions.findByOperationsOperationsid", query = "SELECT a FROM Actions a WHERE a.actionsPK.operationsOperationsid = :operationsOperationsid"),
-    @NamedQuery(name = "Actions.findByPersonsInsurancesInsuranceid", query = "SELECT a FROM Actions a WHERE a.actionsPK.personsInsurancesInsuranceid = :personsInsurancesInsuranceid"),
-    @NamedQuery(name = "Actions.findByPersonsAddressesAddressid", query = "SELECT a FROM Actions a WHERE a.actionsPK.personsAddressesAddressid = :personsAddressesAddressid"),
-    @NamedQuery(name = "Actions.findByPersonsUsersUsersid", query = "SELECT a FROM Actions a WHERE a.actionsPK.personsUsersUsersid = :personsUsersUsersid"),
-    @NamedQuery(name = "Actions.findByPersonsPersonid", query = "SELECT a FROM Actions a WHERE a.actionsPK.personsPersonid = :personsPersonid"),
-    @NamedQuery(name = "Actions.findByReportsDiagnosisDiagnoseid", query = "SELECT a FROM Actions a WHERE a.actionsPK.reportsDiagnosisDiagnoseid = :reportsDiagnosisDiagnoseid"),
-    @NamedQuery(name = "Actions.findByReportsReportid", query = "SELECT a FROM Actions a WHERE a.actionsPK.reportsReportid = :reportsReportid")})
+    @NamedQuery(name = "Actions.findByActionid", query = "SELECT a FROM Actions a WHERE a.actionid = :actionid")})
 public class Actions implements Serializable {
     private static final long serialVersionUID = 1L;
-    @EmbeddedId
-    protected ActionsPK actionsPK;
-    @JoinColumn(name = "operations_operationsid", referencedColumnName = "operationsid", insertable = false, updatable = false)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "actionid")
+    private Integer actionid;
+    @JoinColumn(name = "operations_operationsid", referencedColumnName = "operationsid")
     @ManyToOne(optional = false)
-    private Operations operations;
-    @JoinColumns({
-        @JoinColumn(name = "persons_personid", referencedColumnName = "personid", insertable = false, updatable = false),
-        @JoinColumn(name = "persons_users_usersid", referencedColumnName = "users_usersid", insertable = false, updatable = false),
-        @JoinColumn(name = "persons_addresses_addressid", referencedColumnName = "addresses_addressid", insertable = false, updatable = false),
-        @JoinColumn(name = "persons_insurances_insuranceid", referencedColumnName = "insurances_insuranceid", insertable = false, updatable = false)})
+    private Operations operationsOperationsid;
+    @JoinColumn(name = "persons_has_roles_idphr", referencedColumnName = "idphr")
     @ManyToOne(optional = false)
-    private Persons persons;
-    @JoinColumns({
-        @JoinColumn(name = "reports_reportid", referencedColumnName = "reportid", insertable = false, updatable = false),
-        @JoinColumn(name = "reports_diagnosis_diagnoseid", referencedColumnName = "diagnosis_diagnoseid", insertable = false, updatable = false)})
+    private PersonsHasRoles personsHasRolesIdphr;
+    @JoinColumn(name = "reports_reportid", referencedColumnName = "reportid")
     @ManyToOne(optional = false)
-    private Reports reports;
+    private Reports reportsReportid;
 
     public Actions() {
     }
 
-    public Actions(ActionsPK actionsPK) {
-        this.actionsPK = actionsPK;
+    public Actions(Integer actionid) {
+        this.actionid = actionid;
     }
 
-    public Actions(int operationsOperationsid, int personsInsurancesInsuranceid, int personsAddressesAddressid, int personsUsersUsersid, int personsPersonid, int reportsDiagnosisDiagnoseid, int reportsReportid) {
-        this.actionsPK = new ActionsPK(operationsOperationsid, personsInsurancesInsuranceid, personsAddressesAddressid, personsUsersUsersid, personsPersonid, reportsDiagnosisDiagnoseid, reportsReportid);
+    public Integer getActionid() {
+        return actionid;
     }
 
-    public ActionsPK getActionsPK() {
-        return actionsPK;
+    public void setActionid(Integer actionid) {
+        this.actionid = actionid;
     }
 
-    public void setActionsPK(ActionsPK actionsPK) {
-        this.actionsPK = actionsPK;
+    public Operations getOperationsOperationsid() {
+        return operationsOperationsid;
     }
 
-    public Operations getOperations() {
-        return operations;
+    public void setOperationsOperationsid(Operations operationsOperationsid) {
+        this.operationsOperationsid = operationsOperationsid;
     }
 
-    public void setOperations(Operations operations) {
-        this.operations = operations;
+    public PersonsHasRoles getPersonsHasRolesIdphr() {
+        return personsHasRolesIdphr;
     }
 
-    public Persons getPersons() {
-        return persons;
+    public void setPersonsHasRolesIdphr(PersonsHasRoles personsHasRolesIdphr) {
+        this.personsHasRolesIdphr = personsHasRolesIdphr;
     }
 
-    public void setPersons(Persons persons) {
-        this.persons = persons;
+    public Reports getReportsReportid() {
+        return reportsReportid;
     }
 
-    public Reports getReports() {
-        return reports;
-    }
-
-    public void setReports(Reports reports) {
-        this.reports = reports;
+    public void setReportsReportid(Reports reportsReportid) {
+        this.reportsReportid = reportsReportid;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (actionsPK != null ? actionsPK.hashCode() : 0);
+        hash += (actionid != null ? actionid.hashCode() : 0);
         return hash;
     }
 
@@ -109,7 +99,7 @@ public class Actions implements Serializable {
             return false;
         }
         Actions other = (Actions) object;
-        if ((this.actionsPK == null && other.actionsPK != null) || (this.actionsPK != null && !this.actionsPK.equals(other.actionsPK))) {
+        if ((this.actionid == null && other.actionid != null) || (this.actionid != null && !this.actionid.equals(other.actionid))) {
             return false;
         }
         return true;
@@ -117,7 +107,7 @@ public class Actions implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.Actions[ actionsPK=" + actionsPK + " ]";
+        return "stois.Entity.Actions[ actionid=" + actionid + " ]";
     }
     
 }
