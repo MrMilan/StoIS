@@ -83,8 +83,9 @@ public class Persons implements Serializable {
         this.personid = personid;
     }
 
-    public Persons(Integer personid, String firstname, String surename, boolean gender, String birthnumber, boolean canceled, boolean archived) {
+    public Persons(Integer personid, String firstname, String surename, boolean gender, String birthnumber, boolean canceled, boolean archived, Insurances insurancesInsuranceid) {
         this.personid = personid;
+        this.insurancesInsuranceid = insurancesInsuranceid;
         this.firstname = firstname;
         this.surename = surename;
         this.gender = gender;

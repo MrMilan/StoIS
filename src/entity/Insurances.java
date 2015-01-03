@@ -128,7 +128,7 @@ public class Insurances implements Serializable {
 
     @Override
     public String toString() {
-        return "stois.Entity.Insurances[ insuranceid=" + insuranceid + " ]";
+        return "" + insurancename + ", " + insurancecode + "";
     }
     
 }

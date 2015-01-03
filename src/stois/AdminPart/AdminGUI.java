@@ -380,6 +380,8 @@ public class AdminGUI extends javax.swing.JFrame {
 
     private void jButtUserAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtUserAddActionPerformed
         // TODO add your handling code here:
+    stois.AdminPart.Person.AddPersonGUI addPerson = new stois.AdminPart.Person.AddPersonGUI(emf);
+    addPerson.setVisible(true);     
     }//GEN-LAST:event_jButtUserAddActionPerformed
 
     private void jButtUserDelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtUserDelActionPerformed
