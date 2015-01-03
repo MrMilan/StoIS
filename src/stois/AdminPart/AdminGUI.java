@@ -26,6 +26,7 @@ public class AdminGUI extends javax.swing.JFrame {
         } catch (Exception e) {
             System.err.println("No connection to database");
         } 
+        setDefaultCloseOperation(AdminGUI.DISPOSE_ON_CLOSE);
     }
         
 //    public AdminGUI(EntityManagerFactory emf) {
@@ -75,14 +76,14 @@ public class AdminGUI extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jButtUserAdd.setText("Add user");
+        jButtUserAdd.setText("Add person");
         jButtUserAdd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtUserAddActionPerformed(evt);
             }
         });
 
-        jButtUserDel.setText("Delete user");
+        jButtUserDel.setText("Cancel person");
         jButtUserDel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtUserDelActionPerformed(evt);
@@ -96,9 +97,9 @@ public class AdminGUI extends javax.swing.JFrame {
             }
         });
 
-        jLabel1.setText("Users");
+        jLabel1.setText("Persons");
 
-        jButtUserList.setText("User list");
+        jButtUserList.setText("Person list");
         jButtUserList.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jButtUserListMouseClicked(evt);

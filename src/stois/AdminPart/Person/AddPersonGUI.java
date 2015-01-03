@@ -9,9 +9,12 @@ import Controller.InsurancesJpaController;
 import Controller.PersonsJpaController;
 import entity.Insurances;
 import entity.Persons;
+import java.awt.Component;
 import java.util.List;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -24,10 +27,15 @@ public class AddPersonGUI extends javax.swing.JFrame {
      */
     private static EntityManagerFactory emf = null;
     private static List <Insurances> findInsurances = null;
+    private static List <Persons> findPersons = null;
+    private static boolean find = false;
+    
     
     public AddPersonGUI(EntityManagerFactory emf) {
-        initComponents();
         this.emf = emf;
+        initComponents();
+        initInsurance();
+        setDefaultCloseOperation(AddPersonGUI.DISPOSE_ON_CLOSE);
     }
     
     
@@ -111,11 +119,6 @@ public class AddPersonGUI extends javax.swing.JFrame {
         jLabel8.setText("Insurance:");
 
         jComboInsur.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Insurance" }));
-        jComboInsur.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jComboInsurMouseClicked(evt);
-            }
-        });
 
         jBirthNumber.setText("Birthnumber");
 
@@ -215,7 +218,7 @@ public class AddPersonGUI extends javax.swing.JFrame {
                     .addComponent(jButtonAddress)
                     .addComponent(jTextAddress, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel8)
                     .addComponent(jComboInsur, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 48, Short.MAX_VALUE)
@@ -247,26 +250,55 @@ public class AddPersonGUI extends javax.swing.JFrame {
         Integer insurID = insurObject.getInsuranceid();
         System.out.println(insurID);
         
+        // zkontrolovani jestli neni jiz tento uzivtael uveden v databazi
+        // naplneni listu 
+        findPersons = perjc.findPersonsEntities();
+        
+        
+        findPersons.stream().forEach((per) -> {
+            if (per.getBirthnumber().equals(birthNum)){
+                Component frame = new JFrame();
+                        JOptionPane.showMessageDialog(frame,
+                                "Person is already in the database",
+                                "Add person error",
+                                JOptionPane.ERROR_MESSAGE);
+                find = true;        
+            }   
+            
+        });
+        
+            if (find == false){
         // vytvoreni osoby
-        Persons blb = new Persons(null,firstName,surName,gen,birthNum,false,false,findInsurances.get(insurID));
-        perjc.create(blb);
-        
+                Persons blb = new Persons(null,firstName,surName,gen,birthNum,false,false,findInsurances.get(insurID));
+                perjc.create(blb);
+              
         // prirazeni role osobe 
-        boolean boolAdmin = jCheckBoxAdmin.isSelected();
-        boolean boolDoc = jCheckBoxDoctor.isSelected();
-        boolean boolNurse = jCheckBoxNurse.isSelected();
-        boolean boolPatient = jCheckBoxPatient.isSelected();
-        
+                boolean boolAdmin = jCheckBoxAdmin.isSelected();
+                boolean boolDoc = jCheckBoxDoctor.isSelected();
+                boolean boolNurse = jCheckBoxNurse.isSelected();
+                boolean boolPatient = jCheckBoxPatient.isSelected();
+            }
+            
+            else {
+                find = false; 
+            }
         
        
     }//GEN-LAST:event_jButtConfirmMouseClicked
 
     private void jButtonAddressMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonAddressMouseClicked
         // TODO add your handling code here:
+        
+        // zavolame si novy okno, kde budou vypsany vsechny asdresy a dotycny si zvoli, popripade tam pripda novou
+        
+        stois.AdminPart.Address.AddAddressGUI addAddresses = new stois.AdminPart.Address.AddAddressGUI(emf);
+        addAddresses.setVisible(true);
+        
+        jTextAddress.setText(addAddresses.ChosenAdress);
+        
     }//GEN-LAST:event_jButtonAddressMouseClicked
 
-    private void jComboInsurMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jComboInsurMouseClicked
-        // TODO add your handling code here:]
+    private void initInsurance(){
         
         jComboInsur.removeAllItems();
         
@@ -279,218 +311,17 @@ public class AddPersonGUI extends javax.swing.JFrame {
             jComboInsur.addItem(insur);                              // naplneni comboBoxu
         });
         
-    }//GEN-LAST:event_jComboInsurMouseClicked
-
+    
+    }
+    
+    
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(AddPersonGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(AddPersonGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(AddPersonGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(AddPersonGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-
-        /* Create and display the form */
-        /*java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new AddToolGUI(emf).setVisible(true);
-            }
-        });
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-
-        /* Create and display the form */
-        /*java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new AddToolGUI(emf).setVisible(true);
-            }
-        });
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-
-        /* Create and display the form */
-        /*java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new AddToolGUI(emf).setVisible(true);
-            }
-        });
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-
-        /* Create and display the form */
-        /*java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new AddToolGUI(emf).setVisible(true);
-            }
-        });
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-
-        /* Create and display the form */
-        /*java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new AddToolGUI(emf).setVisible(true);
-            }
-        });
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-
-        /* Create and display the form */
-        /*java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new AddToolGUI(emf).setVisible(true);
-            }
-        });
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-
-        /* Create and display the form */
-        /*java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new AddToolGUI(emf).setVisible(true);
-            }
-        });
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-
-        /* Create and display the form */
-        /*java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new AddToolGUI(emf).setVisible(true);
-            }
-        });
-                */
+    
+        
+        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

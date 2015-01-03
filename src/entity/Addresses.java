@@ -169,7 +169,7 @@ public class Addresses implements Serializable {
 
     @Override
     public String toString() {
-        return "stois.Entity.Addresses[ addressid=" + addressid + " ]";
+        return "" + street +", " + streetnumber + ", " + town + ", " + country + "";
     }
     
 }

@@ -234,7 +234,7 @@
   <SubComponents>
     <Component class="javax.swing.JButton" name="jButtUserAdd">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Add user"/>
+        <Property name="text" type="java.lang.String" value="Add person"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtUserAddActionPerformed"/>
@@ -242,7 +242,7 @@
     </Component>
     <Component class="javax.swing.JButton" name="jButtUserDel">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Delete user"/>
+        <Property name="text" type="java.lang.String" value="Cancel person"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtUserDelActionPerformed"/>
@@ -258,12 +258,12 @@
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel1">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Users"/>
+        <Property name="text" type="java.lang.String" value="Persons"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="jButtUserList">
       <Properties>
-        <Property name="text" type="java.lang.String" value="User list"/>
+        <Property name="text" type="java.lang.String" value="Person list"/>
       </Properties>
       <Events>
         <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jButtUserListMouseClicked"/>
