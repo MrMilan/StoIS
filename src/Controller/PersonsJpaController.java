@@ -397,17 +397,11 @@ public class PersonsJpaController implements Serializable {
         EntityManager em = getEntityManager();
         try {
             Query q;
-//            q = em.createQuery("SELECT r.roleid,r.rolename from Roles AS r LEFT JOIN Persons_has_Roles AS phr ON r.roleid = phr.roles_roleid LEFT JOIN Persons AS p ON p.personid = phr.persons_personid LEFT JOIN Users AS u ON p.personid =  u.persons_personid WHERE u.usersid=:userId");
-          q = em.createQuery("SELECT r.roleid,r.rolename from Persons AS p LEFT JOIN  p.usersCollection AS u  LEFT JOIN p.personsHasRolesCollection AS phr LEFT JOIN phr.rolesRoleid AS r WHERE u.usersid==:userId");
-//            q = em.createQuery("SELECT u.roleid,u.rolename from Userswithrole AS u WHERE u.usersid==:userId");
-//           q = em.createQuery("SELECT p.personid FROM Persons AS p LEFT JOIN Users AS u on u.persons_personid=p.personid WHERE u.usersid=:userId");
+            q = em.createQuery("SELECT r from Persons AS p LEFT JOIN  p.usersCollection AS u LEFT JOIN p.personsHasRolesCollection AS phr LEFT JOIN phr.rolesRoleid AS r WHERE u.usersid=:userId");
             q.setParameter("userId", usersId);
-//            Integer personsId = (Integer) q.getSingleResult();
-//                        q = em.createQuery("SELECT r.roleid,r.rolename FROM Roles AS r LEFT JOIN persons_has_roles AS phr on phr.roles_roleid=r.roleid WHERE phr.persons_personid=:persons");
-//            q.setParameter("personsId", personsId);
-            return (List<Roles>) q.getSingleResult();
+            return (List<Roles>) q.getResultList();
         } catch (Exception e) {
-           e.printStackTrace();
+//           e.printStackTrace();
             return null;
         } finally {
             em.close();
