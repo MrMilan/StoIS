@@ -6,9 +6,14 @@
 package stois.AdminPart.Person;
 
 import Controller.InsurancesJpaController;
+import Controller.PersonsHasRolesJpaController;
 import Controller.PersonsJpaController;
+import Controller.RolesJpaController;
+import entity.Addresses;
 import entity.Insurances;
 import entity.Persons;
+import entity.PersonsHasRoles;
+import entity.Roles;
 import java.awt.Component;
 import java.util.List;
 import javax.persistence.EntityManagerFactory;
@@ -28,14 +33,24 @@ public class AddPersonGUI extends javax.swing.JFrame {
     private static EntityManagerFactory emf = null;
     private static List <Insurances> findInsurances = null;
     private static List <Persons> findPersons = null;
+    private static List <Roles> findRoles = null;
     private static boolean find = false;
     
+    public Addresses myAddress = null;
     
     public AddPersonGUI(EntityManagerFactory emf) {
         this.emf = emf;
         initComponents();
         initInsurance();
         setDefaultCloseOperation(AddPersonGUI.DISPOSE_ON_CLOSE);
+    }
+    
+    public Addresses getMyAddress() {
+        return myAddress;
+    }
+
+    public void setMyAddress(Addresses myAddress) {
+        this.myAddress = myAddress;
     }
     
     
@@ -240,7 +255,7 @@ public class AddPersonGUI extends javax.swing.JFrame {
         String firstName = jFirstName.getText();
         String surName = jSurname.getText();
         String birthNum = jBirthNumber.getText();
-        
+             
         int numGen = jComboGender.getSelectedIndex();
         boolean gen = numGen == 0 ? true : false;
         
@@ -277,8 +292,38 @@ public class AddPersonGUI extends javax.swing.JFrame {
                 boolean boolDoc = jCheckBoxDoctor.isSelected();
                 boolean boolNurse = jCheckBoxNurse.isSelected();
                 boolean boolPatient = jCheckBoxPatient.isSelected();
-            }
+           
+                Integer myRole = null;
+                
+                if(boolAdmin == true){
+                myRole = 1;
+                }
+                
+                if(boolDoc == true){
+                myRole = 2;
+                }
+                
+                if(boolNurse == true){
+                myRole = 3;
+                }
+                    
+                if(boolPatient == true){
+                myRole = 4;
+                }    
+        // vytahnuti si roli z databaze
+      
+            RolesJpaController rolejc = new RolesJpaController(emf); 
+            findRoles = rolejc.findRolesEntities();
+                System.out.println(myRole);
             
+        // vytvoreni role uz kurva
+            
+            PersonsHasRolesJpaController phrjc = new PersonsHasRolesJpaController(emf);
+ 
+            
+            PersonsHasRoles newPersonRole = new PersonsHasRoles(null,blb,findRoles.get(myRole-1),false);           
+            phrjc.create(newPersonRole);
+            }
             else {
                 find = false; 
             }
@@ -294,7 +339,6 @@ public class AddPersonGUI extends javax.swing.JFrame {
         stois.AdminPart.Address.AddAddressGUI addAddresses = new stois.AdminPart.Address.AddAddressGUI(emf);
         addAddresses.setVisible(true);
         
-        jTextAddress.setText(addAddresses.ChosenAdress);
         
     }//GEN-LAST:event_jButtonAddressMouseClicked
 

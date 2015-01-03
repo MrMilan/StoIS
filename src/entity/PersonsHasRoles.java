@@ -49,8 +49,11 @@ public class PersonsHasRoles implements Serializable {
     public PersonsHasRoles() {
     }
 
-    public PersonsHasRoles(Integer idphr) {
+    public PersonsHasRoles(Integer idphr, Persons personsPersonid, Roles rolesRoleid, boolean canceled) {
+        this.personsPersonid = personsPersonid;
         this.idphr = idphr;
+        this.rolesRoleid = rolesRoleid;
+        this.canceled = canceled;
     }
 
     public Integer getIdphr() {

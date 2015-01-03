@@ -5,6 +5,7 @@
  */
 package stois.AdminPart.Address;
 
+import stois.AdminPart.Person.AddPersonGUI;
 import Controller.AddressesJpaController;
 import Controller.ToolsJpaController;
 import Controller.exceptions.IllegalOrphanException;
@@ -23,6 +24,7 @@ import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import org.eclipse.persistence.internal.helper.Helper;
+import stois.AdminPart.Person.AddPersonGUI;
 
 /**
  *
@@ -193,9 +195,9 @@ public class AddAddressGUI extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel4))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel2))
                 .addGap(12, 12, 12)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -296,9 +298,7 @@ public class AddAddressGUI extends javax.swing.JFrame {
     
     private void jButtChooseMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtChooseMouseClicked
         // TODO add your handling code here:
-       
-        ChosenAdress = list1.getSelectedItem();
-        System.exit(0);
+        
         
         
     }//GEN-LAST:event_jButtChooseMouseClicked
@@ -345,6 +345,7 @@ public class AddAddressGUI extends javax.swing.JFrame {
         //</editor-fold>
         //</editor-fold>
 
+        
         /* Create and display the form */
         /*
         java.awt.EventQueue.invokeLater(new Runnable() {
