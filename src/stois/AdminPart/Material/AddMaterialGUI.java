@@ -5,6 +5,8 @@
  */
 package stois.AdminPart.Material;
 
+import javax.persistence.EntityManagerFactory;
+
 /**
  *
  * @author Lukas
@@ -14,7 +16,9 @@ public class AddMaterialGUI extends javax.swing.JFrame {
     /**
      * Creates new form ToolGUI
      */
-    public AddMaterialGUI() {
+    private EntityManagerFactory emf = null;
+    public AddMaterialGUI(EntityManagerFactory emf) {
+        this.emf=emf;
         initComponents();
     }
 
@@ -147,14 +151,14 @@ public class AddMaterialGUI extends javax.swing.JFrame {
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new AddMaterialGUI().setVisible(true);
-            }
-        });
+       //</editor-fold>
+//
+//        /* Create and display the form */
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                new AddMaterialGUI().setVisible(true);
+//            }
+//        });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

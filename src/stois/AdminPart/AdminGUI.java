@@ -398,7 +398,7 @@ public class AdminGUI extends javax.swing.JFrame {
 
     private void jButtOperAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtOperAddActionPerformed
         // TODO add your handling code here:
-    stois.AdminPart.Operation.AddOperationlGUI addOper = new stois.AdminPart.Operation.AddOperationlGUI();
+    stois.AdminPart.Operation.AddOperationlGUI addOper = new stois.AdminPart.Operation.AddOperationlGUI(emf);
     addOper.setVisible(true);
     }//GEN-LAST:event_jButtOperAddActionPerformed
 
