@@ -5,6 +5,8 @@
  */
 package stois.AdminPart;
 
+import entity.Users;
+import entity.Users_;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
@@ -18,6 +20,7 @@ public class AdminGUI extends javax.swing.JFrame {
      * Creates new form AdminGUI
      */
     private EntityManagerFactory emf = null;
+    private static Users userEntity;
 
 //    public AdminGUI() {
 //        initComponents();
@@ -28,12 +31,25 @@ public class AdminGUI extends javax.swing.JFrame {
 //        } 
 //        setDefaultCloseOperation(AdminGUI.DISPOSE_ON_CLOSE);
 //    }
-    public AdminGUI(EntityManagerFactory emf) {
+    public AdminGUI(EntityManagerFactory emf, Users user) {
+        this.userEntity = new Users();
         this.emf = emf;
+        this.userEntity = user;
         initComponents();
         setDefaultCloseOperation(AdminGUI.DISPOSE_ON_CLOSE);
     }
+    
+    public AdminGUI() {
+    }
 
+     public Users getUser() {
+        return this.user;
+    }
+
+    public void setUser(Users user) {
+        this.userEntity = user;
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

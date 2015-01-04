@@ -216,7 +216,7 @@ public class Persons implements Serializable {
 
     @Override
     public String toString() {
-        return "stois.Entity.Persons[ personid=" + personid + " ]";
+        return firstname + ", " + surename + ", " + birthnumber;
     }
     
 }

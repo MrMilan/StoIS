@@ -5,17 +5,41 @@
  */
 package stois.AdminPart.User;
 
+import Controller.UsersJpaController;
+import entity.Users;
+import java.awt.Component;
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.persistence.EntityManagerFactory;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import stois.AdminPart.AdminGUI;
+import stois.AdminPart.Material.AddMaterialGUI;
+import stois.Passport;
+
 /**
  *
  * @author Milhouse
  */
 public class ChangePasswordGUI extends javax.swing.JFrame {
 
+    private EntityManagerFactory emf = null;
+    private Users userEntity = new Users();
+
     /**
      * Creates new form ChangePasswordGUI
+     *
+     * @param emf
+     * @param user
      */
-    public ChangePasswordGUI() {
+    public ChangePasswordGUI(EntityManagerFactory emf, Users user) {
+        this.emf = emf;
+        this.userEntity = user;
         initComponents();
+        setDefaultCloseOperation(AddMaterialGUI.DISPOSE_ON_CLOSE);
+
     }
 
     /**
@@ -38,12 +62,6 @@ public class ChangePasswordGUI extends javax.swing.JFrame {
         jSeparator1 = new javax.swing.JSeparator();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        jPFCurrent.setText("jPasswordField1");
-
-        jPFNew.setText("jPasswordField2");
-
-        jPFConf.setText("jPasswordField3");
 
         jTBConfim.setText("Confirm new Password");
         jTBConfim.setMaximumSize(new java.awt.Dimension(119, 123));
@@ -75,51 +93,133 @@ public class ChangePasswordGUI extends javax.swing.JFrame {
                     .addComponent(jLabel2)
                     .addComponent(jLabel3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPFConf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPFNew, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPFCurrent, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jPFNew, javax.swing.GroupLayout.DEFAULT_SIZE, 108, Short.MAX_VALUE)
+                    .addComponent(jPFCurrent)
+                    .addComponent(jPFConf))
                 .addGap(18, 18, 18)
                 .addComponent(jTBConfim, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(44, 44, 44))
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(28, 28, 28)
-                        .addComponent(jLabel4))
-                    .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 397, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 397, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(31, 31, 31)
+                        .addComponent(jLabel4)))
+                .addContainerGap(30, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(18, 18, 18)
-                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addContainerGap()
+                .addComponent(jLabel4)
+                .addGap(26, 26, 26)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jPFCurrent, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1)
-                    .addComponent(jTBConfim, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jPFNew, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jPFConf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jPFCurrent, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel1))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jPFNew, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel2))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jPFConf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel3)))
+                    .addComponent(jTBConfim, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(21, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    @SuppressWarnings({"IncompatibleEquals", "ArrayEquals"})
     private void jTBConfimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTBConfimActionPerformed
         // TODO add your handling code here:
+        char[] curPass = jPFCurrent.getPassword();
+        char[] newPass = jPFNew.getPassword();
+        char[] confNewPass = jPFConf.getPassword();
+
+        if (newPass.equals(confNewPass)) {
+            if (curPass.equals(userEntity.getPassword2())) {
+                UsersJpaController ujc = new UsersJpaController(emf);
+                Passport pp = new Passport();
+                String salt = null;
+                String passwordHash = null;
+                boolean problemSaltOrPassword = false;
+                // GENERATING NEW SALT
+                try {
+                    salt = pp.getSalt();
+                } catch (NoSuchAlgorithmException ex) {
+                    ex.printStackTrace();
+                    problemSaltOrPassword = true;
+                }
+                if (!problemSaltOrPassword) {
+                    // GENERATING PASSWD HASH
+                    try {
+                        passwordHash = pp.getHash(newPass, salt);
+                    } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
+                        ex.printStackTrace();
+                        problemSaltOrPassword = true;
+                    }
+                    if (!problemSaltOrPassword) {
+                        //INSERTING TO DATABASE
+                        boolean rollBack = false;
+                        Users userToInsert = userEntity;
+                        userToInsert.setPassword2(passwordHash);
+                        userToInsert.setPasswordsalt(salt);
+                        try {
+
+                            ujc.edit(userToInsert);
+                        } catch (Exception ex) {
+                            rollBack = true;
+                            Component frame = new JFrame();
+                            JOptionPane.showMessageDialog(frame,
+                                    "Connection to database or changing password failed",
+                                    "Inane error",
+                                    JOptionPane.ERROR_MESSAGE);
+
+                        }
+                        if (!rollBack) {
+                            userEntity= userToInsert;
+                        }
+                         AdminGUI mySuper = new AdminGUI();
+                         mySuper.setUser(userEntity);
+                    } else {
+                        Component frame = new JFrame();
+                        JOptionPane.showMessageDialog(frame,
+                                "Connection to database or changing password failed",
+                                "Inane error",
+                                JOptionPane.WARNING_MESSAGE);
+                    }
+                } else {
+                    Component frame = new JFrame();
+                    JOptionPane.showMessageDialog(frame,
+                            "Generating salt failed",
+                            "Inane error",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+
+            } else {
+                Component frame = new JFrame();
+                JOptionPane.showMessageDialog(frame,
+                        "Current password is wrong. Try it again",
+                        "Inane error",
+                        JOptionPane.WARNING_MESSAGE);
+            }
+
+        } else {
+            Component frame = new JFrame();
+            JOptionPane.showMessageDialog(frame,
+                    "New password and confirmation password are not same ",
+                    "Inane error",
+                    JOptionPane.WARNING_MESSAGE);
+        }
     }//GEN-LAST:event_jTBConfimActionPerformed
 
     /**
@@ -150,11 +250,11 @@ public class ChangePasswordGUI extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new ChangePasswordGUI().setVisible(true);
-            }
-        });
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                new ChangePasswordGUI().setVisible(true);
+//            }
+//        });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
