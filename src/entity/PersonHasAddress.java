@@ -46,8 +46,10 @@ public class PersonHasAddress implements Serializable {
     public PersonHasAddress() {
     }
 
-    public PersonHasAddress(Integer idpersonHasAddress) {
+    public PersonHasAddress(Integer idpersonHasAddress, Persons personsPersonid, Addresses addressesAddressid) {
         this.idpersonHasAddress = idpersonHasAddress;
+        this.personsPersonid = personsPersonid;
+        this.addressesAddressid = addressesAddressid;
     }
 
     public Integer getIdpersonHasAddress() {

@@ -56,7 +56,7 @@ public class Telephones implements Serializable {
         this.telephoneid = telephoneid;
     }
 
-    public Telephones(Integer telephoneid, int telephonenumber, boolean canceled) {
+    public Telephones(Integer telephoneid, Integer telephonenumber, boolean canceled) {
         this.telephoneid = telephoneid;
         this.telephonenumber = telephonenumber;
         this.canceled = canceled;

@@ -46,8 +46,10 @@ public class PersonsHasTelephones implements Serializable {
     public PersonsHasTelephones() {
     }
 
-    public PersonsHasTelephones(Integer idpht) {
+    public PersonsHasTelephones(Integer idpht, Persons personsPersonid, Telephones telephonesTelephoneid) {
         this.idpht = idpht;
+        this.personsPersonid = personsPersonid;
+        this.telephonesTelephoneid = telephonesTelephoneid;
     }
 
     public Integer getIdpht() {

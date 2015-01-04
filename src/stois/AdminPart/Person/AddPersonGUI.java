@@ -6,14 +6,20 @@
 package stois.AdminPart.Person;
 
 import Controller.InsurancesJpaController;
+import Controller.PersonHasAddressJpaController;
 import Controller.PersonsHasRolesJpaController;
+import Controller.PersonsHasTelephonesJpaController;
 import Controller.PersonsJpaController;
 import Controller.RolesJpaController;
+import Controller.TelephonesJpaController;
 import entity.Addresses;
 import entity.Insurances;
+import entity.PersonHasAddress;
 import entity.Persons;
 import entity.PersonsHasRoles;
+import entity.PersonsHasTelephones;
 import entity.Roles;
+import entity.Telephones;
 import java.awt.Component;
 import java.util.List;
 import javax.persistence.EntityManagerFactory;
@@ -36,7 +42,10 @@ public class AddPersonGUI extends javax.swing.JFrame {
     private static List <Roles> findRoles = null;
     private static boolean find = false;
     
-    public Addresses myAddress = null;
+    private static Addresses myAddress = null;
+    private static Addresses myAddressNew = null;
+    private static String printAddress = null;
+    private static Integer addressID = null;
     
     public AddPersonGUI(EntityManagerFactory emf) {
         this.emf = emf;
@@ -44,6 +53,13 @@ public class AddPersonGUI extends javax.swing.JFrame {
         initInsurance();
         setDefaultCloseOperation(AddPersonGUI.DISPOSE_ON_CLOSE);
     }
+    
+    public AddPersonGUI(Addresses myAddress, String printAddress){
+        this.myAddress = myAddress;
+        this.printAddress = printAddress;
+        //initText();
+    }
+            
     
     public Addresses getMyAddress() {
         return myAddress;
@@ -53,6 +69,13 @@ public class AddPersonGUI extends javax.swing.JFrame {
         this.myAddress = myAddress;
     }
     
+    /*
+    private void initText(){
+        System.out.println("blb");
+        System.out.println(myAddress.toString());
+        jTextAddress.setText(myAddress.toString()); 
+    }
+    */
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -85,13 +108,20 @@ public class AddPersonGUI extends javax.swing.JFrame {
         jComboInsur = new javax.swing.JComboBox();
         jBirthNumber = new javax.swing.JTextField();
         jTextAddress = new javax.swing.JTextField();
+        jLabel9 = new javax.swing.JLabel();
+        jTextPhone = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel1.setText("Add person");
 
-        jFirstName.setText("User name");
+        jFirstName.setText("First name");
+        jFirstName.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jFirstNameActionPerformed(evt);
+            }
+        });
 
         jLabel2.setText("First name:");
 
@@ -124,7 +154,7 @@ public class AddPersonGUI extends javax.swing.JFrame {
 
         jLabel7.setText("Address:");
 
-        jButtonAddress.setText("jButton2");
+        jButtonAddress.setText("Addresses");
         jButtonAddress.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jButtonAddressMouseClicked(evt);
@@ -138,6 +168,20 @@ public class AddPersonGUI extends javax.swing.JFrame {
         jBirthNumber.setText("Birthnumber");
 
         jTextAddress.setText("Address");
+        jTextAddress.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTextAddressMouseClicked(evt);
+            }
+        });
+        jTextAddress.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextAddressActionPerformed(evt);
+            }
+        });
+
+        jLabel9.setText("Phone number:");
+
+        jTextPhone.setText("Phone number");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -153,7 +197,8 @@ public class AddPersonGUI extends javax.swing.JFrame {
                             .addComponent(jLabel5)
                             .addComponent(jLabel6)
                             .addComponent(jLabel7)
-                            .addComponent(jLabel8))
+                            .addComponent(jLabel8)
+                            .addComponent(jLabel9))
                         .addGap(30, 30, 30)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
@@ -166,10 +211,10 @@ public class AddPersonGUI extends javax.swing.JFrame {
                                             .addComponent(jBirthNumber))
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                     .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jTextAddress, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(jButtonAddress)
-                                        .addGap(38, 38, 38)))
+                                        .addComponent(jTextAddress, javax.swing.GroupLayout.DEFAULT_SIZE, 141, Short.MAX_VALUE)
+                                        .addGap(26, 26, 26)
+                                        .addComponent(jButtonAddress, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(24, 24, 24)))
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel3)
                                     .addComponent(jCheckBoxAdmin)
@@ -178,7 +223,9 @@ public class AddPersonGUI extends javax.swing.JFrame {
                                     .addComponent(jCheckBoxPatient))
                                 .addGap(70, 70, 70))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jComboInsur, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jComboInsur, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jTextPhone, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(0, 0, Short.MAX_VALUE))))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
@@ -209,7 +256,7 @@ public class AddPersonGUI extends javax.swing.JFrame {
                             .addComponent(jComboGender, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 11, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(jLabel2)
@@ -236,7 +283,11 @@ public class AddPersonGUI extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel8)
                     .addComponent(jComboInsur, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 48, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel9)
+                    .addComponent(jTextPhone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
                 .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtConfirm, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -263,7 +314,7 @@ public class AddPersonGUI extends javax.swing.JFrame {
         
         Insurances insurObject = (Insurances)jComboInsur.getSelectedItem();
         Integer insurID = insurObject.getInsuranceid();
-        System.out.println(insurID);
+        //System.out.println(insurID);
         
         // zkontrolovani jestli neni jiz tento uzivtael uveden v databazi
         // naplneni listu 
@@ -314,7 +365,7 @@ public class AddPersonGUI extends javax.swing.JFrame {
       
             RolesJpaController rolejc = new RolesJpaController(emf); 
             findRoles = rolejc.findRolesEntities();
-                System.out.println(myRole);
+        //    System.out.println(myRole);
             
         // vytvoreni role uz kurva
             
@@ -323,6 +374,29 @@ public class AddPersonGUI extends javax.swing.JFrame {
             
             PersonsHasRoles newPersonRole = new PersonsHasRoles(null,blb,findRoles.get(myRole-1),false);           
             phrjc.create(newPersonRole);
+            
+            
+        // pridani adresy k uzivateli
+            System.out.println(myAddress);
+            
+            PersonHasAddressJpaController phajc = new PersonHasAddressJpaController(emf);
+            PersonHasAddress newPersonAddress = new PersonHasAddress(null, blb, myAddress);
+            phajc.create(newPersonAddress);
+            
+        // hratky s telefonnimi cisly aneb pridani telefonu do databaze
+            Integer phoneNumber = Integer.valueOf(jTextPhone.getText());
+                System.out.println(phoneNumber);
+            
+            TelephonesJpaController tjc = new TelephonesJpaController(emf);
+            Telephones newPhone = new Telephones(null, phoneNumber, false);
+            tjc.create(newPhone);
+         
+        //  a ted prirazni telefonu osobe
+            
+            PersonsHasTelephonesJpaController phtjc = new PersonsHasTelephonesJpaController(emf);
+            PersonsHasTelephones newPersonPhone = new PersonsHasTelephones(null, blb, newPhone);
+            phtjc.create(newPersonPhone);
+            
             }
             else {
                 find = false; 
@@ -341,6 +415,21 @@ public class AddPersonGUI extends javax.swing.JFrame {
         
         
     }//GEN-LAST:event_jButtonAddressMouseClicked
+
+    private void jTextAddressActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextAddressActionPerformed
+        // TODO add your handling code 
+    }//GEN-LAST:event_jTextAddressActionPerformed
+
+    private void jTextAddressMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextAddressMouseClicked
+        // TODO add your handling code here:
+        
+        jTextAddress.setText(myAddress.toString()); 
+        
+    }//GEN-LAST:event_jTextAddressMouseClicked
+
+    private void jFirstNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jFirstNameActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jFirstNameActionPerformed
 
     private void initInsurance(){
         
@@ -387,9 +476,11 @@ public class AddPersonGUI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JTextField jSurname;
     private javax.swing.JTextField jTextAddress;
+    private javax.swing.JTextField jTextPhone;
     // End of variables declaration//GEN-END:variables
 }

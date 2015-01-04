@@ -130,7 +130,7 @@ public class Materials implements Serializable {
 
     @Override
     public String toString() {
-        return "stois.Entity.Materials[ materialid=" + materialid + " ]";
+        return "" + materialname + ", " + materialcode + "";
     }
     
 }

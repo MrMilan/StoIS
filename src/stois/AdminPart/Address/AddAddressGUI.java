@@ -299,8 +299,13 @@ public class AddAddressGUI extends javax.swing.JFrame {
     private void jButtChooseMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtChooseMouseClicked
         // TODO add your handling code here:
         
-        
-        
+        int index = list1.getSelectedIndex();
+        AddPersonGUI mySuper = new AddPersonGUI(AddressesList.get(index), list1.getSelectedItem());   
+        setVisible(false);
+        //mySuper.setMyAddress(AddressesList.get(index-1));
+        //mySuper.initText();
+        //mySuper.initText(AddressesList.get(index-1));
+       
     }//GEN-LAST:event_jButtChooseMouseClicked
 
     private void jTextStreetNumActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextStreetNumActionPerformed
@@ -344,7 +349,6 @@ public class AddAddressGUI extends javax.swing.JFrame {
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
-
         
         /* Create and display the form */
         /*

@@ -5,7 +5,13 @@
  */
 package stois.AdminPart.Material;
 
+import Controller.MaterialsJpaController;
+import entity.Materials;
+import java.awt.Component;
+import java.util.List;
 import javax.persistence.EntityManagerFactory;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -16,10 +22,16 @@ public class AddMaterialGUI extends javax.swing.JFrame {
     /**
      * Creates new form ToolGUI
      */
-    private EntityManagerFactory emf = null;
+    private static EntityManagerFactory emf = null;
+    private static List <Materials> materialsList = null;
+    private static boolean find = false;
+    
+    
+    
     public AddMaterialGUI(EntityManagerFactory emf) {
         this.emf=emf;
         initComponents();
+        setDefaultCloseOperation(AddMaterialGUI.DISPOSE_ON_CLOSE);
     }
 
     /**
@@ -32,12 +44,12 @@ public class AddMaterialGUI extends javax.swing.JFrame {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        jTextName = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
         jLabel3 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        jTextCode = new javax.swing.JTextField();
+        jButtonConfirm = new javax.swing.JButton();
         jSeparator2 = new javax.swing.JSeparator();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -45,15 +57,20 @@ public class AddMaterialGUI extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel1.setText("Add material");
 
-        jTextField1.setText("Material name");
+        jTextName.setText("Material name");
 
         jLabel2.setText("Material name");
 
         jLabel3.setText("Material code");
 
-        jTextField2.setText("Material code");
+        jTextCode.setText("Material code");
 
-        jButton1.setText("Confirm");
+        jButtonConfirm.setText("Confirm");
+        jButtonConfirm.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtonConfirmMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -65,11 +82,11 @@ public class AddMaterialGUI extends javax.swing.JFrame {
                         .addGap(52, 52, 52)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jTextName, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 131, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel3)
-                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jTextCode, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(32, 32, 32))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addContainerGap()
@@ -79,7 +96,7 @@ public class AddMaterialGUI extends javax.swing.JFrame {
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jButtonConfirm, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(191, 191, 191))
             .addGroup(layout.createSequentialGroup()
                 .addGap(176, 176, 176)
@@ -99,17 +116,60 @@ public class AddMaterialGUI extends javax.swing.JFrame {
                     .addComponent(jLabel3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTextName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextCode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
                 .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jButtonConfirm, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(21, 21, 21))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButtonConfirmMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonConfirmMouseClicked
+        // TODO add your handling code here:
+        
+        String materialName = jTextName.getText();
+        String materialCode = jTextCode.getText();
+             
+        // ykontrolovani jestli nahidiu danej tool uz neni v datbazi
+        
+        
+        // tool controler
+        MaterialsJpaController tjc = new MaterialsJpaController(emf);
+        materialsList = tjc.findMaterialsEntities();
+       
+        materialsList.stream().forEach((currMat) -> {
+            System.out.println(currMat.toString());                               // vypsani pomoci toString
+            if(currMat.getMaterialcode().equals(materialCode) || currMat.getMaterialname().equals(materialName)){
+            Component frame = new JFrame();
+                        JOptionPane.showMessageDialog(frame,
+                                "This material is already in the database",
+                                "Add Material error",
+                                JOptionPane.ERROR_MESSAGE);
+                find = true;  
+            }       
+            // to samy udelam i pro kod nastroje
+            
+            
+        });
+        
+        if(find == false){
+        tjc.create(new Materials(null,materialName,materialCode,false));
+        Component frame = new JFrame();
+                        JOptionPane.showMessageDialog(frame,
+                                "Material has been succesfully added",
+                                "Add Material",
+                                JOptionPane.INFORMATION_MESSAGE);
+                find = true;
+        }
+        else{
+        find = false;
+        }
+        
+    }//GEN-LAST:event_jButtonConfirmMouseClicked
 
     /**
      * @param args the command line arguments
@@ -162,13 +222,13 @@ public class AddMaterialGUI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButtonConfirm;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
+    private javax.swing.JTextField jTextCode;
+    private javax.swing.JTextField jTextName;
     // End of variables declaration//GEN-END:variables
 }

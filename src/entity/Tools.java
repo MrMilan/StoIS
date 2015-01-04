@@ -143,7 +143,7 @@ public class Tools implements Serializable {
 
     @Override
     public String toString() {
-        return "stois.Entity.Tools[ toolid=" + toolid + " ]";
+        return "" +toolname + ", " + toolcode + "";
     }
     
 }

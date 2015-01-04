@@ -5,6 +5,22 @@
  */
 package stois.AdminPart.Material;
 
+
+import Controller.MaterialsJpaController;
+import Controller.ToolsJpaController;
+import Controller.exceptions.IllegalOrphanException;
+import Controller.exceptions.NonexistentEntityException;
+import entity.Materials;
+import entity.Tools;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.swing.DefaultListModel;
+import javax.swing.JList;
+
 /**
  *
  * @author Lukas
@@ -14,10 +30,17 @@ public class DeleteMaterialGUI extends javax.swing.JFrame {
     /**
      * Creates new form ToolGUI
      */
-    public DeleteMaterialGUI() {
+    
+    private static EntityManagerFactory emf = null;
+    private static List <Materials> materialsEntities = null;
+    
+    public DeleteMaterialGUI(EntityManagerFactory emf) {
         initComponents();
+        this.emf = emf;
+        setDefaultCloseOperation(DeleteMaterialGUI.DISPOSE_ON_CLOSE);
+        updateList();
     }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -28,94 +51,120 @@ public class DeleteMaterialGUI extends javax.swing.JFrame {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        JtextName = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
-        jLabel3 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList();
+        JButtDelete = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         jSeparator2 = new javax.swing.JSeparator();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        jButtFind = new javax.swing.JButton();
+        jButtInDatabase = new javax.swing.JButton();
+        list1 = new java.awt.List();
+        jLabel3 = new javax.swing.JLabel();
+        jButtonCanceled = new javax.swing.JButton();
+        jLabel5 = new javax.swing.JLabel();
+        jButtonAddBAck = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel1.setText("Delete material");
 
-        jTextField1.setText("Material name");
+        JtextName.setText("Material name");
 
-        jLabel2.setText("Name");
+        jLabel2.setText("Material name");
 
-        jLabel3.setText("Code");
-
-        jTextField2.setText("Material code");
-
-        jButton1.setText("Delete");
-
-        jList1.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
+        JButtDelete.setText("Delete");
+        JButtDelete.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                JButtDeleteMouseClicked(evt);
+            }
         });
-        jScrollPane1.setViewportView(jList1);
 
         jLabel4.setText("FIND");
 
-        jButton2.setText("Find");
+        jButtFind.setText("Find");
+        jButtFind.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtFindMouseClicked(evt);
+            }
+        });
 
-        jButton3.setText("Reset");
+        jButtInDatabase.setText("In database");
+        jButtInDatabase.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtInDatabaseMouseClicked(evt);
+            }
+        });
+
+        jLabel3.setText("Material name");
+
+        jButtonCanceled.setText("Canceled");
+        jButtonCanceled.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtonCanceledMouseClicked(evt);
+            }
+        });
+
+        jLabel5.setText("Status");
+
+        jButtonAddBAck.setText("ADD");
+        jButtonAddBAck.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtonAddBAckMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(271, 271, 271)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jTextField1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(284, 284, 284)
-                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(34, 34, 34)
-                                .addComponent(jLabel2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel3))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(38, 38, 38)
-                                        .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                        .addGap(69, 69, 69)
-                                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(27, 27, 27))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel4)
-                                .addGap(120, 120, 120)))))
-                .addContainerGap())
             .addGroup(layout.createSequentialGroup()
-                .addGap(181, 181, 181)
-                .addComponent(jLabel1)
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jSeparator1)
+                        .addContainerGap())
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(34, 34, 34)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(list1, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel4)
+                                        .addGap(93, 93, 93)))
+                                .addGap(27, 27, 27))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                    .addComponent(JtextName, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(67, 67, 67))
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                    .addComponent(jButtFind, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(86, 86, 86))
+                                .addComponent(jLabel3))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jLabel5)
+                                .addGap(110, 110, 110))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jButtonAddBAck, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(JButtDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(25, 25, 25))))))
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(20, 20, 20)
+                        .addComponent(jButtInDatabase, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButtonCanceled, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(218, 218, 218)
+                        .addComponent(jLabel1)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -125,33 +174,155 @@ public class DeleteMaterialGUI extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
                     .addComponent(jLabel2)
                     .addComponent(jLabel4))
-                .addGap(13, 13, 13)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jButton2)
-                            .addComponent(jButton3))
+                        .addComponent(jLabel3)
+                        .addGap(5, 5, 5)
+                        .addComponent(JtextName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(14, 14, 14)
-                        .addComponent(jSeparator2, javax.swing.GroupLayout.DEFAULT_SIZE, 11, Short.MAX_VALUE)
+                        .addComponent(jButtFind)
+                        .addGap(18, 18, 18)
+                        .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(19, 19, 19))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(JButtDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButtonAddBAck, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(list1, javax.swing.GroupLayout.DEFAULT_SIZE, 188, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButtInDatabase)
+                    .addComponent(jButtonCanceled))
+                .addGap(22, 22, 22))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void JButtDeleteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JButtDeleteMouseClicked
+        // TODO add your handling code here:
+     
+        MaterialsJpaController mjc = new MaterialsJpaController(emf);
+        
+        materialsEntities.stream().forEach((currMat) -> {
+            if(currMat.toString().equals(list1.getSelectedItem().toString())){
+                currMat.setCanceled(true);
+                System.out.println("Canceled");
+                System.out.println(currMat.toString());
+                System.out.println(currMat.getCanceled());
+                try {
+                    mjc.edit(currMat);
+                } catch (NonexistentEntityException ex) {
+                    Logger.getLogger(DeleteMaterialGUI.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (Exception ex) {
+                    Logger.getLogger(DeleteMaterialGUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+            }
+        });
+        
+        updateList();
+                         
+        
+    }//GEN-LAST:event_JButtDeleteMouseClicked
+
+    private void updateList(){
+    
+        list1.removeAll();
+        
+        MaterialsJpaController mjc = new MaterialsJpaController(emf);
+        
+        //nalezeni si id podle kodu
+        materialsEntities = mjc.findMaterialsEntities();      
+        
+        materialsEntities.stream().forEach((currMat) -> {
+            if(currMat.getCanceled()==false){
+            System.out.println(currMat.toString());
+            list1.add(currMat.toString());          
+            }
+        }); 
+        
+    }
+    
+    
+    private void jButtFindMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtFindMouseClicked
+        // TODO add your handling code here:
+       
+
+        list1.removeAll();     
+        // jmeno hledaneho obejktu
+        
+        String foundName;
+        foundName = JtextName.getText();
+
+        materialsEntities.stream().forEach((currMat) -> {
+            if(currMat.getMaterialname().equals(foundName)){
+                list1.add(currMat.toString());
+            }
+        });
+        
+    }//GEN-LAST:event_jButtFindMouseClicked
+
+    private void jButtInDatabaseMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtInDatabaseMouseClicked
+        // TODO add your handling code here:
+       
+        list1.removeAll();
+       
+        materialsEntities.stream().forEach((currMat) -> {
+            if(currMat.getCanceled()==false){
+            System.out.println(currMat.toString());    
+            list1.add(currMat.toString());
+            }
+        }); 
+        
+        
+        
+    }//GEN-LAST:event_jButtInDatabaseMouseClicked
+
+    private void jButtonCanceledMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonCanceledMouseClicked
+        // TODO add your handling code here:
+        
+        list1.removeAll();
+               
+        materialsEntities.stream().forEach((currMat) -> {
+            if(currMat.getCanceled()==true){
+            System.out.println(currMat.toString());    
+            list1.add(currMat.toString());
+            }
+        });
+        
+        
+        
+    }//GEN-LAST:event_jButtonCanceledMouseClicked
+
+    private void jButtonAddBAckMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonAddBAckMouseClicked
+        // TODO add your handling code here:
+        
+        MaterialsJpaController mjc = new MaterialsJpaController(emf);
+        
+        materialsEntities.stream().forEach((currMat) -> {
+            if(currMat.toString().equals(list1.getSelectedItem().toString())){
+                currMat.setCanceled(false);
+                System.out.println("Back in database");
+                System.out.println(currMat.getCanceled());
+                try {
+                    mjc.edit(currMat);
+                } catch (NonexistentEntityException ex) {
+                    Logger.getLogger(DeleteMaterialGUI.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (Exception ex) {
+                    Logger.getLogger(DeleteMaterialGUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
+        
+        updateList();
+        
+    }//GEN-LAST:event_jButtonAddBAckMouseClicked
 
     /**
      * @param args the command line arguments
@@ -182,40 +353,46 @@ public class DeleteMaterialGUI extends javax.swing.JFrame {
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
+
+        /* Create and display the form */
+        /*
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new DeleteToolGUI(emf).setVisible(true);
+            }
+        });
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
+        /*
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new DeleteMaterialGUI().setVisible(true);
+                new DeleteToolGUI(emf).setVisible(true);
             }
         });
+        */
+        
+        
+        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
+    private javax.swing.JButton JButtDelete;
+    private javax.swing.JTextField JtextName;
+    private javax.swing.JButton jButtFind;
+    private javax.swing.JButton jButtInDatabase;
+    private javax.swing.JButton jButtonAddBAck;
+    private javax.swing.JButton jButtonCanceled;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JList jList1;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
+    private java.awt.List list1;
     // End of variables declaration//GEN-END:variables
 }

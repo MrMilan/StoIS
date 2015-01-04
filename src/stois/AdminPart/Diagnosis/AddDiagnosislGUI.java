@@ -3,38 +3,39 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package stois.AdminPart.Tool;
+package stois.AdminPart.Diagnosis;
 
-import Controller.ToolsJpaController;
-import entity.Tools;
+import Controller.DiagnosisJpaController;
+import Controller.MaterialsJpaController;
+import entity.Diagnosis;
+import entity.Materials;
 import java.awt.Component;
 import java.util.List;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.tools.Tool;
 
 /**
  *
  * @author Lukas
  */
-public class AddToolGUI extends javax.swing.JFrame {
+public class AddDiagnosislGUI extends javax.swing.JFrame {
 
     /**
      * Creates new form ToolGUI
      */
     private static EntityManagerFactory emf = null;
-    private static List <Tools> toolsList = null;
+    private static List <Diagnosis> diagnosisList = null;
     private static boolean find = false;
     
-    public AddToolGUI(EntityManagerFactory emf) {
+    
+    
+    public AddDiagnosislGUI(EntityManagerFactory emf) {
+        this.emf=emf;
         initComponents();
-        this.emf = emf;
-        setDefaultCloseOperation(AddToolGUI.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(AddDiagnosislGUI.DISPOSE_ON_CLOSE);
     }
-    
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -45,33 +46,41 @@ public class AddToolGUI extends javax.swing.JFrame {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
         jLabel3 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        jTextCode = new javax.swing.JTextField();
+        jButtonConfirm = new javax.swing.JButton();
         jSeparator2 = new javax.swing.JSeparator();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTextNote = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel1.setText("Add Tool");
+        jLabel1.setText("Add diagnosis");
 
-        jTextField1.setText("Tool name");
+        jLabel2.setText("Diagnosis note:");
 
-        jLabel2.setText("Tool name");
+        jLabel3.setText("Diagnosis code:");
 
-        jLabel3.setText("Tool code");
-
-        jTextField2.setText("Tool code");
-
-        jButton1.setText("Confirm");
-        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton1MouseClicked(evt);
+        jTextCode.setText("Diagnosisl code");
+        jTextCode.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextCodeActionPerformed(evt);
             }
         });
+
+        jButtonConfirm.setText("Confirm");
+        jButtonConfirm.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtonConfirmMouseClicked(evt);
+            }
+        });
+
+        jTextNote.setColumns(20);
+        jTextNote.setRows(5);
+        jScrollPane1.setViewportView(jTextNote);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -83,11 +92,11 @@ public class AddToolGUI extends javax.swing.JFrame {
                         .addGap(52, 52, 52)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 131, Short.MAX_VALUE)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel3)
-                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jTextCode, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(32, 32, 32))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addContainerGap()
@@ -97,12 +106,12 @@ public class AddToolGUI extends javax.swing.JFrame {
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jButtonConfirm, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(191, 191, 191))
             .addGroup(layout.createSequentialGroup()
-                .addGap(189, 189, 189)
+                .addGap(176, 176, 176)
                 .addComponent(jLabel1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(179, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -116,47 +125,39 @@ public class AddToolGUI extends javax.swing.JFrame {
                     .addComponent(jLabel2)
                     .addComponent(jLabel3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jTextCode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
                 .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jButtonConfirm, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(21, 21, 21))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
+    private void jButtonConfirmMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonConfirmMouseClicked
         // TODO add your handling code here:
-        // pripojeni k databazi
         
-        /*try {
-            emf = Persistence.createEntityManagerFactory("StoISPU");
-        } catch (Exception e) {
-            System.err.println("No connection to database");
-        }
-        */
-         //vytahnuti si dat z textfieldu
-        String toolName = jTextField1.getText();
-        String toolCode = jTextField2.getText();
+        String diagNote = jTextNote.getText();
+        String diagCode = jTextCode.getText();
              
         // ykontrolovani jestli nahidiu danej tool uz neni v datbazi
         
         
         // tool controler
-        ToolsJpaController tjc = new ToolsJpaController(emf);
-        toolsList = tjc.findToolsEntities();
+        DiagnosisJpaController djc = new DiagnosisJpaController(emf);
+        diagnosisList = djc.findDiagnosisEntities();
        
-        toolsList.stream().forEach((currTool) -> {
-            System.out.println(currTool.toString());                               // vypsani pomoci toString
-            if(currTool.getToolcode().equals(toolCode) || currTool.getToolname().equals(toolName)){
+        diagnosisList.stream().forEach((currDiag) -> {
+            System.out.println(currDiag.toString());                               // vypsani pomoci toString
+            if(currDiag.getDiagnosecode().equals(diagCode) || currDiag.getDiagnosenote().equals(diagNote)){
             Component frame = new JFrame();
                         JOptionPane.showMessageDialog(frame,
-                                "This tool is already in the database",
-                                "Add Tool error",
+                                "This diagnosis is already in the database",
+                                "Add Diagnosis error",
                                 JOptionPane.ERROR_MESSAGE);
                 find = true;  
             }       
@@ -166,19 +167,23 @@ public class AddToolGUI extends javax.swing.JFrame {
         });
         
         if(find == false){
-        tjc.create(new Tools(null,toolName,toolCode,false,false));
+        djc.create(new Diagnosis(null,diagCode,diagNote));
         Component frame = new JFrame();
                         JOptionPane.showMessageDialog(frame,
-                                "Tool has been succesfully added",
-                                "Add Tool",
+                                "Diagnosis has been succesfully added",
+                                "Add Diagnosis",
                                 JOptionPane.INFORMATION_MESSAGE);
                 find = true;
         }
         else{
         find = false;
         }
-                 
-    }//GEN-LAST:event_jButton1MouseClicked
+        
+    }//GEN-LAST:event_jButtonConfirmMouseClicked
+
+    private void jTextCodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextCodeActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextCodeActionPerformed
 
     /**
      * @param args the command line arguments
@@ -197,13 +202,13 @@ public class AddToolGUI extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(AddToolGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AddDiagnosislGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(AddToolGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AddDiagnosislGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(AddToolGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AddDiagnosislGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(AddToolGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AddDiagnosislGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
         //</editor-fold>
@@ -220,25 +225,48 @@ public class AddToolGUI extends javax.swing.JFrame {
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
+       //</editor-fold>
+//
+//        /* Create and display the form */
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                new AddMaterialGUI().setVisible(true);
+//            }
+//        });
         //</editor-fold>
-
-        /* Create and display the form */
-        /*java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new AddToolGUI(emf).setVisible(true);
-            }
-        });
-                */
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+       //</editor-fold>
+//
+//        /* Create and display the form */
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                new AddMaterialGUI().setVisible(true);
+//            }
+//        });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButtonConfirm;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
+    private javax.swing.JTextField jTextCode;
+    private javax.swing.JTextArea jTextNote;
     // End of variables declaration//GEN-END:variables
 }
