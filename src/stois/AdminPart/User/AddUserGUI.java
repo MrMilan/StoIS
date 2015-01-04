@@ -179,6 +179,9 @@ public class AddUserGUI extends javax.swing.JFrame {
         char[] passWd = jPFPassword.getPassword();
         String login = jTFUsername.getText();
 
+        Persons persona = personsList.get(listPersons.getSelectedIndex());
+        
+        
         Users u = null;
         try {
             u = ujc.findUsersByUserName(login);
@@ -194,6 +197,7 @@ public class AddUserGUI extends javax.swing.JFrame {
             Users userToInsert = new Users();
             userToInsert.setUsername(login);
             userToInsert.setPasswordanswer("Vsichni jsme gogo");
+            userToInsert.setPersonsPersonid(persona);
             // GENERATING NEW SALT
             try {
                 salt = pp.getSalt();
@@ -232,10 +236,10 @@ public class AddUserGUI extends javax.swing.JFrame {
             }
         } else {
             Component frame = new JFrame();
-        JOptionPane.showMessageDialog(frame,
-                                "This Username exist",
-                                "Inane error",
-                                JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(frame,
+                    "This Username exist",
+                    "Inane error",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
     private void jBtnGetRandomPasswdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnGetRandomPasswdActionPerformed

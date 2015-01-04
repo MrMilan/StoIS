@@ -19,7 +19,7 @@ public class AdminGUI extends javax.swing.JFrame {
      * Creates new form AdminGUI
      */
     private EntityManagerFactory emf = null;
-    private static Users userEntity;
+    private static Users userEntity=new Users();
 
 //    public AdminGUI() {
 //        initComponents();
@@ -31,7 +31,6 @@ public class AdminGUI extends javax.swing.JFrame {
 //        setDefaultCloseOperation(AdminGUI.DISPOSE_ON_CLOSE);
 //    }
     public AdminGUI(EntityManagerFactory emf, Users user) {
-        this.userEntity= new Users();
         this.emf = emf;
         this.userEntity = user;
         initComponents();
