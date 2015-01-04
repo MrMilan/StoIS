@@ -167,7 +167,7 @@ public class AddDiagnosislGUI extends javax.swing.JFrame {
         });
         
         if(find == false){
-        djc.create(new Diagnosis(null,diagCode,diagNote));
+        djc.create(new Diagnosis(null,diagCode,diagNote, false));
         Component frame = new JFrame();
                         JOptionPane.showMessageDialog(frame,
                                 "Diagnosis has been succesfully added",

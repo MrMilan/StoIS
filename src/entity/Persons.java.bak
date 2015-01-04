@@ -216,7 +216,7 @@ public class Persons implements Serializable {
 
     @Override
     public String toString() {
-        return "" + firstname + ", " + surename + ", " + birthnumber + "";
+        return firstname + ", " + surename + ", " + birthnumber;
     }
     
 }

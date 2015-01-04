@@ -6,7 +6,6 @@
 package stois.AdminPart;
 
 import entity.Users;
-import entity.Users_;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
@@ -32,14 +31,13 @@ public class AdminGUI extends javax.swing.JFrame {
 //        setDefaultCloseOperation(AdminGUI.DISPOSE_ON_CLOSE);
 //    }
     public AdminGUI(EntityManagerFactory emf, Users user) {
-        this.userEntity = new Users();
+        this.userEntity= new Users();
         this.emf = emf;
         this.userEntity = user;
         initComponents();
         setDefaultCloseOperation(AdminGUI.DISPOSE_ON_CLOSE);
     }
-    
-    public AdminGUI() {
+ public AdminGUI() {
     }
 
      public Users getUser() {
@@ -49,7 +47,6 @@ public class AdminGUI extends javax.swing.JFrame {
     public void setUser(Users user) {
         this.userEntity = user;
     }
-    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -61,8 +58,8 @@ public class AdminGUI extends javax.swing.JFrame {
 
         jSeparator3 = new javax.swing.JSeparator();
         jSeparator4 = new javax.swing.JSeparator();
-        jButtUserAdd = new javax.swing.JButton();
-        jButtUserDel = new javax.swing.JButton();
+        jButtPersonAdd = new javax.swing.JButton();
+        jButtPersonEdit = new javax.swing.JButton();
         jButtRepExp = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jButtUserList = new javax.swing.JButton();
@@ -90,17 +87,17 @@ public class AdminGUI extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("StoIS Admin Portal");
 
-        jButtUserAdd.setText("Add person");
-        jButtUserAdd.addActionListener(new java.awt.event.ActionListener() {
+        jButtPersonAdd.setText("Add person");
+        jButtPersonAdd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtUserAddActionPerformed(evt);
+                jButtPersonAddActionPerformed(evt);
             }
         });
 
-        jButtUserDel.setText("Cancel person");
-        jButtUserDel.addActionListener(new java.awt.event.ActionListener() {
+        jButtPersonEdit.setText("Edit person");
+        jButtPersonEdit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtUserDelActionPerformed(evt);
+                jButtPersonEditActionPerformed(evt);
             }
         });
 
@@ -246,9 +243,9 @@ public class AdminGUI extends javax.swing.JFrame {
                                                 .addComponent(jButtAdminLogoff, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE))
                                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                                 .addGap(27, 27, 27)
-                                                .addComponent(jButtUserAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(jButtPersonAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addComponent(jButtUserDel, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                                .addComponent(jButtPersonEdit, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                         .addGap(42, 42, 42))
                                     .addGroup(layout.createSequentialGroup()
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -321,8 +318,8 @@ public class AdminGUI extends javax.swing.JFrame {
                             .addComponent(jLabel1)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jButtUserDel)
-                                .addComponent(jButtUserAdd))
+                                .addComponent(jButtPersonEdit)
+                                .addComponent(jButtPersonAdd))
                             .addGap(18, 18, 18)
                             .addComponent(jButtUserList)
                             .addGap(5, 5, 5)))
@@ -370,15 +367,17 @@ public class AdminGUI extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButtUserAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtUserAddActionPerformed
+    private void jButtPersonAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtPersonAddActionPerformed
         // TODO add your handling code here:
         stois.AdminPart.Person.AddPersonGUI addPerson = new stois.AdminPart.Person.AddPersonGUI(emf);
         addPerson.setVisible(true);
-    }//GEN-LAST:event_jButtUserAddActionPerformed
+    }//GEN-LAST:event_jButtPersonAddActionPerformed
 
-    private void jButtUserDelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtUserDelActionPerformed
+    private void jButtPersonEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtPersonEditActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButtUserDelActionPerformed
+        stois.AdminPart.Person.EditPersonGUI1 editPerson = new stois.AdminPart.Person.EditPersonGUI1(emf);
+        editPerson.setVisible(true);
+    }//GEN-LAST:event_jButtPersonEditActionPerformed
 
     private void jButtRepExpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtRepExpActionPerformed
         // TODO add your handling code here:
@@ -500,11 +499,11 @@ public class AdminGUI extends javax.swing.JFrame {
     private javax.swing.JButton jButtOperAdd;
     private javax.swing.JButton jButtOperDel;
     private javax.swing.JButton jButtOperList;
+    private javax.swing.JButton jButtPersonAdd;
+    private javax.swing.JButton jButtPersonEdit;
     private javax.swing.JButton jButtRepExp;
     private javax.swing.JButton jButtToolAdd;
     private javax.swing.JButton jButtToolDel;
-    private javax.swing.JButton jButtUserAdd;
-    private javax.swing.JButton jButtUserDel;
     private javax.swing.JButton jButtUserList;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

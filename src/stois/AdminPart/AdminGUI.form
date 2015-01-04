@@ -58,9 +58,9 @@
                                           </Group>
                                           <Group type="102" alignment="0" attributes="0">
                                               <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
-                                              <Component id="jButtUserAdd" min="-2" pref="100" max="-2" attributes="0"/>
+                                              <Component id="jButtPersonAdd" min="-2" pref="100" max="-2" attributes="0"/>
                                               <EmptySpace max="32767" attributes="0"/>
-                                              <Component id="jButtUserDel" min="-2" pref="129" max="-2" attributes="0"/>
+                                              <Component id="jButtPersonEdit" min="-2" pref="129" max="-2" attributes="0"/>
                                           </Group>
                                       </Group>
                                       <EmptySpace min="-2" pref="42" max="-2" attributes="0"/>
@@ -160,8 +160,8 @@
                           <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="jButtUserDel" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="jButtUserAdd" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="jButtPersonEdit" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="jButtPersonAdd" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Component id="jButtUserList" min="-2" max="-2" attributes="0"/>
@@ -222,20 +222,20 @@
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Component class="javax.swing.JButton" name="jButtUserAdd">
+    <Component class="javax.swing.JButton" name="jButtPersonAdd">
       <Properties>
         <Property name="text" type="java.lang.String" value="Add person"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtUserAddActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtPersonAddActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="jButtUserDel">
+    <Component class="javax.swing.JButton" name="jButtPersonEdit">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Cancel person"/>
+        <Property name="text" type="java.lang.String" value="Edit person"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtUserDelActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtPersonEditActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JButton" name="jButtRepExp">

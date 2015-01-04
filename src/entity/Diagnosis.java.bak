@@ -115,7 +115,7 @@ public class Diagnosis implements Serializable {
 
     @Override
     public String toString() {
-        return "" + diagnosecode + "";
+        return "entity.Diagnosis[ diagnoseid=" + diagnoseid + " ]";
     }
     
 }

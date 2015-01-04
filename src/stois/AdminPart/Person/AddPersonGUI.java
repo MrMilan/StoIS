@@ -41,6 +41,8 @@ public class AddPersonGUI extends javax.swing.JFrame {
     private static List <Persons> findPersons = null;
     private static List <Roles> findRoles = null;
     private static boolean find = false;
+    private static boolean find2 = false;
+    
     
     private static Addresses myAddress = null;
     private static Addresses myAddressNew = null;
@@ -360,21 +362,39 @@ public class AddPersonGUI extends javax.swing.JFrame {
                     
                 if(boolPatient == true){
                 myRole = 4;
-                }    
+                }  
+                
+        // aby aspon jeden byl zadanej         
+                if(boolPatient == true || boolAdmin == true || boolDoc == true || boolNurse == true){               
+                } 
+                else{
+                find2 = true;
+                }
         // vytahnuti si roli z databaze
       
+             
             RolesJpaController rolejc = new RolesJpaController(emf); 
             findRoles = rolejc.findRolesEntities();
+
         //    System.out.println(myRole);
             
         // vytvoreni role uz kurva
             
             PersonsHasRolesJpaController phrjc = new PersonsHasRolesJpaController(emf);
  
-            
+            if(find2 == false){   
             PersonsHasRoles newPersonRole = new PersonsHasRoles(null,blb,findRoles.get(myRole-1),false);           
             phrjc.create(newPersonRole);
-            
+            }
+            else{
+            Component frame = new JFrame();
+                        JOptionPane.showMessageDialog(frame,
+                                "Your role hase been set as a patient",
+                                "Add person",
+                                JOptionPane.INFORMATION_MESSAGE);
+            PersonsHasRoles newPersonRole = new PersonsHasRoles(null,blb,findRoles.get(3),false);           
+            phrjc.create(newPersonRole);
+            }
             
         // pridani adresy k uzivateli
             System.out.println(myAddress);
@@ -410,7 +430,7 @@ public class AddPersonGUI extends javax.swing.JFrame {
         
         // zavolame si novy okno, kde budou vypsany vsechny asdresy a dotycny si zvoli, popripade tam pripda novou
         
-        stois.AdminPart.Address.AddAddressGUI addAddresses = new stois.AdminPart.Address.AddAddressGUI(emf);
+        stois.AdminPart.Address.AddAddressGUI addAddresses = new stois.AdminPart.Address.AddAddressGUI(emf,1);
         addAddresses.setVisible(true);
         
         

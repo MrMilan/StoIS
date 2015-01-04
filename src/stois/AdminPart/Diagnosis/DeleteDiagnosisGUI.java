@@ -25,6 +25,7 @@ public class DeleteDiagnosisGUI extends javax.swing.JFrame {
     
     private static EntityManagerFactory emf = null;
     private static List <Diagnosis> diagEntities = null;
+    Integer index = null;
     
     public DeleteDiagnosisGUI(EntityManagerFactory emf) {
         initComponents();
@@ -369,6 +370,17 @@ public class DeleteDiagnosisGUI extends javax.swing.JFrame {
     private void list1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_list1MouseClicked
         // TODO add your handling code here:
         Integer clicked = list1.getSelectedIndex();
+        
+        /*
+        diagEntities.stream().forEach((currDiag) -> {
+            if(currDiag.toString().equals(clicked)){
+            System.out.println(currDiag.toString()); 
+            index = currDiag.getDiagnoseid();
+            //list1.add(currDiag.toString());
+            }
+        });
+        */
+        //System.out.println(index);
         jTextDiagNote.setText(diagEntities.get(clicked).getDiagnosenote());
         
     }//GEN-LAST:event_list1MouseClicked

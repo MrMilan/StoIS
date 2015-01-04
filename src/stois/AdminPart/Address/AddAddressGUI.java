@@ -25,6 +25,7 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import org.eclipse.persistence.internal.helper.Helper;
 import stois.AdminPart.Person.AddPersonGUI;
+import stois.AdminPart.Person.EditPersonGUI1;
 
 /**
  *
@@ -42,9 +43,11 @@ public class AddAddressGUI extends javax.swing.JFrame {
     
     // globalni prommenou kterou si pak predam do predchozioh okna
     public String ChosenAdress = null; 
+    private static Integer number = null;
     
-    public AddAddressGUI(EntityManagerFactory emf) {
+    public AddAddressGUI(EntityManagerFactory emf, Integer number) {
         this.emf = emf;
+        this.number = number;
         initComponents();
         updateDatabase();
         setDefaultCloseOperation(AddAddressGUI.DISPOSE_ON_CLOSE);
@@ -300,8 +303,14 @@ public class AddAddressGUI extends javax.swing.JFrame {
         // TODO add your handling code here:
         
         int index = list1.getSelectedIndex();
+        if(number==1){
         AddPersonGUI mySuper = new AddPersonGUI(AddressesList.get(index), list1.getSelectedItem());   
         setVisible(false);
+        }
+        else{
+        EditPersonGUI1 mySuper = new EditPersonGUI1(AddressesList.get(index), list1.getSelectedItem());   
+        setVisible(false);       
+        }
         //mySuper.setMyAddress(AddressesList.get(index-1));
         //mySuper.initText();
         //mySuper.initText(AddressesList.get(index-1));
