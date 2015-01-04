@@ -13,6 +13,8 @@ import entity.Users;
 import java.awt.Component;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManagerFactory;
 import javax.swing.JFrame;
@@ -219,6 +221,7 @@ public class AddUserGUI extends javax.swing.JFrame {
 
                     userToInsert.setPassword2(passwordHash);
                     userToInsert.setPasswordsalt(salt);
+                    userToInsert.setDatetimelastlogin(Date.from(Instant.now()));
                     try {
 
                         ujc.create(userToInsert);
