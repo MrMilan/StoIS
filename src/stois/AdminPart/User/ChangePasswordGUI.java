@@ -188,6 +188,8 @@ public class ChangePasswordGUI extends javax.swing.JFrame {
                         if (!rollBack) {
                             userEntity= userToInsert;
                         }
+                        
+                        //A tadz snad vracim nove upraveneho usera
                          AdminGUI mySuper = new AdminGUI();
                          mySuper.setUser(userEntity);
                     } else {
