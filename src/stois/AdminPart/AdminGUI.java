@@ -43,7 +43,7 @@ public class AdminGUI extends javax.swing.JFrame {
     }
 
      public Users getUser() {
-        return this.user;
+        return this.userEntity;
     }
 
     public void setUser(Users user) {

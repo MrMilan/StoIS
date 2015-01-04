@@ -6,10 +6,18 @@
 package stois.AdminPart.User;
 
 import Controller.PersonsJpaController;
+import Controller.UsersJpaController;
 import entity.Addresses;
 import entity.Persons;
+import entity.Users;
+import java.awt.Component;
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import javax.persistence.EntityManagerFactory;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import stois.Passport;
 
 /**
  *
@@ -20,13 +28,14 @@ public class AddUserGUI extends javax.swing.JFrame {
     /**
      * Creates new form AddUserGUI
      */
-      private EntityManagerFactory emf = null;
-      private static List <Persons> personsList = null;
+    private EntityManagerFactory emf = null;
+    private static List<Persons> personsList = null;
+
     public AddUserGUI(EntityManagerFactory emf) {
         this.emf = emf;
         initComponents();
         getDataFromDatabase();
-                setDefaultCloseOperation(AddUserGUI.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(AddUserGUI.DISPOSE_ON_CLOSE);
     }
 
     /**
@@ -40,8 +49,8 @@ public class AddUserGUI extends javax.swing.JFrame {
 
         jLabel1 = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        jBtnGetRandomPasswd = new javax.swing.JButton();
+        jBtnAssign = new javax.swing.JButton();
         jTFUsername = new javax.swing.JTextField();
         jPFPassword = new javax.swing.JPasswordField();
         jLabel2 = new javax.swing.JLabel();
@@ -54,9 +63,19 @@ public class AddUserGUI extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel1.setText("Assign Username to Person");
 
-        jButton1.setText("Get random password");
+        jBtnGetRandomPasswd.setText("Get random password");
+        jBtnGetRandomPasswd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBtnGetRandomPasswdActionPerformed(evt);
+            }
+        });
 
-        jButton2.setText("Assign to Person");
+        jBtnAssign.setText("Assign to Person");
+        jBtnAssign.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBtnAssignActionPerformed(evt);
+            }
+        });
 
         jTFUsername.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -88,7 +107,7 @@ public class AddUserGUI extends javax.swing.JFrame {
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
                                         .addGap(20, 20, 20)
-                                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(jBtnAssign, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGroup(layout.createSequentialGroup()
                                         .addContainerGap()
                                         .addComponent(listPersons, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -98,7 +117,7 @@ public class AddUserGUI extends javax.swing.JFrame {
                                 .addGap(19, 19, 19)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jBtnGetRandomPasswd, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(jPFPassword)
                                         .addComponent(jTFUsername))
                                     .addComponent(jLabel2)
@@ -124,35 +143,111 @@ public class AddUserGUI extends javax.swing.JFrame {
                         .addGap(9, 9, 9)
                         .addComponent(jPFPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton1))
+                        .addComponent(jBtnGetRandomPasswd))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(listPersons, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
-                .addComponent(jButton2)
+                .addComponent(jBtnAssign)
                 .addContainerGap(49, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void getDataFromDatabase(){
-    
-        //vymazani listu
+    private void getDataFromDatabase() {
         listPersons.removeAll();
-        
-        PersonsJpaController pjc = new PersonsJpaController(emf); 
+        PersonsJpaController pjc = new PersonsJpaController(emf);
         personsList = pjc.findPersonsEntitiesNotCanceledNotAssignet();
-        
         personsList.stream().forEach((curPer) -> {
             listPersons.add(curPer.toString());
         });
-        
+
     }
     private void jTFUsernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTFUsernameActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTFUsernameActionPerformed
+
+    private void jBtnAssignActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnAssignActionPerformed
+        UsersJpaController ujc = new UsersJpaController(emf);
+        Passport pp = new Passport();
+        String salt = null;
+        String passwordHash = null;
+        boolean problemSaltOrPassword = false;
+
+        char[] passWd = jPFPassword.getPassword();
+        String login = jTFUsername.getText();
+
+        Users u = null;
+        try {
+            u = ujc.findUsersByUserName(login);
+        } catch (Exception e) {
+            Component frame = new JFrame();
+            JOptionPane.showMessageDialog(frame,
+                    "Connection to database and searching in database faild",
+                    "Inane error",
+                    JOptionPane.WARNING_MESSAGE);
+        }
+
+        if (u == null) {
+            Users userToInsert = new Users();
+            userToInsert.setUsername(login);
+            userToInsert.setPasswordanswer("Vsichni jsme gogo");
+            // GENERATING NEW SALT
+            try {
+                salt = pp.getSalt();
+            } catch (NoSuchAlgorithmException ex) {
+                ex.printStackTrace();
+                problemSaltOrPassword = true;
+            }
+
+            if (!problemSaltOrPassword) {
+                // GENERATING PASSWD HASH
+                try {
+                    passwordHash = pp.getHash(passWd, salt);
+                } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
+                    ex.printStackTrace();
+                    problemSaltOrPassword = true;
+                }
+                if (!problemSaltOrPassword) {
+                    //INSERTING TO DATABASE
+                    boolean rollBack = false;
+
+                    userToInsert.setPassword2(passwordHash);
+                    userToInsert.setPasswordsalt(salt);
+                    try {
+
+                        ujc.create(userToInsert);
+                    } catch (Exception ex) {
+                        rollBack = true;
+                        Component frame = new JFrame();
+                        JOptionPane.showMessageDialog(frame,
+                                "Connection to database or creating new username failed",
+                                "Inane error",
+                                JOptionPane.ERROR_MESSAGE);
+
+                    }
+    }//GEN-LAST:event_jBtnAssignActionPerformed
+            }
+        } else {
+            Component frame = new JFrame();
+        JOptionPane.showMessageDialog(frame,
+                                "This Username exist",
+                                "Inane error",
+                                JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    private void jBtnGetRandomPasswdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnGetRandomPasswdActionPerformed
+        Passport pp = new Passport();
+        String randomPassword = pp.generateRandomPassword(12);
+        jPFPassword.setText(randomPassword);
+        Component frame = new JFrame();
+        JOptionPane.showMessageDialog(frame,
+                "Password is-> " + randomPassword,
+                "Password",
+                JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_jBtnGetRandomPasswdActionPerformed
 
     /**
      * @param args the command line arguments
@@ -190,8 +285,8 @@ public class AddUserGUI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jBtnAssign;
+    private javax.swing.JButton jBtnGetRandomPasswd;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
