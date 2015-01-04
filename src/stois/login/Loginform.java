@@ -16,6 +16,7 @@ import javax.persistence.EntityManagerFactory;
 import java.security.NoSuchAlgorithmException;
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -38,8 +39,9 @@ public class Loginform extends javax.swing.JFrame {
     private EntityManagerFactory emf = null;
 
     public Loginform(EntityManagerFactory emf) {
-        initComponents();
         this.emf = emf;
+        initComponents();
+        setDefaultCloseOperation(Loginform.DISPOSE_ON_CLOSE);
     }
 
     /**
@@ -109,18 +111,19 @@ public class Loginform extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    @SuppressWarnings("null")
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
         char[] pass = txtBoxPasswd.getPassword();
         String username = txtBoxUsername.getText();
 
         UsersJpaController ujc = new UsersJpaController(emf);
-        Users u= null;
+        Users u = null;
         try {
-        u = ujc.findUsersByUserName(username);    
+            u = ujc.findUsersByUserName(username);
         } catch (Exception e) {
-        System.err.println("Connection to database and searching in database faild");
+            System.err.println("Connection to database and searching in database faild");
         }
-        
+
         if (u == null) {
             System.err.println("User not found");
         } else {
@@ -129,11 +132,31 @@ public class Loginform extends javax.swing.JFrame {
                 Passport pp = new Passport();
                 if (pp.isItSamePassword(pass, u.getPasswordsalt(), u.getPassword2())) {
                     int userId = u.getUsersid();
-                    
+
                     PersonsJpaController pjc = new PersonsJpaController(emf);
-                    List<Roles> fur= pjc.getUsersRoles(userId);
-//                    switch(role)
-int a = 7;
+                    List<Roles> role = pjc.getUsersRoles(userId);
+                    if (role.isEmpty() || role == null) {
+                        Component frame = new JFrame();
+                        JOptionPane.showMessageDialog(frame,
+                                "Incorret password or login",
+                                "Inane error",
+                                JOptionPane.WARNING_MESSAGE);
+                    } else {
+                        switch (role.get(0).getRoleid()) {
+                            case 1:
+                                System.err.println("Admin");
+                                break;
+                            case 2:
+                                System.err.println("Doctor");
+                                break;
+                            case 3:
+                                System.err.println("SISTER");
+                                break;
+                            default:
+                                System.err.println("Role not found");
+                                break;
+                        }
+                    }
 
                 } else {
                     Component frame = new JFrame();
@@ -142,9 +165,7 @@ int a = 7;
                             "Inane error",
                             JOptionPane.ERROR_MESSAGE);
                 }
-            } catch (NoSuchAlgorithmException ex) {
-                Logger.getLogger(Loginform.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (UnsupportedEncodingException ex) {
+            } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
                 Logger.getLogger(Loginform.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
