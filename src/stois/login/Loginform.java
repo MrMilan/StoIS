@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import stois.AdminPart.AdminGUI;
 import stois.Passport;
 
 /**
@@ -144,7 +145,9 @@ public class Loginform extends javax.swing.JFrame {
                     } else {
                         switch (role.get(0).getRoleid()) {
                             case 1:
-                                System.err.println("Admin");
+                                stois.AdminPart.AdminGUI aGUI = new AdminGUI(emf);
+                                setVisible(false);
+                                aGUI.setVisible(true);
                                 break;
                             case 2:
                                 System.err.println("Doctor");

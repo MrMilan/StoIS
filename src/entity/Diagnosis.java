@@ -6,9 +6,7 @@
 package entity;
 
 import java.io.Serializable;
-import java.util.Collection;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -16,10 +14,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -32,7 +28,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Diagnosis.findAll", query = "SELECT d FROM Diagnosis d"),
     @NamedQuery(name = "Diagnosis.findByDiagnoseid", query = "SELECT d FROM Diagnosis d WHERE d.diagnoseid = :diagnoseid"),
     @NamedQuery(name = "Diagnosis.findByDiagnosecode", query = "SELECT d FROM Diagnosis d WHERE d.diagnosecode = :diagnosecode"),
-    @NamedQuery(name = "Diagnosis.findByDiagnosenote", query = "SELECT d FROM Diagnosis d WHERE d.diagnosenote = :diagnosenote")})
+    @NamedQuery(name = "Diagnosis.findByDiagnosenote", query = "SELECT d FROM Diagnosis d WHERE d.diagnosenote = :diagnosenote"),
+    @NamedQuery(name = "Diagnosis.findByCanceled", query = "SELECT d FROM Diagnosis d WHERE d.canceled = :canceled")})
 public class Diagnosis implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -46,8 +43,9 @@ public class Diagnosis implements Serializable {
     @Basic(optional = false)
     @Column(name = "diagnosenote")
     private String diagnosenote;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "diagnosisDiagnoseid")
-    private Collection<Reports> reportsCollection;
+    @Basic(optional = false)
+    @Column(name = "canceled")
+    private boolean canceled;
 
     public Diagnosis() {
     }
@@ -56,10 +54,11 @@ public class Diagnosis implements Serializable {
         this.diagnoseid = diagnoseid;
     }
 
-    public Diagnosis(Integer diagnoseid, String diagnosecode, String diagnosenote) {
+    public Diagnosis(Integer diagnoseid, String diagnosecode, String diagnosenote, boolean canceled) {
         this.diagnoseid = diagnoseid;
         this.diagnosecode = diagnosecode;
         this.diagnosenote = diagnosenote;
+        this.canceled = canceled;
     }
 
     public Integer getDiagnoseid() {
@@ -86,13 +85,12 @@ public class Diagnosis implements Serializable {
         this.diagnosenote = diagnosenote;
     }
 
-    @XmlTransient
-    public Collection<Reports> getReportsCollection() {
-        return reportsCollection;
+    public boolean getCanceled() {
+        return canceled;
     }
 
-    public void setReportsCollection(Collection<Reports> reportsCollection) {
-        this.reportsCollection = reportsCollection;
+    public void setCanceled(boolean canceled) {
+        this.canceled = canceled;
     }
 
     @Override
@@ -117,7 +115,7 @@ public class Diagnosis implements Serializable {
 
     @Override
     public String toString() {
-        return "stois.Entity.Diagnosis[ diagnoseid=" + diagnoseid + " ]";
+        return "entity.Diagnosis[ diagnoseid=" + diagnoseid + " ]";
     }
     
 }

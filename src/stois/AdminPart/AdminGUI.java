@@ -18,21 +18,21 @@ public class AdminGUI extends javax.swing.JFrame {
      * Creates new form AdminGUI
      */
     private EntityManagerFactory emf = null;
-    
-    public AdminGUI() {
+
+//    public AdminGUI() {
+//        initComponents();
+//        try {
+//            emf = Persistence.createEntityManagerFactory("StoISPU");
+//        } catch (Exception e) {
+//            System.err.println("No connection to database");
+//        } 
+//        setDefaultCloseOperation(AdminGUI.DISPOSE_ON_CLOSE);
+//    }
+    public AdminGUI(EntityManagerFactory emf) {
+        this.emf = emf;
         initComponents();
-        try {
-            emf = Persistence.createEntityManagerFactory("StoISPU");
-        } catch (Exception e) {
-            System.err.println("No connection to database");
-        } 
         setDefaultCloseOperation(AdminGUI.DISPOSE_ON_CLOSE);
     }
-        
-//    public AdminGUI(EntityManagerFactory emf) {
-//        initComponents();
-//        this.emf = emf;
-//    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -72,6 +72,7 @@ public class AdminGUI extends javax.swing.JFrame {
         jButtAdminLogoff = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("StoIS Admin Portal");
 
         jButtUserAdd.setText("Add person");
         jButtUserAdd.addActionListener(new java.awt.event.ActionListener() {
@@ -355,8 +356,8 @@ public class AdminGUI extends javax.swing.JFrame {
 
     private void jButtUserAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtUserAddActionPerformed
         // TODO add your handling code here:
-    stois.AdminPart.Person.AddPersonGUI addPerson = new stois.AdminPart.Person.AddPersonGUI(emf);
-    addPerson.setVisible(true);     
+        stois.AdminPart.Person.AddPersonGUI addPerson = new stois.AdminPart.Person.AddPersonGUI(emf);
+        addPerson.setVisible(true);
     }//GEN-LAST:event_jButtUserAddActionPerformed
 
     private void jButtUserDelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtUserDelActionPerformed
@@ -369,28 +370,28 @@ public class AdminGUI extends javax.swing.JFrame {
 
     private void jButtToolDelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtToolDelActionPerformed
         // TODO add your handling code here:
-    stois.AdminPart.Tool.DeleteToolGUI deleteTool = new stois.AdminPart.Tool.DeleteToolGUI(emf);
-    deleteTool.setVisible(true); 
+        stois.AdminPart.Tool.DeleteToolGUI deleteTool = new stois.AdminPart.Tool.DeleteToolGUI(emf);
+        deleteTool.setVisible(true);
     }//GEN-LAST:event_jButtToolDelActionPerformed
 
     private void jButtOperAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtOperAddActionPerformed
         // TODO add your handling code here:
-    stois.AdminPart.Operation.AddOperationlGUI addOper = new stois.AdminPart.Operation.AddOperationlGUI(emf);
-    addOper.setVisible(true);
+        stois.AdminPart.Operation.AddOperationlGUI addOper = new stois.AdminPart.Operation.AddOperationlGUI(emf);
+        addOper.setVisible(true);
     }//GEN-LAST:event_jButtOperAddActionPerformed
 
     private void jButtMaterAddMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtMaterAddMouseClicked
         // TODO add your handling code here:
-    stois.AdminPart.Material.AddMaterialGUI addMater = new stois.AdminPart.Material.AddMaterialGUI(emf);
-    addMater.setVisible(true);
-        
+        stois.AdminPart.Material.AddMaterialGUI addMater = new stois.AdminPart.Material.AddMaterialGUI(emf);
+        addMater.setVisible(true);
+
     }//GEN-LAST:event_jButtMaterAddMouseClicked
 
     private void jButtMaterDelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtMaterDelMouseClicked
         // TODO add your handling code here:
-    stois.AdminPart.Material.DeleteMaterialGUI deleteMater = new stois.AdminPart.Material.DeleteMaterialGUI(emf);
-    deleteMater.setVisible(true);
-    
+        stois.AdminPart.Material.DeleteMaterialGUI deleteMater = new stois.AdminPart.Material.DeleteMaterialGUI(emf);
+        deleteMater.setVisible(true);
+
     }//GEN-LAST:event_jButtMaterDelMouseClicked
 
     private void jButtUserListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtUserListMouseClicked
@@ -399,9 +400,9 @@ public class AdminGUI extends javax.swing.JFrame {
 
     private void jButtToolAddMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtToolAddMouseClicked
         // TODO add your handling code here:
-    stois.AdminPart.Tool.AddToolGUI addTool = new stois.AdminPart.Tool.AddToolGUI(emf);
-    addTool.setVisible(true);
-    
+        stois.AdminPart.Tool.AddToolGUI addTool = new stois.AdminPart.Tool.AddToolGUI(emf);
+        addTool.setVisible(true);
+
     }//GEN-LAST:event_jButtToolAddMouseClicked
 
     private void jButtAdminPswMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtAdminPswMouseClicked
@@ -422,15 +423,15 @@ public class AdminGUI extends javax.swing.JFrame {
 
     private void jButtDiagAddMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtDiagAddMouseClicked
         // TODO add your handling code here:
-    stois.AdminPart.Diagnosis.AddDiagnosislGUI addDiag = new stois.AdminPart.Diagnosis.AddDiagnosislGUI(emf);
-    addDiag.setVisible(true);
-        
+        stois.AdminPart.Diagnosis.AddDiagnosislGUI addDiag = new stois.AdminPart.Diagnosis.AddDiagnosislGUI(emf);
+        addDiag.setVisible(true);
+
     }//GEN-LAST:event_jButtDiagAddMouseClicked
 
     private void jButtDiagDelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtDiagDelMouseClicked
         // TODO add your handling code here:
-    stois.AdminPart.Diagnosis.DeleteDiagnosisGUI delDiag = new stois.AdminPart.Diagnosis.DeleteDiagnosisGUI(emf);
-    delDiag.setVisible(true);
+        stois.AdminPart.Diagnosis.DeleteDiagnosisGUI delDiag = new stois.AdminPart.Diagnosis.DeleteDiagnosisGUI(emf);
+        delDiag.setVisible(true);
     }//GEN-LAST:event_jButtDiagDelMouseClicked
 
     private void jButtDiagDelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtDiagDelActionPerformed
@@ -465,12 +466,12 @@ public class AdminGUI extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new AdminGUI().setVisible(true);
-            }
-        });
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            @Override
+//            public void run() {
+//                new AdminGUI().setVisible(true);
+//            }
+//        });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

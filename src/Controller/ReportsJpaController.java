@@ -12,7 +12,6 @@ import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import entity.Diagnosis;
 import entity.Actions;
 import entity.Reports;
 import java.util.ArrayList;
@@ -44,11 +43,6 @@ public class ReportsJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Diagnosis diagnosisDiagnoseid = reports.getDiagnosisDiagnoseid();
-            if (diagnosisDiagnoseid != null) {
-                diagnosisDiagnoseid = em.getReference(diagnosisDiagnoseid.getClass(), diagnosisDiagnoseid.getDiagnoseid());
-                reports.setDiagnosisDiagnoseid(diagnosisDiagnoseid);
-            }
             Collection<Actions> attachedActionsCollection = new ArrayList<Actions>();
             for (Actions actionsCollectionActionsToAttach : reports.getActionsCollection()) {
                 actionsCollectionActionsToAttach = em.getReference(actionsCollectionActionsToAttach.getClass(), actionsCollectionActionsToAttach.getActionid());
@@ -56,10 +50,6 @@ public class ReportsJpaController implements Serializable {
             }
             reports.setActionsCollection(attachedActionsCollection);
             em.persist(reports);
-            if (diagnosisDiagnoseid != null) {
-                diagnosisDiagnoseid.getReportsCollection().add(reports);
-                diagnosisDiagnoseid = em.merge(diagnosisDiagnoseid);
-            }
             for (Actions actionsCollectionActions : reports.getActionsCollection()) {
                 Reports oldReportsReportidOfActionsCollectionActions = actionsCollectionActions.getReportsReportid();
                 actionsCollectionActions.setReportsReportid(reports);
@@ -83,8 +73,6 @@ public class ReportsJpaController implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             Reports persistentReports = em.find(Reports.class, reports.getReportid());
-            Diagnosis diagnosisDiagnoseidOld = persistentReports.getDiagnosisDiagnoseid();
-            Diagnosis diagnosisDiagnoseidNew = reports.getDiagnosisDiagnoseid();
             Collection<Actions> actionsCollectionOld = persistentReports.getActionsCollection();
             Collection<Actions> actionsCollectionNew = reports.getActionsCollection();
             List<String> illegalOrphanMessages = null;
@@ -99,10 +87,6 @@ public class ReportsJpaController implements Serializable {
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
-            if (diagnosisDiagnoseidNew != null) {
-                diagnosisDiagnoseidNew = em.getReference(diagnosisDiagnoseidNew.getClass(), diagnosisDiagnoseidNew.getDiagnoseid());
-                reports.setDiagnosisDiagnoseid(diagnosisDiagnoseidNew);
-            }
             Collection<Actions> attachedActionsCollectionNew = new ArrayList<Actions>();
             for (Actions actionsCollectionNewActionsToAttach : actionsCollectionNew) {
                 actionsCollectionNewActionsToAttach = em.getReference(actionsCollectionNewActionsToAttach.getClass(), actionsCollectionNewActionsToAttach.getActionid());
@@ -111,14 +95,6 @@ public class ReportsJpaController implements Serializable {
             actionsCollectionNew = attachedActionsCollectionNew;
             reports.setActionsCollection(actionsCollectionNew);
             reports = em.merge(reports);
-            if (diagnosisDiagnoseidOld != null && !diagnosisDiagnoseidOld.equals(diagnosisDiagnoseidNew)) {
-                diagnosisDiagnoseidOld.getReportsCollection().remove(reports);
-                diagnosisDiagnoseidOld = em.merge(diagnosisDiagnoseidOld);
-            }
-            if (diagnosisDiagnoseidNew != null && !diagnosisDiagnoseidNew.equals(diagnosisDiagnoseidOld)) {
-                diagnosisDiagnoseidNew.getReportsCollection().add(reports);
-                diagnosisDiagnoseidNew = em.merge(diagnosisDiagnoseidNew);
-            }
             for (Actions actionsCollectionNewActions : actionsCollectionNew) {
                 if (!actionsCollectionOld.contains(actionsCollectionNewActions)) {
                     Reports oldReportsReportidOfActionsCollectionNewActions = actionsCollectionNewActions.getReportsReportid();
@@ -169,11 +145,6 @@ public class ReportsJpaController implements Serializable {
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
-            }
-            Diagnosis diagnosisDiagnoseid = reports.getDiagnosisDiagnoseid();
-            if (diagnosisDiagnoseid != null) {
-                diagnosisDiagnoseid.getReportsCollection().remove(reports);
-                diagnosisDiagnoseid = em.merge(diagnosisDiagnoseid);
             }
             em.remove(reports);
             em.getTransaction().commit();

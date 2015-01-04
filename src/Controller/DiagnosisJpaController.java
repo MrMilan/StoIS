@@ -5,20 +5,16 @@
  */
 package Controller;
 
-import Controller.exceptions.IllegalOrphanException;
 import Controller.exceptions.NonexistentEntityException;
 import entity.Diagnosis;
 import java.io.Serializable;
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import entity.Reports;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 
 /**
  *
@@ -36,29 +32,11 @@ public class DiagnosisJpaController implements Serializable {
     }
 
     public void create(Diagnosis diagnosis) {
-        if (diagnosis.getReportsCollection() == null) {
-            diagnosis.setReportsCollection(new ArrayList<Reports>());
-        }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Collection<Reports> attachedReportsCollection = new ArrayList<Reports>();
-            for (Reports reportsCollectionReportsToAttach : diagnosis.getReportsCollection()) {
-                reportsCollectionReportsToAttach = em.getReference(reportsCollectionReportsToAttach.getClass(), reportsCollectionReportsToAttach.getReportid());
-                attachedReportsCollection.add(reportsCollectionReportsToAttach);
-            }
-            diagnosis.setReportsCollection(attachedReportsCollection);
             em.persist(diagnosis);
-            for (Reports reportsCollectionReports : diagnosis.getReportsCollection()) {
-                Diagnosis oldDiagnosisDiagnoseidOfReportsCollectionReports = reportsCollectionReports.getDiagnosisDiagnoseid();
-                reportsCollectionReports.setDiagnosisDiagnoseid(diagnosis);
-                reportsCollectionReports = em.merge(reportsCollectionReports);
-                if (oldDiagnosisDiagnoseidOfReportsCollectionReports != null) {
-                    oldDiagnosisDiagnoseidOfReportsCollectionReports.getReportsCollection().remove(reportsCollectionReports);
-                    oldDiagnosisDiagnoseidOfReportsCollectionReports = em.merge(oldDiagnosisDiagnoseidOfReportsCollectionReports);
-                }
-            }
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -67,45 +45,12 @@ public class DiagnosisJpaController implements Serializable {
         }
     }
 
-    public void edit(Diagnosis diagnosis) throws IllegalOrphanException, NonexistentEntityException, Exception {
+    public void edit(Diagnosis diagnosis) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Diagnosis persistentDiagnosis = em.find(Diagnosis.class, diagnosis.getDiagnoseid());
-            Collection<Reports> reportsCollectionOld = persistentDiagnosis.getReportsCollection();
-            Collection<Reports> reportsCollectionNew = diagnosis.getReportsCollection();
-            List<String> illegalOrphanMessages = null;
-            for (Reports reportsCollectionOldReports : reportsCollectionOld) {
-                if (!reportsCollectionNew.contains(reportsCollectionOldReports)) {
-                    if (illegalOrphanMessages == null) {
-                        illegalOrphanMessages = new ArrayList<String>();
-                    }
-                    illegalOrphanMessages.add("You must retain Reports " + reportsCollectionOldReports + " since its diagnosisDiagnoseid field is not nullable.");
-                }
-            }
-            if (illegalOrphanMessages != null) {
-                throw new IllegalOrphanException(illegalOrphanMessages);
-            }
-            Collection<Reports> attachedReportsCollectionNew = new ArrayList<Reports>();
-            for (Reports reportsCollectionNewReportsToAttach : reportsCollectionNew) {
-                reportsCollectionNewReportsToAttach = em.getReference(reportsCollectionNewReportsToAttach.getClass(), reportsCollectionNewReportsToAttach.getReportid());
-                attachedReportsCollectionNew.add(reportsCollectionNewReportsToAttach);
-            }
-            reportsCollectionNew = attachedReportsCollectionNew;
-            diagnosis.setReportsCollection(reportsCollectionNew);
             diagnosis = em.merge(diagnosis);
-            for (Reports reportsCollectionNewReports : reportsCollectionNew) {
-                if (!reportsCollectionOld.contains(reportsCollectionNewReports)) {
-                    Diagnosis oldDiagnosisDiagnoseidOfReportsCollectionNewReports = reportsCollectionNewReports.getDiagnosisDiagnoseid();
-                    reportsCollectionNewReports.setDiagnosisDiagnoseid(diagnosis);
-                    reportsCollectionNewReports = em.merge(reportsCollectionNewReports);
-                    if (oldDiagnosisDiagnoseidOfReportsCollectionNewReports != null && !oldDiagnosisDiagnoseidOfReportsCollectionNewReports.equals(diagnosis)) {
-                        oldDiagnosisDiagnoseidOfReportsCollectionNewReports.getReportsCollection().remove(reportsCollectionNewReports);
-                        oldDiagnosisDiagnoseidOfReportsCollectionNewReports = em.merge(oldDiagnosisDiagnoseidOfReportsCollectionNewReports);
-                    }
-                }
-            }
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
@@ -123,7 +68,7 @@ public class DiagnosisJpaController implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException {
+    public void destroy(Integer id) throws NonexistentEntityException {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -134,17 +79,6 @@ public class DiagnosisJpaController implements Serializable {
                 diagnosis.getDiagnoseid();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The diagnosis with id " + id + " no longer exists.", enfe);
-            }
-            List<String> illegalOrphanMessages = null;
-            Collection<Reports> reportsCollectionOrphanCheck = diagnosis.getReportsCollection();
-            for (Reports reportsCollectionOrphanCheckReports : reportsCollectionOrphanCheck) {
-                if (illegalOrphanMessages == null) {
-                    illegalOrphanMessages = new ArrayList<String>();
-                }
-                illegalOrphanMessages.add("This Diagnosis (" + diagnosis + ") cannot be destroyed since the Reports " + reportsCollectionOrphanCheckReports + " in its reportsCollection field has a non-nullable diagnosisDiagnoseid field.");
-            }
-            if (illegalOrphanMessages != null) {
-                throw new IllegalOrphanException(illegalOrphanMessages);
             }
             em.remove(diagnosis);
             em.getTransaction().commit();
