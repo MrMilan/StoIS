@@ -6,8 +6,17 @@
 package stois.AdminPart;
 
 import entity.Users;
+import java.awt.Component;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import stois.AdminPart.User.AddUserGUI;
+import stois.AdminPart.User.ChangePasswordGUI;
+import stois.login.Loginform;
 
 /**
  *
@@ -19,7 +28,7 @@ public class AdminGUI extends javax.swing.JFrame {
      * Creates new form AdminGUI
      */
     private EntityManagerFactory emf = null;
-    private static Users userEntity=new Users();
+    private static Users userEntity = new Users();
 
 //    public AdminGUI() {
 //        initComponents();
@@ -34,18 +43,20 @@ public class AdminGUI extends javax.swing.JFrame {
         this.emf = emf;
         this.userEntity = user;
         initComponents();
-        setDefaultCloseOperation(AdminGUI.DISPOSE_ON_CLOSE);
-    }
- public AdminGUI() {
+        setDefaultCloseOperation(AdminGUI.EXIT_ON_CLOSE);
     }
 
-     public Users getUser() {
+    public AdminGUI() {
+    }
+
+    public Users getUser() {
         return this.userEntity;
     }
 
     public void setUser(Users user) {
         this.userEntity = user;
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -61,7 +72,6 @@ public class AdminGUI extends javax.swing.JFrame {
         jButtPersonEdit = new javax.swing.JButton();
         jButtRepExp = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
-        jButtUserList = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jButtMaterAdd = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
@@ -82,6 +92,7 @@ public class AdminGUI extends javax.swing.JFrame {
         jSeparator5 = new javax.swing.JSeparator();
         jButtAdminPsw = new javax.swing.JButton();
         jButtAdminLogoff = new javax.swing.JButton();
+        jBtnUser = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("StoIS Admin Portal");
@@ -108,13 +119,6 @@ public class AdminGUI extends javax.swing.JFrame {
         });
 
         jLabel1.setText("Persons");
-
-        jButtUserList.setText("Person list");
-        jButtUserList.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButtUserListMouseClicked(evt);
-            }
-        });
 
         jLabel2.setText("Reports");
 
@@ -205,11 +209,28 @@ public class AdminGUI extends javax.swing.JFrame {
                 jButtAdminPswMouseClicked(evt);
             }
         });
+        jButtAdminPsw.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtAdminPswActionPerformed(evt);
+            }
+        });
 
         jButtAdminLogoff.setText("Log off");
         jButtAdminLogoff.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jButtAdminLogoffMouseClicked(evt);
+            }
+        });
+        jButtAdminLogoff.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtAdminLogoffActionPerformed(evt);
+            }
+        });
+
+        jBtnUser.setText("Add username");
+        jBtnUser.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBtnUserActionPerformed(evt);
             }
         });
 
@@ -242,25 +263,27 @@ public class AdminGUI extends javax.swing.JFrame {
                                                 .addComponent(jButtAdminLogoff, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE))
                                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                                 .addGap(27, 27, 27)
-                                                .addComponent(jButtPersonAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addComponent(jButtPersonEdit, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addGroup(layout.createSequentialGroup()
+                                                        .addComponent(jSeparator5, javax.swing.GroupLayout.PREFERRED_SIZE, 339, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addGap(0, 0, Short.MAX_VALUE))
+                                                    .addGroup(layout.createSequentialGroup()
+                                                        .addComponent(jButtPersonAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                        .addComponent(jButtPersonEdit, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                                         .addGap(42, 42, 42))
                                     .addGroup(layout.createSequentialGroup()
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addGroup(layout.createSequentialGroup()
-                                                .addGap(10, 10, 10)
-                                                .addComponent(jSeparator5, javax.swing.GroupLayout.PREFERRED_SIZE, 339, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addGap(189, 189, 189)
-                                                .addComponent(jLabel1))
-                                            .addGroup(layout.createSequentialGroup()
                                                 .addGap(187, 187, 187)
                                                 .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
                                             .addGroup(layout.createSequentialGroup()
-                                                .addGap(132, 132, 132)
-                                                .addComponent(jButtUserList, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 82, Short.MAX_VALUE)))
+                                                .addGap(177, 177, 177)
+                                                .addComponent(jLabel1))
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addGap(171, 171, 171)
+                                                .addComponent(jBtnUser)))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                                 .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(27, 27, 27)))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -296,7 +319,7 @@ public class AdminGUI extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButtDiagDel, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButtDiagAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 55, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -311,17 +334,17 @@ public class AdminGUI extends javax.swing.JFrame {
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(jButtAdminPsw)
                                 .addComponent(jButtAdminLogoff))
-                            .addGap(23, 23, 23)
+                            .addGap(14, 14, 14)
+                            .addComponent(jBtnUser)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                             .addComponent(jSeparator5, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(jLabel1)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jButtPersonEdit)
-                                .addComponent(jButtPersonAdd))
-                            .addGap(18, 18, 18)
-                            .addComponent(jButtUserList)
-                            .addGap(5, 5, 5)))
+                                .addComponent(jButtPersonAdd)
+                                .addComponent(jButtPersonEdit))
+                            .addGap(24, 24, 24)))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addGap(14, 14, 14)
@@ -408,10 +431,6 @@ public class AdminGUI extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jButtMaterDelMouseClicked
 
-    private void jButtUserListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtUserListMouseClicked
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButtUserListMouseClicked
-
     private void jButtToolAddMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtToolAddMouseClicked
         // TODO add your handling code here:
         stois.AdminPart.Tool.AddToolGUI addTool = new stois.AdminPart.Tool.AddToolGUI(emf);
@@ -452,6 +471,25 @@ public class AdminGUI extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButtDiagDelActionPerformed
 
+    private void jButtAdminPswActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtAdminPswActionPerformed
+        // TODO add your handling code here:
+        stois.AdminPart.User.ChangePasswordGUI pawd = new ChangePasswordGUI(emf, userEntity);
+        pawd.setVisible(true);
+    }//GEN-LAST:event_jButtAdminPswActionPerformed
+
+    private void jBtnUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnUserActionPerformed
+        // TODO add your handling code here:
+        stois.AdminPart.User.AddUserGUI auD = new AddUserGUI(emf);
+        auD.setVisible(true);
+    }//GEN-LAST:event_jBtnUserActionPerformed
+
+    private void jButtAdminLogoffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtAdminLogoffActionPerformed
+        // TODO add your handling code here:
+        stois.login.Loginform lf = new Loginform(emf);
+        lf.setVisible(true);
+        setVisible(false);
+    }//GEN-LAST:event_jButtAdminLogoffActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -489,6 +527,7 @@ public class AdminGUI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jBtnUser;
     private javax.swing.JButton jButtAdminLogoff;
     private javax.swing.JButton jButtAdminPsw;
     private javax.swing.JButton jButtDiagAdd;
@@ -503,7 +542,6 @@ public class AdminGUI extends javax.swing.JFrame {
     private javax.swing.JButton jButtRepExp;
     private javax.swing.JButton jButtToolAdd;
     private javax.swing.JButton jButtToolDel;
-    private javax.swing.JButton jButtUserList;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

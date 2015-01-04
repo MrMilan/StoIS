@@ -378,7 +378,10 @@ public class PersonsJpaController implements Serializable {
     private List<Persons> findPersonsForUsers() {
         EntityManager em = getEntityManager();
         try {
-            Query q = em.createQuery("SELECT p from Persons AS p LEFT JOIN  p.usersCollection AS u LEFT JOIN p.personsHasRolesCollection AS phr LEFT JOIN phr.rolesRoleid AS r WHERE (p.canceled=false AND p.archived=false) AND r.roleid != 4 AND p.personid != (SELECT p.personid from Persons AS p LEFT JOIN  p.usersCollection AS u)");
+            Query q;
+            
+//            q = em.createQuery("SELECT p from Persons AS p LEFT JOIN  p.usersCollection AS u LEFT JOIN p.personsHasRolesCollection AS phr LEFT JOIN phr.rolesRoleid AS r WHERE (p.canceled=false AND p.archived=false) AND r.roleid != 4 AND p.personid NOT IN (SELECT p.personid from Persons AS p LEFT JOIN  p.usersCollection AS u)");
+            q = em.createQuery("SELECT p from Persons AS p LEFT JOIN  p.usersCollection AS u LEFT JOIN p.personsHasRolesCollection AS phr LEFT JOIN phr.rolesRoleid AS r WHERE (p.canceled=false AND p.archived=false) AND r.roleid != 4 AND p.personid NOT IN (SELECT p.personid from Persons AS p LEFT JOIN  p.usersCollection AS u WHERE u.username IS NOT NULL)");
             return q.getResultList();
         } finally {
             em.close();

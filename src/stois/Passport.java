@@ -38,7 +38,7 @@ public class Passport {
     }
 
     public String getSalt() throws NoSuchAlgorithmException {
-        int myMagicNuber = 36;
+        int myMagicNuber = 16;
         String characters = "asdLKJ:ASDklkj!qweRZT@POITZU#?MNYXvnb$yxcvcxnm%^asd&nmb*LKJ'/.,€";
         random = new Random();
         char[] text = new char[myMagicNuber];

@@ -10,6 +10,7 @@ import entity.Users;
 import java.awt.Component;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManagerFactory;
@@ -144,75 +145,85 @@ public class ChangePasswordGUI extends javax.swing.JFrame {
         char[] curPass = jPFCurrent.getPassword();
         char[] newPass = jPFNew.getPassword();
         char[] confNewPass = jPFConf.getPassword();
+        Passport pp = new Passport();
 
-        if (newPass.equals(confNewPass)) {
-            if (curPass.equals(userEntity.getPassword2())) {
-                UsersJpaController ujc = new UsersJpaController(emf);
-                Passport pp = new Passport();
-                String salt = null;
-                String passwordHash = null;
-                boolean problemSaltOrPassword = false;
-                // GENERATING NEW SALT
-                try {
-                    salt = pp.getSalt();
-                } catch (NoSuchAlgorithmException ex) {
-                    ex.printStackTrace();
-                    problemSaltOrPassword = true;
-                }
-                if (!problemSaltOrPassword) {
-                    // GENERATING PASSWD HASH
+        if (Arrays.equals(newPass, confNewPass)) {
+            try {
+                if (pp.isItSamePassword(curPass, userEntity.getPasswordsalt(), userEntity.getPassword2())) {
+                    UsersJpaController ujc = new UsersJpaController(emf);
+                    String salt = null;
+                    String passwordHash = null;
+                    boolean problemSaltOrPassword = false;
+                    // GENERATING NEW SALT
                     try {
-                        passwordHash = pp.getHash(newPass, salt);
-                    } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
+                        salt = pp.getSalt();
+                    } catch (NoSuchAlgorithmException ex) {
                         ex.printStackTrace();
                         problemSaltOrPassword = true;
                     }
                     if (!problemSaltOrPassword) {
-                        //INSERTING TO DATABASE
-                        boolean rollBack = false;
-                        Users userToInsert = userEntity;
-                        userToInsert.setPassword2(passwordHash);
-                        userToInsert.setPasswordsalt(salt);
+                        // GENERATING PASSWD HASH
                         try {
-
-                            ujc.edit(userToInsert);
-                        } catch (Exception ex) {
-                            rollBack = true;
+                            passwordHash = pp.getHash(newPass, salt);
+                        } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
+                            ex.printStackTrace();
+                            problemSaltOrPassword = true;
+                        }
+                        if (!problemSaltOrPassword) {
+                            //INSERTING TO DATABASE
+                            boolean rollBack = false;
+                            Users userToInsert = userEntity;
+                            userToInsert.setPassword2(passwordHash);
+                            userToInsert.setPasswordsalt(salt);
+                            try {
+                                
+                                ujc.edit(userToInsert);
+                            } catch (Exception ex) {
+                                rollBack = true;
+                                Component frame = new JFrame();
+                                JOptionPane.showMessageDialog(frame,
+                                        "Connection to database or changing password failed",
+                                        "Inane error",
+                                        JOptionPane.ERROR_MESSAGE);
+                                
+                            }
+                            if (!rollBack) {
+                                userEntity = userToInsert;
+                            }
+                            
+                            //A tadz snad vracim nove upraveneho usera
+                            AdminGUI mySuper = new AdminGUI();
+                            mySuper.setUser(userEntity);
+                             Component frame = new JFrame();
+                                JOptionPane.showMessageDialog(frame,
+                                        "Password changed",
+                                        "Inane error",
+                                        JOptionPane.INFORMATION_MESSAGE);
+                                setVisible(false);
+                        } else {
                             Component frame = new JFrame();
                             JOptionPane.showMessageDialog(frame,
                                     "Connection to database or changing password failed",
                                     "Inane error",
-                                    JOptionPane.ERROR_MESSAGE);
-
+                                    JOptionPane.WARNING_MESSAGE);
                         }
-                        if (!rollBack) {
-                            userEntity= userToInsert;
-                        }
-                        
-                        //A tadz snad vracim nove upraveneho usera
-                         AdminGUI mySuper = new AdminGUI();
-                         mySuper.setUser(userEntity);
                     } else {
                         Component frame = new JFrame();
                         JOptionPane.showMessageDialog(frame,
-                                "Connection to database or changing password failed",
+                                "Generating salt failed",
                                 "Inane error",
-                                JOptionPane.WARNING_MESSAGE);
+                                JOptionPane.ERROR_MESSAGE);
                     }
+                    
                 } else {
                     Component frame = new JFrame();
                     JOptionPane.showMessageDialog(frame,
-                            "Generating salt failed",
+                            "Current password is wrong. Try it again",
                             "Inane error",
-                            JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.WARNING_MESSAGE);
                 }
-
-            } else {
-                Component frame = new JFrame();
-                JOptionPane.showMessageDialog(frame,
-                        "Current password is wrong. Try it again",
-                        "Inane error",
-                        JOptionPane.WARNING_MESSAGE);
+            } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
+                Logger.getLogger(ChangePasswordGUI.class.getName()).log(Level.SEVERE, null, ex);
             }
 
         } else {

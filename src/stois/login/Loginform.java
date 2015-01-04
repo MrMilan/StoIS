@@ -42,7 +42,7 @@ public class Loginform extends javax.swing.JFrame {
     public Loginform(EntityManagerFactory emf) {
         this.emf = emf;
         initComponents();
-        setDefaultCloseOperation(Loginform.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(Loginform.EXIT_ON_CLOSE);
     }
 
     /**
