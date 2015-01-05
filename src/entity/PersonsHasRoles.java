@@ -110,7 +110,7 @@ public class PersonsHasRoles implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.PersonsHasRoles[ idphr=" + idphr + " ]";
+        return " " + personsPersonid.toString() + " " + rolesRoleid.toString();
     }
     
 }

@@ -165,4 +165,29 @@ public class ActionsJpaController implements Serializable {
         }
     }
     
+       public List<Actions> findActionsOperations() {
+        return findActionsForReports();
+    }
+       
+        private List<Actions> findActionsForReports() {
+        EntityManager em = getEntityManager();
+        try {
+            Query q;
+            q = em.createQuery("SELECT DISTINCT a.operationsOperationsid from Actions AS a LEFT JOIN  a.operationsOperationsid AS o");
+            return q.getResultList();
+        } finally {
+            em.close();
+        }
+    }
+     public List<Actions> findActers(Integer idOperation) {
+        EntityManager em = getEntityManager();
+        try {
+            Query q;
+            q = em.createQuery("SELECT a from Actions AS a LEFT JOIN  a.operationsOperationsid AS o WHERE o.operationsid =:idOper");
+            q.setParameter("idOper", idOperation);
+            return q.getResultList();
+        } finally {
+            em.close();
+        }
+    }
 }

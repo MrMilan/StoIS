@@ -107,7 +107,7 @@ public class Actions implements Serializable {
 
     @Override
     public String toString() {
-        return "stois.Entity.Actions[ actionid=" + actionid + " ]";
+        return "" + actionid + "";
     }
     
 }
